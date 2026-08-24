@@ -40,6 +40,21 @@ describe('GameEngine Unit Tests', () => {
       assert.ok(player);
       assert.equal(player.studentId, '2204055');
     });
+
+    it('authorizes student with RFID card and retrieves player by RFID', () => {
+      const res = engine.authorizeStudent('2204059', '4F00BB1B57');
+      assert.equal(res.success, true);
+      assert.equal(res.player?.rfid, '4F00BB1B57');
+
+      const byRfid = engine.getPlayerByRfid('4F00BB1B57');
+      assert.ok(byRfid);
+      assert.equal(byRfid.studentId, '2204059');
+
+      // Case insensitive lookup
+      const byLowerRfid = engine.getPlayerByRfid('4f00bb1b57');
+      assert.ok(byLowerRfid);
+      assert.equal(byLowerRfid.studentId, '2204059');
+    });
   });
 
   describe('Battleship Mechanics', () => {

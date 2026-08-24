@@ -422,8 +422,10 @@ export class GameEngine {
   }
 
   // --- Student Auth & Checkpoints ---
-  public authorizeStudent(studentId: string): { success: boolean; player?: PlayerRecord; message: string } {
+  public authorizeStudent(studentId: string, rfid?: string): { success: boolean; player?: PlayerRecord; message: string } {
     const cleanId = studentId.trim();
+    const cleanRfid = rfid ? rfid.trim().toUpperCase() : undefined;
+
     if (cleanId.length < 6) return { success: false, message: 'সঠিক আইডি প্রদান করুন (যেমন: 2204055)' };
 
     const batch = cleanId.substring(0, 2);
@@ -438,6 +440,7 @@ export class GameEngine {
     if (!player) {
       player = {
         studentId: cleanId,
+        rfid: cleanRfid,
         batch,
         deptCode,
         roll,
@@ -454,6 +457,9 @@ export class GameEngine {
       };
       this.players[cleanId] = player;
       this.addActivity(`${cleanId} (${DEPARTMENTS[deptCode].abbr}-${batch}) রেজিস্টার্ড হয়েছে! 🎟️`, 'AUTH', deptCode);
+      this.saveState();
+    } else if (cleanRfid && player.rfid !== cleanRfid) {
+      player.rfid = cleanRfid;
       this.saveState();
     }
 
@@ -489,6 +495,11 @@ export class GameEngine {
 
   public getPlayer(studentId: string): PlayerRecord | null {
     return this.players[studentId.trim()] || null;
+  }
+
+  public getPlayerByRfid(rfid: string): PlayerRecord | null {
+    const cleanRfid = rfid.trim().toUpperCase();
+    return Object.values(this.players).find(p => p.rfid && p.rfid.toUpperCase() === cleanRfid) || null;
   }
 
   public updatePlayerStage(studentId: string, stage: PlayerRecord['currentStage']): void {

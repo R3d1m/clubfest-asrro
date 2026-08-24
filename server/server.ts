@@ -35,21 +35,21 @@ app.get('/api/health', (req, res) => {
   return res.json({ status: 'ok', uptime: process.uptime(), timestamp: Date.now() });
 });
 
-// 1. Stall Coordinator Authorizes Student ID
+// 1. Stall Coordinator Authorizes Student ID (via Web Desk or RFID Terminal)
 app.post('/api/auth/register', (req, res) => {
-  const { studentId } = req.body;
+  const { studentId, rfid } = req.body;
   if (!studentId) {
     return res.status(400).json({ success: false, message: 'Student ID আবশ্যক!' });
   }
 
-  const result = gameEngine.authorizeStudent(studentId);
+  const result = gameEngine.authorizeStudent(studentId, rfid);
   if (result.success) {
     io.emit('state:update', gameEngine.getSnapshot());
   }
   return res.json(result);
 });
 
-// 2. Fetch Player Status / Checkpoint
+// 2. Fetch Player Status / Checkpoint by Student ID
 app.get('/api/player/:studentId', (req, res) => {
   const { studentId } = req.params;
   const player = gameEngine.getPlayer(studentId);
@@ -57,6 +57,19 @@ app.get('/api/player/:studentId', (req, res) => {
     return res.status(404).json({ 
       success: false, 
       message: 'শিক্ষার্থীকে বুথে এখনো রেজিস্টার করা হয়নি! অনুগ্রহ করে বুথের প্রতিনিধির সাথে যোগাযোগ করুন।' 
+    });
+  }
+  return res.json({ success: true, player });
+});
+
+// 2b. Fetch Player Status / Checkpoint by RFID Card Tag
+app.get('/api/player/rfid/:rfid', (req, res) => {
+  const { rfid } = req.params;
+  const player = gameEngine.getPlayerByRfid(rfid);
+  if (!player) {
+    return res.status(404).json({ 
+      success: false, 
+      message: 'এই RFID কার্ডটি এখনো কোনো শিক্ষার্থীর আইডির সাথে যুক্ত করা হয়নি।' 
     });
   }
   return res.json({ success: true, player });

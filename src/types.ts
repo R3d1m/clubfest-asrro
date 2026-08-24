@@ -36,6 +36,7 @@ export interface ParsedStudent {
 
 export interface PlayerRecord {
   studentId: string;
+  rfid?: string;
   batch: string;
   deptCode: DepartmentCode;
   roll: string;
