@@ -1,0 +1,163 @@
+import React, { useState } from 'react';
+import { Flame, Sparkles, Send, Coffee, Moon, Zap } from 'lucide-react';
+import { ParsedStudent } from '../types';
+import { DEPARTMENT_LIST } from '../data/departments';
+import { sound } from '../utils/sound';
+import { vibrate } from '../utils/haptics';
+
+interface PollStageProps {
+  student: ParsedStudent;
+  onPollSubmit: (answers: { q1?: string; q2?: string; q3?: string }) => void;
+}
+
+export const PollStage: React.FC<PollStageProps> = ({ student, onPollSubmit }) => {
+  const [q1, setQ1] = useState<string>('');
+  const [q2, setQ2] = useState<string>('');
+  const [q3, setQ3] = useState<string>('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async () => {
+    if (!q1 || !q2 || !q3) {
+      sound.playPop(250);
+      return;
+    }
+
+    setIsSubmitting(true);
+    sound.playStreakChime();
+    vibrate(30);
+
+    const answers = { q1, q2, q3 };
+
+    try {
+      await fetch('/api/poll/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          studentId: student.studentId,
+          answers
+        })
+      });
+
+      onPollSubmit(answers);
+    } catch (err) {
+      console.error('Poll submit error:', err);
+      onPollSubmit(answers);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="w-full max-w-lg mx-auto p-3 flex flex-col items-center space-y-3 min-h-[calc(100vh-70px)] justify-between">
+      {/* Top Banner */}
+      <div className="w-full pop-box p-3 bg-white flex items-center justify-between shadow-pop-sm">
+        <div>
+          <span className="text-xs font-bold text-gray-500 font-bangla block">স্টেপ ৪: স্পাইসি ফেস্ট সার্ভে</span>
+          <h2 className="text-base font-black font-bangla text-[#1E232A]">
+            🌶️ গোপন ভোট ও পরিসংখ্যান
+          </h2>
+        </div>
+
+        <div className="bg-[#FFE0E2] p-1.5 rounded-xl border-2 border-[#1E232A]">
+          <Flame className="w-5 h-5 text-[#FF5964]" />
+        </div>
+      </div>
+
+      {/* 3 Questions Container */}
+      <div className="w-full space-y-3">
+        {/* Question 1 */}
+        <div className="pop-box p-3.5 bg-[#FFFBEB] border-3 border-[#1E232A] space-y-2 shadow-pop-sm">
+          <div className="flex items-center space-x-2">
+            <Moon className="w-4 h-4 text-purple-600 flex-shrink-0" />
+            <h3 className="text-xs sm:text-sm font-black font-bangla text-[#1E232A]">
+              ১. সবচেয়ে চিল ও ঘুমন্ত ডিপার্টমেন্ট কোনটি?
+            </h3>
+          </div>
+
+          <div className="grid grid-cols-4 sm:grid-cols-6 gap-1.5">
+            {DEPARTMENT_LIST.map((dept) => (
+              <button
+                key={dept.code}
+                onClick={() => { sound.playPop(); setQ1(dept.abbr); }}
+                className={`py-1.5 px-1 rounded-xl text-xs font-black border-2 border-[#1E232A] transition-all truncate select-none ${
+                  q1 === dept.abbr 
+                    ? 'bg-[#845EC2] text-white -translate-y-0.5 shadow-pop-sm scale-105' 
+                    : 'bg-white text-gray-700 hover:bg-gray-50'
+                }`}
+              >
+                {dept.abbr}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Question 2 */}
+        <div className="pop-box p-3.5 bg-[#FFFBEB] border-3 border-[#1E232A] space-y-2 shadow-pop-sm">
+          <div className="flex items-center space-x-2">
+            <Zap className="w-4 h-4 text-amber-500 flex-shrink-0" />
+            <h3 className="text-xs sm:text-sm font-black font-bangla text-[#1E232A]">
+              ২. ফেস্টে সবচেয়ে বেশি হাইপ ও এনার্জি কার?
+            </h3>
+          </div>
+
+          <div className="grid grid-cols-4 sm:grid-cols-6 gap-1.5">
+            {DEPARTMENT_LIST.map((dept) => (
+              <button
+                key={dept.code}
+                onClick={() => { sound.playPop(); setQ2(dept.abbr); }}
+                className={`py-1.5 px-1 rounded-xl text-xs font-black border-2 border-[#1E232A] transition-all truncate select-none ${
+                  q2 === dept.abbr 
+                    ? 'bg-[#FFA931] text-[#1E232A] -translate-y-0.5 shadow-pop-sm scale-105' 
+                    : 'bg-white text-gray-700 hover:bg-gray-50'
+                }`}
+              >
+                {dept.abbr}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Question 3 */}
+        <div className="pop-box p-3.5 bg-[#FFFBEB] border-3 border-[#1E232A] space-y-2 shadow-pop-sm">
+          <div className="flex items-center space-x-2">
+            <Coffee className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+            <h3 className="text-xs sm:text-sm font-black font-bangla text-[#1E232A]">
+              ৩. ক্যান্টিনের আড্ডায় সবচেয়ে এগিয়ে কারা?
+            </h3>
+          </div>
+
+          <div className="grid grid-cols-4 sm:grid-cols-6 gap-1.5">
+            {DEPARTMENT_LIST.map((dept) => (
+              <button
+                key={dept.code}
+                onClick={() => { sound.playPop(); setQ3(dept.abbr); }}
+                className={`py-1.5 px-1 rounded-xl text-xs font-black border-2 border-[#1E232A] transition-all truncate select-none ${
+                  q3 === dept.abbr 
+                    ? 'bg-[#00C9A7] text-[#1E232A] -translate-y-0.5 shadow-pop-sm scale-105' 
+                    : 'bg-white text-gray-700 hover:bg-gray-50'
+                }`}
+              >
+                {dept.abbr}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Submit Button */}
+      <button
+        onClick={handleSubmit}
+        disabled={!q1 || !q2 || !q3 || isSubmitting}
+        className={`pop-btn w-full py-3.5 font-black text-base font-bangla flex items-center justify-center space-x-2 transition-all ${
+          q1 && q2 && q3 && !isSubmitting
+            ? 'bg-[#4ECDC4] text-[#1E232A] hover:bg-[#3dbdb5] animate-bounce shadow-pop'
+            : 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-60'
+        }`}
+      >
+        <Send className="w-5 h-5" />
+        <span>ভোট জমা দিন ও ব্যাজ দেখুন</span>
+        <Sparkles className="w-4 h-4 text-[#F9D342]" />
+      </button>
+    </div>
+  );
+};

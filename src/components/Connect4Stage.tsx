@@ -1,0 +1,247 @@
+import React, { useState, useEffect } from 'react';
+import { ChevronDown, Sparkles, ArrowRight, CheckCircle2 } from 'lucide-react';
+import confetti from 'canvas-confetti';
+import { Connect4State, ParsedStudent } from '../types';
+import { DEPARTMENTS } from '../data/departments';
+import { sound } from '../utils/sound';
+import { vibrate, vibratePattern } from '../utils/haptics';
+
+interface Connect4StageProps {
+  student: ParsedStudent;
+  initialState: Connect4State;
+  alreadyPlayedCol: number | null;
+  onDropComplete: (result: {
+    col: number;
+    row: number;
+    streakEarned: boolean;
+    points: number;
+    newState: Connect4State;
+  }) => void;
+  onAdvanceToNextStage: () => void;
+}
+
+export const Connect4Stage: React.FC<Connect4StageProps> = ({
+  student,
+  initialState,
+  alreadyPlayedCol,
+  onDropComplete,
+  onAdvanceToNextStage
+}) => {
+  const [state, setState] = useState<Connect4State>(initialState);
+  const [selectedCol, setSelectedCol] = useState<number | null>(alreadyPlayedCol);
+  const [isDropping, setIsDropping] = useState(false);
+  const [hasPlayed, setHasPlayed] = useState(alreadyPlayedCol !== null);
+  const [streakResult, setStreakResult] = useState<{ earned: boolean; points: number } | null>(null);
+
+  useEffect(() => {
+    setState(initialState);
+  }, [initialState]);
+
+  const handleDrop = async (col: number) => {
+    if (hasPlayed || isDropping) return;
+
+    // Check if column is full
+    if (state.grid[col] && state.grid[col][0] !== null) {
+      sound.playPop(200);
+      return;
+    }
+
+    setIsDropping(true);
+    setSelectedCol(col);
+    sound.playDrop();
+    vibrate(25);
+
+    try {
+      const res = await fetch('/api/connect4/drop', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          studentId: student.studentId,
+          col
+        })
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setHasPlayed(true);
+        if (data.state?.connect4) {
+          setState(data.state.connect4);
+        }
+
+        if (data.streakEarned) {
+          sound.playStreakChime();
+          vibratePattern([100, 50, 150, 50, 200]);
+          confetti({
+            particleCount: 80,
+            spread: 70,
+            origin: { y: 0.6 }
+          });
+          setStreakResult({ earned: true, points: data.points });
+        } else {
+          setStreakResult({ earned: false, points: 0 });
+        }
+
+        onDropComplete({
+          col,
+          row: data.row || 0,
+          streakEarned: !!data.streakEarned,
+          points: data.points || 0,
+          newState: data.state?.connect4 || state
+        });
+      }
+    } catch (err) {
+      console.error('Drop error:', err);
+    } finally {
+      setIsDropping(false);
+    }
+  };
+
+  const cols = state.cols || 14;
+  const rows = state.rows || 10;
+
+  return (
+    <div className="w-full max-w-lg mx-auto p-3 flex flex-col items-center space-y-3 min-h-[calc(100vh-70px)] justify-between">
+      {/* Top Banner */}
+      <div className="w-full pop-box p-3.5 bg-white flex items-center justify-between shadow-pop-sm">
+        <div>
+          <span className="text-xs font-bold text-gray-500 font-bangla block">স্টেপ ২: মেগা কানেক্ট-৪</span>
+          <h2 className="text-base font-black font-bangla text-[#1E232A]">
+            {hasPlayed ? '✅ বল ড্রপ সম্পন্ন হয়েছে!' : '🎯 ১টি কলাম বেছে বল ফেলুন'}
+          </h2>
+        </div>
+
+        <div 
+          className="px-3 py-1.5 rounded-xl border-2 border-[#1E232A] font-black text-xs font-bangla shadow-pop-sm flex items-center space-x-1"
+          style={{ backgroundColor: student.themeColor, color: '#1E232A' }}
+        >
+          <span>তোমার বল: {student.deptAbbr}</span>
+        </div>
+      </div>
+
+      {/* Grid Container with Horizontal Scroll on Mobile */}
+      <div className="w-full pop-box p-3 bg-[#F9D342] border-4 border-[#1E232A] relative shadow-pop">
+        <div className="text-[10px] text-[#1E232A] font-bangla text-center mb-2 font-bold">
+          {hasPlayed 
+            ? '৪টি মিললে বলগুলো ধূসর (Gray) হয়ে স্থায়ী পয়েন্ট লক হয়!' 
+            : '👇 কলামের ওপর তীরচিহ্নে ট্যাপ করে তোমার বলটি ড্রপ করো:'}
+        </div>
+
+        <div className="w-full overflow-x-auto pb-2 scroll-smooth">
+          <div className="inline-block min-w-[480px] sm:min-w-full bg-[#1E232A] p-3 rounded-2xl border-3 border-[#1E232A] shadow-inner">
+            {/* Top Drop Arrows */}
+            <div className="grid grid-cols-14 gap-1 mb-2">
+              {Array.from({ length: cols }).map((_, c) => {
+                const isFull = state.grid[c] && state.grid[c][0] !== null;
+                return (
+                  <button
+                    key={c}
+                    onClick={() => handleDrop(c)}
+                    disabled={hasPlayed || isDropping || isFull}
+                    className={`h-7 rounded-lg border-2 border-[#1E232A] flex items-center justify-center transition-all ${
+                      hasPlayed || isFull
+                        ? 'bg-gray-600 opacity-30 cursor-not-allowed'
+                        : 'bg-[#FFE66D] hover:bg-[#FFF9D2] active:translate-y-0.5 shadow-pop-sm cursor-pointer'
+                    }`}
+                    title={`Column ${c + 1}`}
+                  >
+                    <ChevronDown className="w-4 h-4 text-[#1E232A]" />
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* The 14x10 Matrix */}
+            <div className="grid grid-cols-14 gap-1">
+              {Array.from({ length: cols }).map((_, c) => (
+                <div key={c} className="flex flex-col gap-1">
+                  {Array.from({ length: rows }).map((_, r) => {
+                    const cell = state.grid[c]?.[r];
+
+                    if (!cell) {
+                      return (
+                        <div
+                          key={`${c},${r}`}
+                          className="w-full aspect-square rounded-full bg-[#12171E] border border-black/40 shadow-inner"
+                        />
+                      );
+                    }
+
+                    const dept = DEPARTMENTS[cell.deptCode || '01'];
+
+                    // GRAY LOCKED STREAK
+                    if (cell.isGrayLocked) {
+                      return (
+                        <div
+                          key={`${c},${r}`}
+                          className="w-full aspect-square rounded-full bg-[#6C7A89] border-2 border-white/60 flex items-center justify-center font-black text-[7px] text-white shadow-md select-none animate-pulse"
+                          title={`Locked 4-Streak (${dept?.abbr})`}
+                        >
+                          <span className="truncate">{dept?.abbr}</span>
+                        </div>
+                      );
+                    }
+
+                    // ACTIVE COLORED TOKEN
+                    return (
+                      <div
+                        key={`${c},${r}`}
+                        className="w-full aspect-square rounded-full border-2 border-[#1E232A] flex items-center justify-center font-black text-[7px] shadow-sm select-none"
+                        style={{
+                          backgroundColor: dept?.themeColor || '#4ECDC4',
+                          color: dept?.textColor || '#FFFFFF'
+                        }}
+                        title={`Token: ${dept?.name}`}
+                      >
+                        <span className="truncate">{dept?.abbr}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Streak / Drop Result Banner */}
+      {hasPlayed && streakResult && (
+        <div className={`w-full p-3 rounded-xl border-3 border-[#1E232A] shadow-pop-sm flex items-center space-x-2.5 font-bangla animate-bounce-in ${
+          streakResult.earned ? 'bg-[#D4F8F0] text-[#00897B]' : 'bg-white text-[#1E232A]'
+        }`}>
+          {streakResult.earned ? (
+            <>
+              <Sparkles className="w-6 h-6 text-amber-500 flex-shrink-0" />
+              <div>
+                <strong className="block text-sm font-black">🎉 ৪-ইন-এ-রো কমপ্লিট!</strong>
+                <p className="text-xs">তোমার ড্রপে ডিপার্টমেন্ট অর্জন করেছে <span className="font-black text-emerald-700">+{streakResult.points} পয়েন্ট</span> (গ্রে লক)!</p>
+              </div>
+            </>
+          ) : (
+            <>
+              <CheckCircle2 className="w-5 h-5 text-blue-600 flex-shrink-0" />
+              <div className="text-xs">
+                <strong className="block font-bold">বল সফলভাবে ফেলা হয়েছে!</strong>
+                <p className="text-gray-600">তোমার বলটি গ্রিডে সংরক্ষিত হয়েছে।</p>
+              </div>
+            </>
+          )}
+        </div>
+      )}
+
+      {/* Next Stage Button */}
+      {hasPlayed ? (
+        <button
+          onClick={() => { sound.playPop(); onAdvanceToNextStage(); }}
+          className="pop-btn w-full py-3.5 bg-[#6BCB77] text-[#1E232A] font-black text-base font-bangla flex items-center justify-center space-x-2 animate-bounce"
+        >
+          <span>পরের গেম: টাওয়ার স্ট্যাকিং (৩/৪)</span>
+          <ArrowRight className="w-5 h-5" />
+        </button>
+      ) : (
+        <div className="text-center font-bangla text-xs font-bold text-gray-600">
+          তোমার নির্ধারিত কলামে ১টি বল ড্রপ করে নিশ্চিত করো।
+        </div>
+      )}
+    </div>
+  );
+};
