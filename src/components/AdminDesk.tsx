@@ -3,6 +3,7 @@ import { UserCheck, Shield, Users, RefreshCw, CheckCircle2, AlertCircle, ArrowLe
 import { parseStudentID } from '../data/departments';
 import { ServerStateSnapshot } from '../types';
 import { sound } from '../utils/sound';
+import { apiFetch } from '../config';
 
 interface AdminDeskProps {
   serverState?: ServerStateSnapshot | null;
@@ -37,7 +38,7 @@ export const AdminDesk: React.FC<AdminDeskProps> = ({ serverState, onBackToPlaye
     sound.playPop();
 
     try {
-      const res = await fetch('/api/auth/register', {
+      const res = await apiFetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ studentId: studentIdInput.trim() })
@@ -66,7 +67,7 @@ export const AdminDesk: React.FC<AdminDeskProps> = ({ serverState, onBackToPlaye
   const handleResetBoard = async () => {
     if (!confirm('আপনি কি নিশ্চিত যে পুরো গেমের সমস্ত ডেটা ও স্কোর রিসেট করতে চান?')) return;
     try {
-      await fetch('/api/admin/reset', { method: 'POST' });
+      await apiFetch('/api/admin/reset', { method: 'POST' });
       sound.playExplosion();
       alert('বোর্ড সম্পূর্ণ রিসেট হয়েছে!');
     } catch {

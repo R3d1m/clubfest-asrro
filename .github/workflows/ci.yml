@@ -1,0 +1,66 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  build-and-test:
+    name: Build & Test (Node ${{ matrix.node-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20.x, 22.x]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check TypeScript
+        run: npm run type-check
+
+      - name: Run unit test suite
+        run: npm test
+
+      - name: Build frontend application
+        run: npm run build
+
+  integration-check:
+    name: Server Integration & Health Check
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Start server in background
+        run: |
+          npm start &
+          sleep 4
+
+      - name: Check health endpoint
+        run: |
+          curl -f -s http://localhost:3001/health || (echo "Health check failed" && exit 1)
+
+      - name: Run end-to-end integration test
+        run: node verify_game.js

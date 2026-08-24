@@ -4,6 +4,7 @@ import confetti from 'canvas-confetti';
 import { ParsedStudent } from '../types';
 import { sound } from '../utils/sound';
 import { vibrate, vibratePattern } from '../utils/haptics';
+import { apiFetch } from '../config';
 
 interface StackerStageProps {
   student: ParsedStudent;
@@ -283,7 +284,7 @@ export const StackerStage: React.FC<StackerStageProps> = ({
   const submitScore = async (finalFloors: number, finalCombos: number) => {
     setIsSubmitting(true);
     try {
-      await fetch('/api/stacker/finish', {
+      await apiFetch('/api/stacker/finish', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

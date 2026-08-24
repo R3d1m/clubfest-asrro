@@ -4,6 +4,7 @@ import { BattleshipState, ParsedStudent } from '../types';
 import { DEPARTMENTS } from '../data/departments';
 import { sound } from '../utils/sound';
 import { vibrate, vibratePattern } from '../utils/haptics';
+import { apiFetch } from '../config';
 
 interface BattleshipStageProps {
   student: ParsedStudent;
@@ -79,7 +80,7 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
     vibrate(20);
 
     try {
-      const res = await fetch('/api/battleship/move', {
+      const res = await apiFetch('/api/battleship/move', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

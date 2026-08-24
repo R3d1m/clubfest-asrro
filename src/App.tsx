@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { io, Socket } from 'socket.io-client';
+import { Socket } from 'socket.io-client';
 import { Shield, Sparkles, Trophy, LogIn, AlertCircle, RefreshCw } from 'lucide-react';
 import { 
   ParsedStudent, 
@@ -10,6 +10,7 @@ import {
 import { parseStudentID } from './data/departments';
 import { sound } from './utils/sound';
 import { vibrate } from './utils/haptics';
+import { apiFetch, createGameSocket } from './config';
 
 import { Header } from './components/Header';
 import { BanglaBriefing } from './components/BanglaBriefing';
@@ -34,7 +35,7 @@ export const App: React.FC = () => {
 
   // Socket Connection
   useEffect(() => {
-    const socket: Socket = io();
+    const socket: Socket = createGameSocket();
 
     socket.on('state:update', (data: ServerStateSnapshot) => {
       setServerState(data);
@@ -75,7 +76,7 @@ export const App: React.FC = () => {
     setLoginError(null);
 
     try {
-      const res = await fetch(`/api/player/${studentIdInput.trim()}`);
+      const res = await apiFetch(`/api/player/${studentIdInput.trim()}`);
       const data = await res.json();
 
       if (data.success && data.player) {
@@ -108,7 +109,7 @@ export const App: React.FC = () => {
     if (!playerRecord) return;
     setCurrentStage(nextStage);
     try {
-      await fetch('/api/player/stage', {
+      await apiFetch('/api/player/stage', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

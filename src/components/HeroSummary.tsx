@@ -3,6 +3,7 @@ import { Trophy, Shield, Share2, CheckCircle2, Award, RotateCcw } from 'lucide-r
 import confetti from 'canvas-confetti';
 import { ParsedStudent, PlayerRecord, ServerStateSnapshot } from '../types';
 import { sound } from '../utils/sound';
+import { apiFetch } from '../config';
 
 interface HeroSummaryProps {
   student: ParsedStudent;
@@ -49,7 +50,7 @@ export const HeroSummary: React.FC<HeroSummaryProps> = ({
   const handleReplayClick = async () => {
     sound.playPop();
     try {
-      await fetch(`/api/player/${student.studentId}/reset`, { method: 'POST' });
+      await apiFetch(`/api/player/${student.studentId}/reset`, { method: 'POST' });
       if (onReplay) {
         onReplay();
       } else {

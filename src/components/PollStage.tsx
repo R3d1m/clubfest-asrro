@@ -4,6 +4,7 @@ import { ParsedStudent } from '../types';
 import { DEPARTMENT_LIST } from '../data/departments';
 import { sound } from '../utils/sound';
 import { vibrate } from '../utils/haptics';
+import { apiFetch } from '../config';
 
 interface PollStageProps {
   student: ParsedStudent;
@@ -29,7 +30,7 @@ export const PollStage: React.FC<PollStageProps> = ({ student, onPollSubmit }) =
     const answers = { q1, q2, q3 };
 
     try {
-      await fetch('/api/poll/submit', {
+      await apiFetch('/api/poll/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

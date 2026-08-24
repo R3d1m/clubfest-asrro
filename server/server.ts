@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from 'express';
 import http from 'http';
 import { Server as SocketIOServer } from 'socket.io';
@@ -14,12 +15,25 @@ const server = http.createServer(app);
 const io = new SocketIOServer(server, {
   cors: {
     origin: '*',
-    methods: ['GET', 'POST']
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
   }
 });
 
-app.use(cors());
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
+
+// Health Check for Render & uptime monitoring
+app.get('/health', (req, res) => {
+  return res.json({ status: 'ok', uptime: process.uptime(), timestamp: Date.now() });
+});
+
+app.get('/api/health', (req, res) => {
+  return res.json({ status: 'ok', uptime: process.uptime(), timestamp: Date.now() });
+});
 
 // 1. Stall Coordinator Authorizes Student ID
 app.post('/api/auth/register', (req, res) => {
@@ -166,7 +180,17 @@ io.on('connection', (socket) => {
   socket.emit('state:update', gameEngine.getSnapshot());
 });
 
-const PORT = process.env.PORT || 3001;
-server.listen(PORT, () => {
-  console.log(`🎮 Department Clash Server running on http://localhost:${PORT}`);
+const PORT = Number(process.env.PORT) || 3001;
+const HOST = process.env.HOST || '0.0.0.0';
+
+server.listen(PORT, HOST, () => {
+  console.log(`🎮 Department Clash Server running on http://${HOST}:${PORT}`);
+});
+
+process.on('SIGTERM', () => {
+  console.log('SIGTERM signal received: closing HTTP server');
+  server.close(() => {
+    console.log('HTTP server closed');
+    process.exit(0);
+  });
 });

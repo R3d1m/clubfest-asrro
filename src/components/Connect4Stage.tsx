@@ -5,6 +5,7 @@ import { Connect4State, ParsedStudent } from '../types';
 import { DEPARTMENTS } from '../data/departments';
 import { sound } from '../utils/sound';
 import { vibrate, vibratePattern } from '../utils/haptics';
+import { apiFetch } from '../config';
 
 interface Connect4StageProps {
   student: ParsedStudent;
@@ -52,7 +53,7 @@ export const Connect4Stage: React.FC<Connect4StageProps> = ({
     vibrate(25);
 
     try {
-      const res = await fetch('/api/connect4/drop', {
+      const res = await apiFetch('/api/connect4/drop', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
