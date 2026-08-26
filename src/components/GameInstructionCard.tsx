@@ -26,54 +26,59 @@ export const GameInstructionCard: React.FC<GameInstructionCardProps> = ({
       case 1:
         return {
           stepNum: 'গেম ১/৩',
-          title: 'গুপ্ত বনাম প্রকাশ্য',
+          title: 'স্টিলথ ব্যাটেলশিপ',
           icon: '🚢',
-          badgeText: 'ডিপার্টমেন্ট লড়াই',
+          badgeText: '৩৫×৩৫ ডিপার্টমেন্ট হান্টিং',
           badgeBg: '#FFE0E2',
           badgeColor: '#D32F2F',
           bullets: [
             {
               emoji: '🗺️',
               title: 'লুকানো ঘাঁটি:',
-              desc: '৩৫×৩৫ ম্যাপের কুয়াশায় চুয়েটের ১২টি ডিপার্টমেন্টের ঘাঁটি খণ্ডিত অংশে লুকানো আছে।'
+              desc: '৩৫×৩৫ ম্যাপের কুয়াশায় চুয়েটের ১২টি ডিপার্টমেন্টের ৪-টাইল বিশিষ্ট ঘাঁটি লুকানো আছে।'
             },
             {
               emoji: '⚡',
-              title: '৩টি সুযোগ (Action Points):',
-              desc: 'তোমাকে দেওয়া হচ্ছে মোট ৩টি চাল। ভেবেচিন্তে চাল দাও!'
+              title: '৩টি চাল (Action Points):',
+              desc: 'তোমাকে দেওয়া হচ্ছে মোট ৩টি চাল। চালগুলো সতর্কভাবে ব্যবহার করো!'
             },
             {
-              emoji: '⚔️',
-              title: 'আক্রমণ বনাম লুকানো:',
-              desc: 'চালগুলো দিয়ে শত্রুর ঘাঁটি খুঁজতে পারো (ATTACK) অথবা নিজের উন্মোচিত ঘাঁটি ধোঁয়া দিয়ে লুকাতে পারো (HIDE)।'
+              emoji: '🎯',
+              title: 'আক্রমণ মোড (ATTACK):',
+              desc: 'কুয়াশায় ট্যাপ করে শত্রুর ঘাঁটি খুঁজুন। শত্রুর ঘাঁটি উন্মোচিত হলে পাবে ১০০ পয়েন্ট (+ডিপার্টমেন্ট মাল্টিপ্লায়ার)!'
+            },
+            {
+              emoji: '🌫️',
+              title: 'লুকানো মোড (HIDE):',
+              desc: 'নিজের ডিপার্টমেন্টের বেস ফাঁস হয়ে থাকলে ধোঁয়া ছড়িয়ে পুনরায় লুকিয়ে ফেলো।'
             },
             {
               emoji: '🏆',
               title: 'বিজয়ের শর্ত:',
-              desc: 'বিজয়ী হবে তারাই যারা নিজেদের গুপ্ত রেখে অন্যদের সবচেয়ে বেশি এক্সপোজ (উন্মোচন) করবে!'
+              desc: 'বিজয়ী হবে তারাই যারা নিজেদের গোপন রেখে অন্যদের সবচেয়ে বেশি এক্সপোজ (উন্মোচন) করবে!'
             }
           ],
-          buttonText: 'অভিযান শুরু করো!',
+          buttonText: 'ব্যাটেলশিপ শুরু করো',
           accentColor: '#FF6B6B'
         };
       case 2:
         return {
           stepNum: 'গেম ২/৩',
-          title: 'ডিপার্টমেন্টাল বন্ডিং',
+          title: 'মেগা কানেক্ট-৪',
           icon: '🔴',
-          badgeText: 'ডিপার্টমেন্ট লড়াই',
+          badgeText: '১২-ডিপার্টমেন্ট লাইভ বোর্ড',
           badgeBg: '#D4F8F0',
           badgeColor: '#00897B',
           bullets: [
             {
               emoji: '🎯',
               title: '১টি বল ড্রপ:',
-              desc: 'বোর্ডের যেকোনো একটি কলামে তুমি তোমার ডিপার্টমেন্টের ১টি বল ফেলতে পারবে।'
+              desc: 'বোর্ডের ১৪টি কলামের যেকোনো একটিতে তোমার ডিপার্টমেন্টের ১টি বল ড্রপ করতে পারবে।'
             },
             {
               emoji: '⭐',
-              title: 'পরপর ৪-এই বাজিমাত (+১০০ Pts):',
-              desc: 'তোমার ডিপার্টমেন্টের ৪টি বল পাশাপাশি/উপরে/কোণাকুণি মিললেই পাবে ১০০ পয়েন্ট!'
+              title: 'পরপর ৪-এ বাজিমাত (+১০০ Pts):',
+              desc: 'তোমার ডিপার্টমেন্টের ৪টি বল পাশাপাশি/উপরে/কোণাকুণি মিললেই পার্মানেন্ট গ্রে লক ও ১০০ পয়েন্ট পাবে!'
             },
             {
               emoji: '🤝',
@@ -86,13 +91,13 @@ export const GameInstructionCard: React.FC<GameInstructionCardProps> = ({
               desc: 'অন্য ডিপার্টমেন্ট পরপর ৪টি মেলানোর আগেই ওদের লাইনের মাঝখানে বল ফেলে আটকে দাও!'
             }
           ],
-          buttonText: 'বন্ডিং বাড়াও!',
+          buttonText: 'কানেক্ট-৪ এ বল ফেলুন',
           accentColor: '#4ECDC4'
         };
       case 3:
         return {
           stepNum: 'গেম ৩/৩',
-          title: 'নাম কামাও!',
+          title: 'ব্যক্তিগত টাওয়ার স্ট্যাক',
           icon: '🏗️',
           badgeText: 'ASRRO বিশেষ উপহার',
           badgeBg: '#FFF2DC',
@@ -101,20 +106,20 @@ export const GameInstructionCard: React.FC<GameInstructionCardProps> = ({
             {
               emoji: '🏢',
               title: 'উঁচু টাওয়ার গড়ো:',
-              desc: 'স্লাইডিং ব্লকগুলো ঠিক ওপর ফেলে যত বেশি তলা উঠতে পারবে, তত বেশি পয়েন্ট পাবে।'
+              desc: 'স্লাইডিং ব্লকগুলো ঠিক ওপর ট্যাপ করে যত বেশি তলা উঠতে পারবে, তত বেশি ব্যক্তিগত পয়েন্ট পাবে।'
             },
             {
               emoji: '⚡',
-              title: 'পারফেক্ট টাইমিং:',
-              desc: 'নিখুঁত বসলে কম্বো বোনাস পাবে এবং ব্লক বড় হবে। মিস হলে ব্লক ছোট হতে থাকবে!'
+              title: 'পারফেক্ট টাইমিং ও কম্বো:',
+              desc: 'নিখুঁত বসালে কম্বো বোনাস পাবে এবং ব্লক বড় হবে। মিস হলে ব্লক কেটে ছোট হতে থাকবে!'
             },
             {
               emoji: '🎁',
               title: 'ASRRO বিশেষ উপহার:',
-              desc: 'ফেস্ট শেষে যদি তুমি টপ ৫ এ থাকতে পারো, তাহলে ASRRO থেকে পাবে বিশেষ আকর্ষণীয় উপহার!'
+              desc: 'ফেস্ট শেষে যারা টপ ৫ এ থাকবে, তারা ASRRO থেকে পাবে বিশেষ আকর্ষণীয় উপহার!'
             }
           ],
-          buttonText: 'নাম কামানো শুরু করো!',
+          buttonText: 'স্ট্যাকিং শুরু করো',
           accentColor: '#FFA931'
         };
     }
@@ -123,7 +128,7 @@ export const GameInstructionCard: React.FC<GameInstructionCardProps> = ({
   const data = getGameData();
 
   return (
-    <div className="w-full max-w-md mx-auto p-3 sm:p-4 flex flex-col items-center justify-center min-h-[calc(100vh-65px)]">
+    <div className="w-full max-w-lg mx-auto p-3 sm:p-4 flex flex-col items-center justify-center min-h-[calc(100vh-65px)]">
       <div className="pop-box w-full p-5 sm:p-6 bg-[#FFFBEB] border-4 border-[#1E232A] text-center space-y-4 animate-bounce-in shadow-pop-lg">
         {/* Step Badge */}
         <div className="inline-flex items-center space-x-1.5 px-3 py-1 bg-[#FFF9D2] border-2 border-[#1E232A] rounded-full text-xs font-black text-[#1E232A] font-bangla shadow-xs">

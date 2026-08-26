@@ -69,7 +69,7 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
     } else {
       // ATTACK MODE
       if (state.exploredWater.includes(key) || state.revealedTiles[key]) {
-        setFeedback({ text: 'নীল- অলরেডি অভিযান চালানো হয়েছে!', type: 'info' });
+        setFeedback({ text: 'অলরেডি অভিযান চালানো হয়েছে!', type: 'info' });
         sound.playPop(300);
         return;
       }

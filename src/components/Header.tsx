@@ -29,13 +29,13 @@ export const Header: React.FC<HeaderProps> = ({
       case 'BRIEFING':
       case 'STAGE_1_INSTRUCTION':
       case 'STAGE_1_BATTLESHIP':
-        return '১. স্টিলথ ব্যাটেলশিপ';
+        return '১. গুপ্ত বনাম প্রকাশ্য';
       case 'STAGE_2_INSTRUCTION':
       case 'STAGE_2_CONNECT4':
-        return '২. মেগা কানেক্ট-৪';
+        return '২. বন্ডিং বাড়াও';
       case 'STAGE_3_INSTRUCTION':
       case 'STAGE_3_STACK':
-        return '৩. টাওয়ার স্ট্যাক';
+        return '৩. নাম কামাও';
       case 'STAGE_4_POLL':
         return '৪. স্পাইসি পোল';
       case 'COMPLETED':
@@ -53,7 +53,7 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
         <div>
           <h1 className="font-extrabold text-sm sm:text-base leading-tight tracking-wide font-bangla text-[#F9D342]">
-            ডিপার্টমেন্ট ক্ল্যাশ ২০২৬
+            ASRRO ফেস্ট অ্যারেনা ২০২৬
           </h1>
           <p className="text-xs text-gray-300 font-medium font-bangla">
             {getStageTitle()}

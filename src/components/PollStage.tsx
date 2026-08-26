@@ -71,7 +71,7 @@ export const PollStage: React.FC<PollStageProps> = ({ student, onPollSubmit }) =
           <div className="flex items-center space-x-2">
             <Moon className="w-4 h-4 text-purple-600 flex-shrink-0" />
             <h3 className="text-xs sm:text-sm font-black font-bangla text-[#1E232A]">
-              ১. সবচেয়ে চিল ও ঘুমন্ত ডিপার্টমেন্ট কোনটি?
+              ১. সবচেয়ে চিল ডিপার্টমেন্ট কোনটি?
             </h3>
           </div>
 
@@ -97,7 +97,7 @@ export const PollStage: React.FC<PollStageProps> = ({ student, onPollSubmit }) =
           <div className="flex items-center space-x-2">
             <Zap className="w-4 h-4 text-amber-500 flex-shrink-0" />
             <h3 className="text-xs sm:text-sm font-black font-bangla text-[#1E232A]">
-              ২. ফেস্টে সবচেয়ে বেশি হাইপ ও এনার্জি কার?
+              ২. কোন ডিপার্টমেন্ট সবচেয়ে বেশি ঝামেলা করে?
             </h3>
           </div>
 
@@ -123,7 +123,7 @@ export const PollStage: React.FC<PollStageProps> = ({ student, onPollSubmit }) =
           <div className="flex items-center space-x-2">
             <Coffee className="w-4 h-4 text-emerald-600 flex-shrink-0" />
             <h3 className="text-xs sm:text-sm font-black font-bangla text-[#1E232A]">
-              ৩. ক্যান্টিনের আড্ডায় সবচেয়ে এগিয়ে কারা?
+              ৩. সবচেয়ে বিরক্তিকর ডিপার্টমেন্ট কোনটি?
             </h3>
           </div>
 
