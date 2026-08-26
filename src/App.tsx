@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { io, Socket } from 'socket.io-client';
+import { Socket } from 'socket.io-client';
 import { Sparkles, Trophy, LogIn, AlertCircle, Radio } from 'lucide-react';
 import { 
   ParsedStudent, 
@@ -10,6 +10,7 @@ import {
 import { parseStudentID } from './data/departments';
 import { sound } from './utils/sound';
 import { vibrate } from './utils/haptics';
+import { apiFetch, createGameSocket, BACKEND_URL } from './config';
 
 import { Header } from './components/Header';
 import { BanglaBriefing } from './components/BanglaBriefing';
@@ -35,7 +36,7 @@ export const App: React.FC = () => {
 
   // Socket Connection & URL Route Handling
   useEffect(() => {
-    const socket: Socket = io(import.meta.env.VITE_BACKEND_URL);
+    const socket: Socket = createGameSocket();
 
     socket.on('state:update', (data: ServerStateSnapshot) => {
       setServerState(data);
@@ -89,12 +90,12 @@ export const App: React.FC = () => {
 
     try {
       // 1. Try fetching by direct Student ID
-      let res = await fetch(`/api/player/${cleanInput}`);
+      let res = await apiFetch(`/api/player/${cleanInput}`);
       let data = await res.json();
 
       // 2. If not found by Student ID, try fetching by RFID card tag
       if (!data.success) {
-        const rfidRes = await fetch(`/api/player/rfid/${cleanInput}`);
+        const rfidRes = await apiFetch(`/api/player/rfid/${cleanInput}`);
         const rfidData = await rfidRes.json();
         if (rfidData.success && rfidData.player) {
           data = rfidData;
@@ -131,7 +132,7 @@ export const App: React.FC = () => {
     if (!playerRecord) return;
     setCurrentStage(nextStage);
     try {
-      await fetch('/api/player/stage', {
+      await apiFetch('/api/player/stage', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -177,7 +178,7 @@ export const App: React.FC = () => {
                   ডিপার্টমেন্ট ক্ল্যাশ ২০২৬
                 </h2>
                 <p className="text-xs font-bold text-gray-600 mt-1">
-                  স্টুডেন্ট আইডি:
+                  বুথে অনুমোদিত স্টুডেন্ট আইডি অথবা RFID ট্যাপ করুন:
                 </p>
               </div>
 
@@ -200,7 +201,7 @@ export const App: React.FC = () => {
                     style={{ backgroundColor: parsedStudent.lightColor, color: '#1E232A' }}
                   >
                     <div>
-                      <span className="block text-[10px] text-gray-500">ডিপার্টমেন্ট:</span>
+                      <span className="block text-[10px] text-gray-500">শনাক্তকৃত ডিপার্টমেন্ট:</span>
                       <span className="text-sm font-black">{parsedStudent.deptName} ({parsedStudent.deptAbbr})</span>
                     </div>
                     <div className="text-right">

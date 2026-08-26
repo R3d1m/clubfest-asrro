@@ -1,6 +1,11 @@
 import { io, Socket } from 'socket.io-client';
 
 /**
+ * Explicit backend URL from Vite environment variable (e.g. on Render)
+ */
+export const BACKEND_URL = (import.meta.env.VITE_BACKEND_URL || import.meta.env.VITE_API_URL || '').trim().replace(/\/+$/, '');
+
+/**
  * Returns the backend base URL.
  * 
  * Logic:
@@ -8,13 +13,12 @@ import { io, Socket } from 'socket.io-client';
  * 2. If running locally (localhost / 127.0.0.1), returns empty string so requests
  *    use relative paths and the Vite dev proxy.
  * 3. If running on the backend host itself, returns empty string.
- * 4. If running on a separated frontend deployment (such as https://clubfest-asrro-1.onrender.com
- *    or any external domain), defaults to 'https://clubfest-asrro.onrender.com'.
+ * 4. If running on a separated frontend deployment on Render or custom domain,
+ *    defaults to the Render backend service.
  */
 export const getBackendUrl = (): string => {
-  const envUrl = import.meta.env.VITE_BACKEND_URL || import.meta.env.VITE_API_URL;
-  if (envUrl && typeof envUrl === 'string' && envUrl.trim() !== '') {
-    return envUrl.trim().replace(/\/+$/, '');
+  if (BACKEND_URL) {
+    return BACKEND_URL;
   }
 
   if (typeof window !== 'undefined' && window.location) {
@@ -27,7 +31,7 @@ export const getBackendUrl = (): string => {
     if (hostname === 'clubfest-asrro.onrender.com') {
       return '';
     }
-    // Deployed separately (e.g. clubfest-asrro-1.onrender.com or custom domain)
+    // Deployed separately on Render
     return 'https://clubfest-asrro.onrender.com';
   }
 
@@ -56,7 +60,6 @@ export const apiFetch = async (path: string, options?: RequestInit): Promise<Res
  */
 export const createGameSocket = (): Socket => {
   const backend = getBackendUrl();
-  // If backend is empty string (same origin / proxy), pass window.location.origin or undefined
   const socketTarget = backend || undefined;
 
   return io(socketTarget, {
