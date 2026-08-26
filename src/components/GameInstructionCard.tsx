@@ -26,16 +26,16 @@ export const GameInstructionCard: React.FC<GameInstructionCardProps> = ({
       case 1:
         return {
           stepNum: 'গেম ১/৩',
-          title: 'স্টিলথ ব্যাটেলশিপ',
+          title: 'গুপ্ত বনাম প্রকাশ্য',
           icon: '🚢',
-          badgeText: '৩৫×৩৫ ডিপার্টমেন্ট হান্টিং',
+          badgeText: 'ডিপার্টমেন্ট হান্টিং',
           badgeBg: '#FFE0E2',
           badgeColor: '#D32F2F',
           bullets: [
             {
               emoji: '🗺️',
               title: 'লুকানো ঘাঁটি:',
-              desc: '৩৫×৩৫ ম্যাপের কুয়াশায় ১২টি ডিপার্টমেন্টের ৪-টাইল বিশিষ্ট ঘাঁটি লুকানো আছে।'
+              desc: '৩৫×৩৫ ম্যাপের কুয়াশায় ১২টি ডিপার্টমেন্টের ৪-টাইলের বেশ কিছু ঘাঁটি লুকানো আছে।'
             },
             {
               emoji: '⚡',
@@ -44,27 +44,27 @@ export const GameInstructionCard: React.FC<GameInstructionCardProps> = ({
             },
             {
               emoji: '🎯',
-              title: 'আক্রমণ মোড (ATTACK):',
-              desc: 'কুয়াশায় ট্যাপ করে শত্রুর ঘাঁটি উন্মোচন করো! ঘাঁটি ফাঁস করতে পারলে ১০০ পয়েন্ট পাবে।'
+              title: 'আক্রমণ মোড:',
+              desc: 'কুয়াশায় ট্যাপ করে ঘাঁটি উন্মোচন করো! ঘাঁটি ফাঁস করতে পারলে ১০০ পয়েন্ট পাবে।'
             },
             {
               emoji: '🌫️',
-              title: 'লুকানো মোড (HIDE):',
+              title: 'লুকানো মোড:',
               desc: 'নিজের ডিপার্টমেন্টের বেস ফাঁস হয়ে থাকলে ধোঁয়া ছড়িয়ে পুনরায় লুকিয়ে ফেলো।'
             },
             {
               emoji: '🏆',
               title: 'বিজয়ের শর্ত:',
-              desc: 'বিজয়ী হবে তারাই যারা নিজেদের গোপন রেখে অন্যদের সবচেয়ে বেশি এক্সপোজ (উন্মোচন) করবে!'
+              desc: 'বিজয়ী হবে তারাই যারা নিজেদের গুপ্ত রেখে অন্যদের সবচেয়ে বেশি Expose করবে!'
             }
           ],
-          buttonText: 'ব্যাটেলশিপ শুরু করো',
+          buttonText: 'অভিযান শুরু করো',
           accentColor: '#FF6B6B'
         };
       case 2:
         return {
           stepNum: 'গেম ২/৩',
-          title: 'মেগা কানেক্ট-৪',
+          title: 'ডিপার্টমেন্টাল বন্ডিং',
           icon: '🔴',
           badgeText: '১২-ডিপার্টমেন্ট লাইভ বোর্ড',
           badgeBg: '#D4F8F0',
@@ -91,13 +91,13 @@ export const GameInstructionCard: React.FC<GameInstructionCardProps> = ({
               desc: 'অন্য ডিপার্টমেন্ট পরপর ৪টি মেলানোর আগেই ওদের লাইনের মাঝখানে বল ফেলে আটকে দাও!'
             }
           ],
-          buttonText: 'কানেক্ট-৪ এ বল ফেলুন',
+          buttonText: 'বন্ডিং শুরু করো',
           accentColor: '#4ECDC4'
         };
       case 3:
         return {
           stepNum: 'গেম ৩/৩',
-          title: 'ব্যক্তিগত টাওয়ার স্ট্যাক',
+          title: 'নাম কামাও!',
           icon: '🏗️',
           badgeText: 'ASRRO বিশেষ উপহার',
           badgeBg: '#FFF2DC',
@@ -119,7 +119,7 @@ export const GameInstructionCard: React.FC<GameInstructionCardProps> = ({
               desc: 'ফেস্ট শেষে যারা টপ ৫ এ থাকবে, তারা ASRRO থেকে পাবে বিশেষ আকর্ষণীয় উপহার!'
             }
           ],
-          buttonText: 'স্ট্যাকিং শুরু করো',
+          buttonText: 'কামানো শুরু করো',
           accentColor: '#FFA931'
         };
     }
@@ -152,7 +152,7 @@ export const GameInstructionCard: React.FC<GameInstructionCardProps> = ({
             {data.title}
           </h2>
           <p className="text-xs sm:text-sm font-bold text-gray-500 font-bangla mt-0.5">
-            খেলার নিয়ম ও কৌশল পড়ে নিন:
+            খেলার নিয়ম ও কৌশল পড়ে নাও:
           </p>
         </div>
 
@@ -176,7 +176,7 @@ export const GameInstructionCard: React.FC<GameInstructionCardProps> = ({
             <div className="p-3 bg-[#FFF9D2] rounded-xl border-2 border-[#FFA931] flex items-center space-x-2.5 mt-2 shadow-xs">
               <Gift className="w-6 h-6 text-amber-600 flex-shrink-0 animate-bounce" />
               <span className="text-xs sm:text-sm font-black text-[#D67229] leading-tight">
-                🎁 টপ ৫ বিজয়ীদের জন্য ASRRO স্পেশাল রিওয়ার্ড নিশ্চিত!
+                🎁 টপ ৫ বিজয়ীদের জন্য ASRRO স্পেশাল পুরস্কার নিশ্চিত!
               </span>
             </div>
           )}
