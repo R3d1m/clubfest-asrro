@@ -155,41 +155,42 @@ export const App: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#F9D342] flex flex-col font-bangla select-none">
+    <div className="min-h-screen bg-[#F9D342] flex flex-col font-bangla select-none w-full">
       <Header
         student={parsedStudent}
         currentStage={currentStage}
         onOpenLeaderboard={() => setShowLeaderboardModal(true)}
       />
 
-      <main className="flex-1 flex flex-col items-center justify-center p-2 sm:p-4">
+      <main className="flex-1 w-full max-w-md mx-auto flex flex-col justify-between p-2.5 sm:p-4">
         {/* STAGE 0: LOGIN & ID / RFID ENTRY */}
         {currentStage === 'LOGIN' && (
-          <div className="w-full max-w-md p-4 space-y-4 animate-bounce-in">
-            <div className="pop-box p-6 bg-[#FFFBEB] border-4 border-[#1E232A] shadow-pop-lg text-center space-y-5">
+          <div className="w-full flex-1 flex flex-col justify-between py-2 animate-bounce-in">
+            <div className="pop-box w-full p-5 sm:p-6 bg-[#FFFBEB] flex flex-col justify-between space-y-5 shadow-pop-lg">
               {/* Logo / Badge */}
               <div className="w-20 h-20 mx-auto rounded-3xl bg-[#FFE66D] border-4 border-[#1E232A] shadow-pop flex flex-col items-center justify-center animate-bounce">
                 <span className="text-3xl">🎮</span>
-                <span className="text-[10px] font-black text-[#1E232A] mt-0.5">FEST ARENA</span>
+                <span className="text-[10px] font-black text-[#1E232A] mt-0.5 font-display">FEST ARENA</span>
               </div>
 
-              <div>
-                <h2 className="text-2xl font-black text-[#1E232A] leading-tight">
+              <div className="text-center">
+                <h2 className="text-2xl sm:text-3xl font-black text-[#1E232A] leading-tight font-bangla">
                   ডিপার্টমেন্ট ক্ল্যাশ ২০২৬
                 </h2>
-                <p className="text-xs font-bold text-gray-600 mt-1">
+                <p className="text-xs sm:text-sm font-bold text-gray-600 mt-1 font-bangla">
                   বুথে অনুমোদিত স্টুডেন্ট আইডি অথবা RFID ট্যাপ করুন:
                 </p>
               </div>
 
-              <form onSubmit={handleStudentLogin} className="space-y-3">
+              <form onSubmit={handleStudentLogin} className="space-y-4">
                 <div>
                   <input
                     type="text"
-                    placeholder="e.g. 2204055"
+                    inputMode="numeric"
+                    placeholder="e.g. 2204055 বা RFID"
                     value={studentIdInput}
                     onChange={(e) => handleIdInputChange(e.target.value)}
-                    className="w-full text-center text-2xl font-black font-display tracking-widest px-4 py-3.5 bg-white border-3 border-[#1E232A] rounded-2xl shadow-pop-sm focus:outline-none focus:ring-2 focus:ring-[#4ECDC4]"
+                    className="w-full text-center text-2xl font-black font-display tracking-widest px-4 py-4 bg-white border-3 border-[#1E232A] rounded-2xl shadow-pop-sm focus:outline-none focus:ring-2 focus:ring-[#4ECDC4]"
                     autoFocus
                   />
                 </div>
@@ -197,7 +198,7 @@ export const App: React.FC = () => {
                 {/* Auto-Decoded Preview */}
                 {parsedStudent && (
                   <div 
-                    className="p-3 rounded-xl border-2 border-[#1E232A] text-left text-xs font-black flex items-center justify-between animate-bounce-in shadow-pop-sm"
+                    className="p-3.5 rounded-xl border-2 border-[#1E232A] text-left text-xs font-black flex items-center justify-between animate-bounce-in shadow-pop-sm"
                     style={{ backgroundColor: parsedStudent.lightColor, color: '#1E232A' }}
                   >
                     <div>
@@ -214,7 +215,7 @@ export const App: React.FC = () => {
                 <button
                   type="submit"
                   disabled={!studentIdInput.trim() || isLoading}
-                  className={`pop-btn w-full py-3.5 font-black text-base flex items-center justify-center space-x-2 transition-all ${
+                  className={`pop-btn w-full py-4 font-black text-lg flex items-center justify-center space-x-2 transition-all cursor-pointer ${
                     studentIdInput.trim() && !isLoading
                       ? 'bg-[#4ECDC4] text-[#1E232A] shadow-pop hover:bg-[#3dbdb5]'
                       : 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-60'
@@ -222,7 +223,7 @@ export const App: React.FC = () => {
                 >
                   <LogIn className="w-5 h-5" />
                   <span>{isLoading ? 'যাচাই করা হচ্ছে...' : 'লগইন করুন ও খেলুন'}</span>
-                  <Sparkles className="w-4 h-4 text-[#F9D342]" />
+                  <Sparkles className="w-5 h-5 text-[#F9D342]" />
                 </button>
               </form>
 
@@ -353,7 +354,7 @@ export const App: React.FC = () => {
       {/* Global Leaderboard Modal */}
       {showLeaderboardModal && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 animate-bounce-in">
-          <div className="pop-box w-full max-w-lg max-h-[85vh] bg-white p-5 border-4 border-[#1E232A] flex flex-col space-y-3 shadow-pop-lg">
+          <div className="pop-box w-full max-w-lg max-h-[85vh] bg-white p-4 sm:p-5 border-4 border-[#1E232A] flex flex-col space-y-3 shadow-pop-lg">
             <div className="flex items-center justify-between border-b-3 border-[#1E232A] pb-2">
               <div className="flex items-center space-x-2">
                 <Trophy className="w-6 h-6 text-amber-500" />
@@ -362,7 +363,7 @@ export const App: React.FC = () => {
 
               <button
                 onClick={() => { sound.playPop(); setShowLeaderboardModal(false); }}
-                className="w-8 h-8 rounded-xl bg-[#FF5964] text-white font-black border-2 border-[#1E232A] shadow-pop-sm flex items-center justify-center"
+                className="w-8 h-8 rounded-xl bg-[#FF5964] text-white font-black border-2 border-[#1E232A] shadow-pop-sm flex items-center justify-center cursor-pointer"
               >
                 ✕
               </button>

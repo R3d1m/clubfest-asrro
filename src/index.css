@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+@theme {
+  --font-bangla: 'Baloo Da 2', sans-serif;
+  --font-display: 'Fredoka', 'Baloo Da 2', sans-serif;
+}
+
 @layer base {
   *, *::before, *::after {
     -webkit-tap-highlight-color: transparent;
@@ -11,35 +16,43 @@
 
   html, body {
     width: 100%;
-    height: 100%;
-    min-height: 100vh;
-    min-height: -webkit-fill-available;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
     touch-action: manipulation;
-    overflow-x: hidden;
+    font-family: 'Baloo Da 2', sans-serif;
+    background-color: #F9D342;
+    color: #1E232A;
+  }
+
+  #root {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
   }
 }
 
 /* 2D Vector Comic Box & Button Styles */
 .pop-box {
   background: white;
-  border: 3px solid #1E232A;
-  border-radius: 20px;
+  border: 3.5px solid #1E232A;
+  border-radius: 24px;
   box-shadow: 4px 4px 0px #1E232A;
 }
 
 .pop-box-sm {
   background: white;
   border: 2.5px solid #1E232A;
-  border-radius: 14px;
+  border-radius: 16px;
   box-shadow: 3px 3px 0px #1E232A;
 }
 
 .pop-btn {
-  border: 3px solid #1E232A;
-  border-radius: 16px;
+  border: 3.5px solid #1E232A;
+  border-radius: 18px;
   box-shadow: 4px 4px 0px #1E232A;
-  transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
-  min-height: 48px; /* Mobile touch standard */
+  transition: all 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 52px; /* Large mobile touch target */
 }
 
 .pop-btn:active {
@@ -49,10 +62,10 @@
 
 .pop-btn-sm {
   border: 2.5px solid #1E232A;
-  border-radius: 12px;
+  border-radius: 14px;
   box-shadow: 3px 3px 0px #1E232A;
-  transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
-  min-height: 38px;
+  transition: all 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 42px;
 }
 
 .pop-btn-sm:active {
@@ -60,28 +73,15 @@
   box-shadow: 1.5px 1.5px 0px #1E232A;
 }
 
-/* Custom Scrollbar for smooth mobile panning */
-::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
-}
-::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.05);
-}
-::-webkit-scrollbar-thumb {
-  background: #1E232A;
-  border-radius: 4px;
-}
-
 /* Keyframe animations */
 @keyframes bounce-in {
-  0% { transform: scale(0.85); opacity: 0; }
-  70% { transform: scale(1.03); opacity: 1; }
+  0% { transform: scale(0.92); opacity: 0; }
+  70% { transform: scale(1.02); opacity: 1; }
   100% { transform: scale(1); }
 }
 
 .animate-bounce-in {
-  animation: bounce-in 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: bounce-in 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 @keyframes pulse-glow {

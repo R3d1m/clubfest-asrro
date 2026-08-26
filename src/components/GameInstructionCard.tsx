@@ -35,17 +35,17 @@ export const GameInstructionCard: React.FC<GameInstructionCardProps> = ({
             {
               emoji: '🗺️',
               title: 'লুকানো ঘাঁটি:',
-              desc: '৩৫×৩৫ ম্যাপের কুয়াশায় চুয়েটের ১২টি ডিপার্টমেন্টের ৪-টাইল বিশিষ্ট ঘাঁটি লুকানো আছে।'
+              desc: '৩৫×৩৫ ম্যাপের কুয়াশায় ১২টি ডিপার্টমেন্টের ৪-টাইল বিশিষ্ট ঘাঁটি লুকানো আছে।'
             },
             {
               emoji: '⚡',
               title: '৩টি চাল (Action Points):',
-              desc: 'তোমাকে দেওয়া হচ্ছে মোট ৩টি চাল। চালগুলো সতর্কভাবে ব্যবহার করো!'
+              desc: 'তোমাকে দেওয়া হচ্ছে মোট ৩টি সুযোগ। প্রতিটি চাল ভেবেচিন্তে ব্যবহার করো!'
             },
             {
               emoji: '🎯',
               title: 'আক্রমণ মোড (ATTACK):',
-              desc: 'কুয়াশায় ট্যাপ করে শত্রুর ঘাঁটি খুঁজুন। শত্রুর ঘাঁটি উন্মোচিত হলে পাবে ১০০ পয়েন্ট (+ডিপার্টমেন্ট মাল্টিপ্লায়ার)!'
+              desc: 'কুয়াশায় ট্যাপ করে শত্রুর ঘাঁটি উন্মোচন করো! ঘাঁটি ফাঁস করতে পারলে ১০০ পয়েন্ট পাবে।'
             },
             {
               emoji: '🌫️',
@@ -73,7 +73,7 @@ export const GameInstructionCard: React.FC<GameInstructionCardProps> = ({
             {
               emoji: '🎯',
               title: '১টি বল ড্রপ:',
-              desc: 'বোর্ডের ১৪টি কলামের যেকোনো একটিতে তোমার ডিপার্টমেন্টের ১টি বল ড্রপ করতে পারবে।'
+              desc: 'বোর্ডের যেকোনো একটি কলামে তুমি তোমার ডিপার্টমেন্টের ১টি বল ফেলতে পারবে।'
             },
             {
               emoji: '⭐',
@@ -128,62 +128,68 @@ export const GameInstructionCard: React.FC<GameInstructionCardProps> = ({
   const data = getGameData();
 
   return (
-    <div className="w-full max-w-lg mx-auto p-3 sm:p-4 flex flex-col items-center justify-center min-h-[calc(100vh-65px)]">
-      <div className="pop-box w-full p-5 sm:p-6 bg-[#FFFBEB] border-4 border-[#1E232A] text-center space-y-4 animate-bounce-in shadow-pop-lg">
-        {/* Step Badge */}
-        <div className="inline-flex items-center space-x-1.5 px-3 py-1 bg-[#FFF9D2] border-2 border-[#1E232A] rounded-full text-xs font-black text-[#1E232A] font-bangla shadow-xs">
-          <span>{data.stepNum}</span>
-          <span>•</span>
-          <span style={{ color: data.badgeColor }}>{data.badgeText}</span>
+    <div className="w-full flex-1 flex flex-col justify-between py-2 px-1 sm:px-3 animate-bounce-in">
+      <div className="pop-box w-full p-4 sm:p-6 bg-[#FFFBEB] flex flex-col justify-between space-y-4 shadow-pop-lg">
+        {/* Top Header Row */}
+        <div className="flex items-center justify-between border-b-2 border-dashed border-[#1E232A]/20 pb-3">
+          <div className="inline-flex items-center space-x-1.5 px-3 py-1 bg-[#FFF9D2] border-2 border-[#1E232A] rounded-full text-xs font-black text-[#1E232A]">
+            <span>{data.stepNum}</span>
+            <span>•</span>
+            <span style={{ color: data.badgeColor }}>{data.badgeText}</span>
+          </div>
+
+          <div 
+            className="w-12 h-12 rounded-2xl border-3 border-[#1E232A] shadow-pop-sm flex items-center justify-center text-2xl animate-bounce"
+            style={{ backgroundColor: data.accentColor }}
+          >
+            {data.icon}
+          </div>
         </div>
 
-        {/* Big Game Icon */}
-        <div 
-          className="w-16 h-16 mx-auto rounded-3xl border-3 border-[#1E232A] shadow-pop flex flex-col items-center justify-center animate-bounce"
-          style={{ backgroundColor: data.accentColor }}
-        >
-          <span className="text-3xl">{data.icon}</span>
-        </div>
-
-        <div>
-          <h2 className="text-2xl font-black font-bangla text-[#1E232A] leading-tight">
+        {/* Title */}
+        <div className="text-left">
+          <h2 className="text-2xl sm:text-3xl font-black font-bangla text-[#1E232A] leading-tight">
             {data.title}
           </h2>
-          <p className="text-xs font-bold text-gray-500 font-bangla mt-0.5">
+          <p className="text-xs sm:text-sm font-bold text-gray-500 font-bangla mt-0.5">
             খেলার নিয়ম ও কৌশল পড়ে নিন:
           </p>
         </div>
 
         {/* Bullet Points Container */}
-        <div className="p-3.5 bg-white rounded-2xl border-3 border-[#1E232A] shadow-pop-sm text-left font-bangla space-y-2.5">
+        <div className="p-3 sm:p-4 bg-white rounded-2xl border-3 border-[#1E232A] shadow-pop-sm text-left font-bangla space-y-3">
           {data.bullets.map((b, idx) => (
-            <div key={idx} className="flex items-start space-x-2.5 pb-1 border-b border-gray-100 last:border-b-0 last:pb-0">
-              <span className="text-base flex-shrink-0 mt-0.5">{b.emoji}</span>
-              <div className="text-xs leading-relaxed">
-                <strong className="text-[#1E232A] font-black mr-1">{b.title}</strong>
-                <span className="text-gray-700 font-medium">{b.desc}</span>
+            <div key={idx} className="flex items-start space-x-3 pb-2 border-b border-gray-100 last:border-b-0 last:pb-0">
+              <span className="text-xl flex-shrink-0 mt-0.5">{b.emoji}</span>
+              <div className="text-xs sm:text-sm leading-snug">
+                <strong className="text-[#1E232A] font-black text-sm sm:text-base mr-1 block sm:inline">
+                  {b.title}
+                </strong>
+                <span className="text-gray-700 font-medium">
+                  {b.desc}
+                </span>
               </div>
             </div>
           ))}
 
           {gameIndex === 3 && (
-            <div className="p-2.5 bg-[#FFF9D2] rounded-xl border-2 border-[#FFA931] flex items-center space-x-2 mt-2 shadow-xs">
-              <Gift className="w-5 h-5 text-amber-600 flex-shrink-0 animate-bounce" />
-              <span className="text-xs font-black text-[#D67229]">
+            <div className="p-3 bg-[#FFF9D2] rounded-xl border-2 border-[#FFA931] flex items-center space-x-2.5 mt-2 shadow-xs">
+              <Gift className="w-6 h-6 text-amber-600 flex-shrink-0 animate-bounce" />
+              <span className="text-xs sm:text-sm font-black text-[#D67229] leading-tight">
                 🎁 টপ ৫ বিজয়ীদের জন্য ASRRO স্পেশাল রিওয়ার্ড নিশ্চিত!
               </span>
             </div>
           )}
         </div>
 
-        {/* Start Game Action Button */}
+        {/* Big Start Button */}
         <button
           onClick={handleProceed}
-          className="pop-btn w-full py-3.5 bg-[#4ECDC4] text-[#1E232A] font-black text-base font-bangla flex items-center justify-center space-x-2 hover:bg-[#3dbdb5] shadow-pop transition-all active:translate-y-0.5"
+          className="pop-btn w-full py-4 bg-[#4ECDC4] text-[#1E232A] font-black text-lg font-bangla flex items-center justify-center space-x-2 hover:bg-[#3dbdb5] shadow-pop transition-all active:translate-y-0.5 mt-2 cursor-pointer"
         >
-          <Play className="w-5 h-5 fill-current" />
+          <Play className="w-6 h-6 fill-current" />
           <span>{data.buttonText}</span>
-          <Sparkles className="w-4 h-4 text-[#F9D342]" />
+          <Sparkles className="w-5 h-5 text-[#F9D342]" />
         </button>
       </div>
     </div>
