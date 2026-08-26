@@ -6,6 +6,7 @@ import {
   PolyominoFragment, 
   PolyominoShape,
   BattleshipState,
+  BattleshipDeptScore,
   Connect4State,
   StackerRecord,
   SpicyPollStats,
@@ -15,6 +16,19 @@ import {
   ServerStateSnapshot
 } from '../src/types';
 import { DEPARTMENTS, DEPARTMENT_LIST } from '../src/data/departments';
+import { 
+  isNeonConnected,
+  initDatabaseSchema,
+  dbSaveGameState,
+  dbLoadGameState,
+  dbSavePlayer,
+  dbLoadAllPlayers,
+  dbSaveStackerRecord,
+  dbLoadStackerRecords,
+  dbSaveActivity,
+  dbLoadActivities,
+  dbResetAll
+} from './db';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -33,11 +47,28 @@ export class GameEngine {
   public players: Record<string, PlayerRecord> = {};
   public activities: ActivityEvent[] = [];
   public day: 1 | 2 = 1;
+  public isReady: Promise<void>;
 
   constructor() {
     this.battleship = this.initBattleship();
     this.connect4 = this.initConnect4();
-    this.loadState();
+    this.isReady = this.bootstrapState();
+  }
+
+  private async bootstrapState(): Promise<void> {
+    try {
+      if (isNeonConnected()) {
+        const ok = await initDatabaseSchema();
+        if (ok) {
+          await this.loadState();
+          return;
+        }
+      }
+    } catch (err) {
+      console.error('Neon DB connection initialization warning:', err);
+    }
+    // Fallback load local state
+    await this.loadState();
   }
 
   // --- Initializers ---
@@ -46,7 +77,6 @@ export class GameEngine {
     const fragments: PolyominoFragment[] = [];
     const occupied = new Set<string>();
 
-    // Generate non-overlapping 4-tile polyomino fragments
     DEPARTMENT_LIST.forEach((dept) => {
       for (let i = 0; i < dept.baseCount; i++) {
         const frag = this.generateRandomFragment(dept.code, i + 1, gridSize, occupied);
@@ -55,13 +85,12 @@ export class GameEngine {
       }
     });
 
-    const stealthScores: BattleshipState['stealthScores'] = {} as any;
+    const deptScores: Record<DepartmentCode, BattleshipDeptScore> = {} as any;
     DEPARTMENT_LIST.forEach((dept) => {
-      stealthScores[dept.code] = {
-        totalBases: dept.baseCount,
-        unrevealedBases: dept.baseCount,
-        stealthPercent: 100,
-        stealthScore: 1000
+      deptScores[dept.code] = {
+        fragmentsFoundCount: 0,
+        attackScore: 0,
+        friendlyFireCount: 0
       };
     });
 
@@ -70,7 +99,7 @@ export class GameEngine {
       fragments,
       revealedTiles: {},
       exploredWater: [],
-      stealthScores
+      deptScores
     };
   }
 
@@ -107,7 +136,6 @@ export class GameEngine {
       }
     }
 
-    // Fallback simple line if dense
     const fallbackX = (index * 2) % 30;
     const fallbackY = (index * 2) % 30;
     return {
@@ -153,7 +181,7 @@ export class GameEngine {
     };
   }
 
-  // --- Battleship Logic ---
+  // --- Battleship Offensive Hunting Logic ---
   public handleBattleshipMove(
     studentId: string, 
     x: number, 
@@ -176,13 +204,13 @@ export class GameEngine {
       }
 
       delete this.battleship.revealedTiles[key];
-      this.recalculateStealth();
 
       player.battleshipAP--;
       player.battleshipMoves.push({ x, y, action: 'HIDE', hitDept: player.deptCode, result: 'RE_CLOAKED' });
 
       this.addActivity(`${DEPARTMENTS[player.deptCode].abbr} তাদের [${x},${y}] বেস ধোঁয়া দিয়ে আবার লুকিয়ে ফেলেছে! 🌫️`, 'RE_CLOAK', player.deptCode);
       this.saveState();
+      dbSavePlayer(player);
       return { success: true, result: 'RE_CLOAKED', message: 'বেস সফলভাবে ধোঁয়ার আড়ালে লুকানো হয়েছে!', state: this.getSnapshot() };
     }
 
@@ -193,55 +221,59 @@ export class GameEngine {
     const hitFrag = this.battleship.fragments.find(f => f.tiles.some(([tx, ty]) => tx === x && ty === y));
 
     if (hitFrag) {
-      this.battleship.revealedTiles[key] = { deptCode: hitFrag.deptCode, fragmentId: hitFrag.id };
+      const isFriendly = hitFrag.deptCode === player.deptCode;
+      this.battleship.revealedTiles[key] = { 
+        deptCode: hitFrag.deptCode, 
+        fragmentId: hitFrag.id,
+        revealedByDept: player.deptCode
+      };
       hitFrag.hits = hitFrag.tiles.filter(([tx, ty]) => this.battleship.revealedTiles[`${tx},${ty}`]).length;
 
-      const isFriendly = hitFrag.deptCode === player.deptCode;
       player.battleshipAP--;
 
       if (isFriendly) {
+        // Friendly fire accident
+        this.battleship.deptScores[player.deptCode].friendlyFireCount += 1;
         player.battleshipMoves.push({ x, y, action: 'ATTACK', hitDept: hitFrag.deptCode, result: 'FRIENDLY_FIRE' });
         this.addActivity(`🚨 ফ্রেন্ডলি ফায়ার! ${player.studentId} ভুলবশত নিজের ${DEPARTMENTS[player.deptCode].abbr} বেস উন্মুক্ত করেছে!`, 'FRIENDLY_FIRE', player.deptCode);
+        
+        this.saveState();
+        dbSavePlayer(player);
+        return { 
+          success: true, 
+          result: 'FRIENDLY_FIRE', 
+          message: '🚨 ওহ না! নিজের ডিপার্টমেন্টের বেসে ফ্রেন্ডলি ফায়ার!',
+          state: this.getSnapshot()
+        };
       } else {
-        const pts = Math.round(50 * DEPARTMENTS[player.deptCode].multiplier);
+        // Successful Enemy Fragment Hit
+        const pts = Math.round(100 * DEPARTMENTS[player.deptCode].multiplier);
         player.totalPointsEarned += pts;
-        player.battleshipMoves.push({ x, y, action: 'ATTACK', hitDept: hitFrag.deptCode, result: 'HIT' });
-        this.addActivity(`🎯 ${DEPARTMENTS[player.deptCode].abbr} শত্রুপক্ষ ${DEPARTMENTS[hitFrag.deptCode].abbr} এর ৪-টাইল বেস খুঁজে পেয়েছে! (+${pts} pts)`, 'BATTLESHIP_HIT', player.deptCode);
-      }
+        
+        // Award offensive points to player's department
+        this.battleship.deptScores[player.deptCode].fragmentsFoundCount += 1;
+        this.battleship.deptScores[player.deptCode].attackScore += pts;
 
-      this.recalculateStealth();
-      this.saveState();
-      return { 
-        success: true, 
-        result: isFriendly ? 'FRIENDLY_FIRE' : 'HIT', 
-        message: isFriendly ? '🚨 ওহ না! নিজের ডিপার্টমেন্টের বেসে ফ্রেন্ডলি ফায়ার!' : `🎯 সফল আঘাত! ${DEPARTMENTS[hitFrag.deptCode].name} এর বেস ফাঁস হয়েছে!`,
-        state: this.getSnapshot()
-      };
+        player.battleshipMoves.push({ x, y, action: 'ATTACK', hitDept: hitFrag.deptCode, result: 'HIT' });
+        this.addActivity(`🎯 ${DEPARTMENTS[player.deptCode].abbr} শত্রুপক্ষ ${DEPARTMENTS[hitFrag.deptCode].abbr} এর ৪-টাইল ঘাঁটি উন্মোচন করেছে! (+${pts} pts)`, 'BATTLESHIP_HIT', player.deptCode);
+
+        this.saveState();
+        dbSavePlayer(player);
+        return { 
+          success: true, 
+          result: 'HIT', 
+          message: `🎯 সফল আক্রমণ! ${DEPARTMENTS[hitFrag.deptCode].name} এর বেস ফাঁস হয়েছে (+${pts} pts)!`,
+          state: this.getSnapshot()
+        };
+      }
     } else {
       this.battleship.exploredWater.push(key);
       player.battleshipAP--;
       player.battleshipMoves.push({ x, y, action: 'ATTACK', result: 'MISS' });
       this.saveState();
+      dbSavePlayer(player);
       return { success: true, result: 'MISS', message: 'খালি সাগরে আঘাত লেগেছে (কোনো বেস পাওয়া যায়নি)।', state: this.getSnapshot() };
     }
-  }
-
-  private recalculateStealth() {
-    DEPARTMENT_LIST.forEach((dept) => {
-      const deptFrags = this.battleship.fragments.filter(f => f.deptCode === dept.code);
-      const total = deptFrags.length;
-      const exposedFrags = deptFrags.filter(f => f.tiles.every(([x, y]) => this.battleship.revealedTiles[`${x},${y}`])).length;
-      const unrevealed = Math.max(0, total - exposedFrags);
-      const percent = total > 0 ? Math.round((unrevealed / total) * 1000) / 10 : 100;
-      const score = Math.round(percent * 10);
-
-      this.battleship.stealthScores[dept.code] = {
-        totalBases: total,
-        unrevealedBases: unrevealed,
-        stealthPercent: percent,
-        stealthScore: score
-      };
-    });
   }
 
   // --- Connect 4 Logic ---
@@ -309,6 +341,7 @@ export class GameEngine {
     }
 
     this.saveState();
+    dbSavePlayer(player);
     return {
       success: true,
       row: targetRow,
@@ -396,6 +429,8 @@ export class GameEngine {
     }
 
     this.saveState();
+    dbSavePlayer(player);
+    dbSaveStackerRecord(record);
     return { success: true, message: 'স্ট্যাকিং স্কোর রেকর্ড করা হয়েছে!', state: this.getSnapshot() };
   }
 
@@ -418,6 +453,7 @@ export class GameEngine {
     this.pollStats.totalVotes++;
 
     this.saveState();
+    dbSavePlayer(player);
     return { success: true, message: 'পোল সফলভাবে জমা হয়েছে!', state: this.getSnapshot() };
   }
 
@@ -458,9 +494,11 @@ export class GameEngine {
       this.players[cleanId] = player;
       this.addActivity(`${cleanId} (${DEPARTMENTS[deptCode].abbr}-${batch}) রেজিস্টার্ড হয়েছে! 🎟️`, 'AUTH', deptCode);
       this.saveState();
+      dbSavePlayer(player);
     } else if (cleanRfid && player.rfid !== cleanRfid) {
       player.rfid = cleanRfid;
       this.saveState();
+      dbSavePlayer(player);
     }
 
     return { success: true, player, message: 'শিক্ষার্থী সফলভাবে অনুমোদিত হয়েছে!' };
@@ -490,6 +528,7 @@ export class GameEngine {
     };
     this.players[cleanId] = player;
     this.saveState();
+    dbSavePlayer(player);
     return { success: true, player };
   }
 
@@ -508,13 +547,17 @@ export class GameEngine {
       player.currentStage = stage;
       player.status = 'IN_PROGRESS';
       this.saveState();
+      dbSavePlayer(player);
     }
   }
 
-  // --- Decathlon Overall Leaderboard ---
+  // --- Decathlon Overall Leaderboard (Hunting Points + Connect4 + Stacker + Attendance) ---
   public getOverallLeaderboard(): OverallLeaderboardEntry[] {
     const list: OverallLeaderboardEntry[] = DEPARTMENT_LIST.map((dept) => {
-      const bScore = this.battleship.stealthScores[dept.code]?.stealthScore || 1000;
+      const bData = this.battleship.deptScores?.[dept.code] || { fragmentsFoundCount: 0, attackScore: 0, friendlyFireCount: 0 };
+      const bScore = bData.attackScore;
+      const bFragmentsFound = bData.fragmentsFoundCount;
+
       const cScore = this.connect4.streakScores[dept.code]?.points || 0;
 
       const deptStackers = Object.values(this.players).filter(p => p.deptCode === dept.code && p.stackFloors > 0);
@@ -525,8 +568,9 @@ export class GameEngine {
       const playedCount = Object.values(this.players).filter(p => p.deptCode === dept.code).length;
       const participationRate = Math.min(1, playedCount / (dept.studentCount * 0.7));
 
+      // Grand Composite Score: Offensive Battleship + Connect4 + Stacking + Attendance
       const grandScore = Math.round(
-        (bScore * 0.35) + 
+        (bScore * 1.5) + 
         (cScore * 1.5) + 
         (avgStack * 25) + 
         (participationRate * 500)
@@ -539,6 +583,7 @@ export class GameEngine {
         themeColor: dept.themeColor,
         battleshipRank: 1,
         battleshipScore: bScore,
+        battleshipFragmentsFound: bFragmentsFound,
         connect4Rank: 1,
         connect4Score: cScore,
         stackRank: 1,
@@ -550,7 +595,8 @@ export class GameEngine {
       };
     });
 
-    list.sort((a, b) => b.battleshipScore - a.battleshipScore);
+    // Rank Battleship (Highest attack points & enemy bases found leads)
+    list.sort((a, b) => b.battleshipScore - a.battleshipScore || b.battleshipFragmentsFound - a.battleshipFragmentsFound);
     list.forEach((item, idx) => item.battleshipRank = idx + 1);
 
     list.sort((a, b) => b.connect4Score - a.connect4Score);
@@ -582,17 +628,19 @@ export class GameEngine {
   }
 
   private addActivity(text: string, type: ActivityEvent['type'], deptCode?: DepartmentCode) {
-    this.activities.push({
+    const activity: ActivityEvent = {
       id: `ACT_${Date.now()}_${Math.random()}`,
       text,
       type,
       deptCode,
       timestamp: Date.now()
-    });
+    };
+    this.activities.push(activity);
     if (this.activities.length > 50) this.activities.shift();
+    dbSaveActivity(activity);
   }
 
-  // --- Persistence ---
+  // --- Persistence IO (Dual: Neon DB + local fallback) ---
   private saveState() {
     try {
       const data = {
@@ -605,31 +653,77 @@ export class GameEngine {
         day: this.day
       };
       fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2));
+
+      if (isNeonConnected()) {
+        dbSaveGameState({
+          day: this.day,
+          battleship: this.battleship,
+          connect4: this.connect4,
+          pollStats: this.pollStats
+        });
+      }
     } catch (err) {
       console.error('Failed to save DB state:', err);
     }
   }
 
-  private loadState() {
+  private async loadState() {
+    if (isNeonConnected()) {
+      try {
+        const neonGameState = await dbLoadGameState();
+        const neonPlayers = await dbLoadAllPlayers();
+        const neonStackers = await dbLoadStackerRecords();
+        const neonActivities = await dbLoadActivities();
+
+        if (neonGameState) {
+          this.day = neonGameState.day;
+          this.battleship = neonGameState.battleship;
+          if (!this.battleship.deptScores) {
+            this.battleship.deptScores = {} as any;
+            DEPARTMENT_LIST.forEach((d) => {
+              this.battleship.deptScores[d.code] = { fragmentsFoundCount: 0, attackScore: 0, friendlyFireCount: 0 };
+            });
+          }
+          this.connect4 = neonGameState.connect4;
+          this.pollStats = neonGameState.pollStats;
+          this.players = neonPlayers;
+          this.stackerTopRecords = neonStackers;
+          this.activities = neonActivities;
+          console.log(`🌐 Successfully loaded state from Neon DB (${Object.keys(this.players).length} players).`);
+          return;
+        }
+      } catch (err) {
+        console.error('Failed to load from Neon DB, falling back to local storage:', err);
+      }
+    }
+
     try {
       if (fs.existsSync(DB_PATH)) {
         const raw = fs.readFileSync(DB_PATH, 'utf-8');
         const data = JSON.parse(raw);
-        if (data.battleship) this.battleship = data.battleship;
+        if (data.battleship) {
+          this.battleship = data.battleship;
+          if (!this.battleship.deptScores) {
+            this.battleship.deptScores = {} as any;
+            DEPARTMENT_LIST.forEach((d) => {
+              this.battleship.deptScores[d.code] = { fragmentsFoundCount: 0, attackScore: 0, friendlyFireCount: 0 };
+            });
+          }
+        }
         if (data.connect4) this.connect4 = data.connect4;
         if (data.stackerTopRecords) this.stackerTopRecords = data.stackerTopRecords;
         if (data.pollStats) this.pollStats = data.pollStats;
         if (data.players) this.players = data.players;
         if (data.activities) this.activities = data.activities;
         if (data.day) this.day = data.day;
-        console.log('Successfully loaded persisted database state.');
+        console.log('Successfully loaded persisted local database state.');
       }
     } catch (err) {
-      console.error('Could not load DB state, starting fresh:', err);
+      console.error('Could not load local DB state, starting fresh:', err);
     }
   }
 
-  public resetAll() {
+  public async resetAll() {
     this.battleship = this.initBattleship();
     this.connect4 = this.initConnect4();
     this.stackerTopRecords = [];
@@ -637,6 +731,9 @@ export class GameEngine {
     this.players = {};
     this.activities = [];
     this.saveState();
+    if (isNeonConnected()) {
+      await dbResetAll();
+    }
   }
 }
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Trophy, Maximize, Minimize, Flame, Shield, Award, Users, Layers, Activity } from 'lucide-react';
+import { Trophy, Maximize, Minimize, Flame, Shield, Award, Users, Layers, Activity, Target } from 'lucide-react';
 import { ServerStateSnapshot } from '../types';
 import { DEPARTMENT_LIST } from '../data/departments';
 
@@ -22,7 +22,7 @@ export const SpectatorScreen: React.FC<SpectatorScreenProps> = ({ serverState, o
   };
 
   const leaderboard = serverState?.overallLeaderboard || [];
-  const battleshipRanks = [...leaderboard].sort((a, b) => b.battleshipScore - a.battleshipScore);
+  const battleshipRanks = [...leaderboard].sort((a, b) => b.battleshipScore - a.battleshipScore || b.battleshipFragmentsFound - a.battleshipFragmentsFound);
   const connect4Ranks = [...leaderboard].sort((a, b) => b.connect4Score - a.connect4Score);
   const topStackers = serverState?.stackerTopRecords || [];
   const poll = serverState?.pollStats;
@@ -59,27 +59,20 @@ export const SpectatorScreen: React.FC<SpectatorScreenProps> = ({ serverState, o
           >
             {isFullscreen ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
           </button>
-
-          <button
-            onClick={onBackToPlayer}
-            className="px-3 py-1.5 rounded-xl bg-[#FF5964] border-2 border-white text-white text-xs font-black shadow-pop-sm"
-          >
-            প্লেয়ার মোড
-          </button>
         </div>
       </div>
 
       {/* 4 Main Arena Quadrants (Side-by-Side) */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3.5 my-3.5 flex-1">
-        {/* Quadrant 1: Battleship Stealth */}
+        {/* Quadrant 1: Battleship Base Hunters */}
         <div className="pop-box p-4 bg-white border-3 border-[#1E232A] flex flex-col shadow-pop">
           <div className="flex items-center justify-between border-b-3 border-[#1E232A] pb-2 mb-2.5">
             <div className="flex items-center space-x-1.5">
-              <span className="text-xl">🚢</span>
-              <h2 className="font-black text-sm text-[#1E232A]">স্টিলথ ব্যাটেলশিপ</h2>
+              <span className="text-xl">🎯</span>
+              <h2 className="font-black text-sm text-[#1E232A]">গুপ্ত বনাম প্রকাশ্য</h2>
             </div>
-            <span className="text-[10px] font-black px-2 py-0.5 bg-[#FFF9D2] border border-[#1E232A] rounded-md">
-              % হিডেন
+            <span className="text-[10px] font-black px-2 py-0.5 bg-[#FFE0E2] border border-[#1E232A] rounded-md text-[#D32F2F]">
+              শত্রু ঘাঁটি উন্মোচন
             </span>
           </div>
 
@@ -100,11 +93,16 @@ export const SpectatorScreen: React.FC<SpectatorScreenProps> = ({ serverState, o
                   >
                     {dept.deptAbbr}
                   </span>
-                  <span className="truncate max-w-[90px]">{dept.deptName}</span>
+                  <span className="truncate max-w-[85px]">{dept.deptName}</span>
                 </div>
-                <span className="font-display font-black text-emerald-600">
-                  {dept.battleshipScore / 10}%
-                </span>
+                <div className="text-right">
+                  <span className="font-display font-black text-red-600 block leading-tight">
+                    +{dept.battleshipScore} pts
+                  </span>
+                  <span className="text-[9px] text-gray-500 font-bold block">
+                    {dept.battleshipFragmentsFound}টি ঘাঁটি ফাঁদ
+                  </span>
+                </div>
               </div>
             ))}
           </div>
@@ -115,7 +113,7 @@ export const SpectatorScreen: React.FC<SpectatorScreenProps> = ({ serverState, o
           <div className="flex items-center justify-between border-b-3 border-[#1E232A] pb-2 mb-2.5">
             <div className="flex items-center space-x-1.5">
               <span className="text-xl">🔴</span>
-              <h2 className="font-black text-sm text-[#1E232A]">মেগা কানেক্ট-৪</h2>
+              <h2 className="font-black text-sm text-[#1E232A]">ডিপার্টমেন্টাল বন্ডিং</h2>
             </div>
             <span className="text-[10px] font-black px-2 py-0.5 bg-[#D4F8F0] border border-[#1E232A] rounded-md text-[#00897B]">
               গ্রে লক পয়েন্ট
@@ -154,7 +152,7 @@ export const SpectatorScreen: React.FC<SpectatorScreenProps> = ({ serverState, o
           <div className="flex items-center justify-between border-b-3 border-[#1E232A] pb-2 mb-2.5">
             <div className="flex items-center space-x-1.5">
               <span className="text-xl">🏗️</span>
-              <h2 className="font-black text-sm text-[#1E232A]">টপ স্ট্যাকার (ব্যক্তিগত)</h2>
+              <h2 className="font-black text-sm text-[#1E232A]">নাম কামাও!</h2>
             </div>
             <span className="text-[10px] font-black px-2 py-0.5 bg-[#FFE0E2] border border-[#1E232A] rounded-md text-[#D32F2F]">
               সর্বোচ্চ তলা

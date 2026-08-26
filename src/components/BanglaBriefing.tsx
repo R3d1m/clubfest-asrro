@@ -40,11 +40,11 @@ export const BanglaBriefing: React.FC<BanglaBriefingProps> = ({ student, onStart
         {/* 4 Mission Cards */}
         <div className="space-y-3 text-left font-bangla text-xs sm:text-sm">
           <div className="p-3 bg-white rounded-xl border-2 border-[#1E232A] shadow-pop-sm flex items-start space-x-2.5">
-            <span className="text-xl">🚢</span>
+            <span className="text-xl">🎯</span>
             <div>
               <strong className="text-[#1E232A] block font-bold">১. স্টিলথ ব্যাটেলশিপ (৩৫×৩৫):</strong>
               <p className="text-gray-600 leading-snug">
-                তোমার ৩টি চাল আছে। কুয়াশায় শত্রুর ৪-টাইল বেস আক্রমণ করো অথবা নিজের বেস উন্মোচিত হলে ধোঁয়া দিয়ে লুকিয়ে রাখো!
+                তোমার ৩টি চাল আছে। কুয়াশায় শত্রুর ঘাঁটি আক্রমণ করে পয়েন্ট আনো! যে ডিপার্টমেন্ট যত বেশি শত্রুর ঘাঁটি উন্মোচন করবে তারা শীর্ষে থাকবে।
               </p>
             </div>
           </div>

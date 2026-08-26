@@ -56,7 +56,7 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
     if (mode === 'HIDE') {
       const revealed = state.revealedTiles[key];
       if (!revealed) {
-        setFeedback({ text: 'শুধুমাত্র ইতিমধ্যে উন্মোচিত হওয়া বেস লুকানো যাবে!', type: 'info' });
+        setFeedback({ text: 'শুধুমাত্র ডিপার্টমেন্টের expose হওয়া বেস লুকাতে পারবে!', type: 'info' });
         sound.playPop(250);
         return;
       }
@@ -69,7 +69,7 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
     } else {
       // ATTACK MODE
       if (state.exploredWater.includes(key) || state.revealedTiles[key]) {
-        setFeedback({ text: 'এই অংশটি ইতিমধ্যে সার্চ করা হয়েছে (নীল পানি / বেস)!', type: 'info' });
+        setFeedback({ text: 'নীল- অলরেডি অভিযান চালানো হয়েছে!', type: 'info' });
         sound.playPop(300);
         return;
       }
@@ -100,7 +100,7 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
 
         if (mode === 'HIDE') {
           sound.playSmokePuff();
-          setFeedback({ text: '🌫️ বেস সফলভাবে ধোঁয়ার আড়ালে লুকানো হয়েছে!', type: 'success' });
+          setFeedback({ text: 'ধোঁয়ার আড়ালে লুকানো হয়েছে!', type: 'success' });
         } else {
           if (data.result === 'HIT') {
             sound.playExplosion();
@@ -112,7 +112,7 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
             setFeedback({ text: data.message, type: 'danger' });
           } else {
             sound.playExplosion();
-            setFeedback({ text: 'খালি সাগরে আঘাত লেগেছে (নীল পানি উন্মোচিত)!', type: 'info' });
+            setFeedback({ text: 'ব্যর্থ অভিযান!', type: 'info' });
           }
         }
 
@@ -125,7 +125,7 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
           newState: data.state?.battleship || state
         });
       } else {
-        setFeedback({ text: data.message || 'চাল সম্পন্ন করা যায়নি', type: 'danger' });
+        setFeedback({ text: data.message || 'অভিযান সম্পন্ন করা যায়নি', type: 'danger' });
       }
     } catch {
       setFeedback({ text: 'সার্ভারের সাথে সংযোগ বিচ্ছিন্ন হয়েছে', type: 'danger' });
@@ -167,7 +167,7 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
       {/* Top Banner: AP Tracker */}
       <div className="w-full pop-box p-3.5 bg-white flex items-center justify-between shadow-pop-sm">
         <div>
-          <span className="text-xs font-bold text-gray-500 font-bangla block">স্টেপ ১: স্টিলথ ব্যাটেলশিপ</span>
+          <span className="text-xs font-bold text-gray-500 font-bangla block">স্টেপ ১: গুপ্ত বনাম প্রকাশ্য</span>
           <h2 className="text-base font-black font-bangla text-[#1E232A]">
             {mode === 'ATTACK' ? '🎯 শত্রুর ঘাঁটি খুঁজুন' : '🌫️ নিজের ঘাঁটি লুকান'}
           </h2>
@@ -212,7 +212,7 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
           }`}
         >
           <CloudRain className="w-4 h-4" />
-          <span>🌫️ লুকানো ({ownExposedCount} Exposed)</span>
+          <span>🌫️ লুকাও ({ownExposedCount} Exposed)</span>
         </button>
       </div>
 
@@ -220,17 +220,17 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
       <div className="w-full grid grid-cols-3 gap-1.5 text-[10px] font-bangla font-bold">
         <div className="bg-[#1A252F] text-gray-300 p-1.5 rounded-lg border border-[#1E232A] flex items-center space-x-1 justify-center">
           <span className="w-2.5 h-2.5 rounded bg-[#2C3A47] border border-gray-500 inline-block"></span>
-          <span>কুয়াশা (ট্যাপ করুন)</span>
+          <span>এখনো গুপ্ত</span>
         </div>
 
         <div className="bg-[#E0F7FA] text-[#006064] p-1.5 rounded-lg border border-[#00BCD4] flex items-center space-x-1 justify-center shadow-xs">
           <span className="w-2.5 h-2.5 rounded bg-[#4DD0E1] border border-[#00838F] inline-block"></span>
-          <span>খালি পানি (সার্চড)</span>
+          <span>এক্সপোজড</span>
         </div>
 
         <div className="bg-[#FFF2DC] text-[#D67229] p-1.5 rounded-lg border border-[#FFA931] flex items-center space-x-1 justify-center">
           <span className="w-2.5 h-2.5 rounded bg-[#FF5964] border border-[#1E232A] inline-block"></span>
-          <span>উন্মোচিত বেস</span>
+          <span>উন্মোচিত</span>
         </div>
       </div>
 

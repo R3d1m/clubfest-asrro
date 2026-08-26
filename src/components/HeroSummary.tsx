@@ -1,24 +1,21 @@
 import React, { useEffect } from 'react';
-import { Trophy, Shield, Share2, CheckCircle2, Award, RotateCcw } from 'lucide-react';
+import { Trophy, Share2, CheckCircle2, Award } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { ParsedStudent, PlayerRecord, ServerStateSnapshot } from '../types';
 import { sound } from '../utils/sound';
-import { apiFetch } from '../config';
 
 interface HeroSummaryProps {
   student: ParsedStudent;
   player: PlayerRecord;
   serverState?: ServerStateSnapshot | null;
   onOpenLeaderboard: () => void;
-  onReplay?: () => void;
 }
 
 export const HeroSummary: React.FC<HeroSummaryProps> = ({
   student,
   player,
   serverState,
-  onOpenLeaderboard,
-  onReplay
+  onOpenLeaderboard
 }) => {
   useEffect(() => {
     sound.playStreakChime();
@@ -44,20 +41,6 @@ export const HeroSummary: React.FC<HeroSummaryProps> = ({
         `আমি ${student.deptName} এর জন্য লড়াই করে ${player.totalPointsEarned} পয়েন্ট অর্জন করেছি! ⚔️`
       );
       alert('টেক্সট ক্লিপবোর্ডে কপি হয়েছে!');
-    }
-  };
-
-  const handleReplayClick = async () => {
-    sound.playPop();
-    try {
-      await apiFetch(`/api/player/${student.studentId}/reset`, { method: 'POST' });
-      if (onReplay) {
-        onReplay();
-      } else {
-        window.location.reload();
-      }
-    } catch {
-      window.location.reload();
     }
   };
 
@@ -88,21 +71,27 @@ export const HeroSummary: React.FC<HeroSummaryProps> = ({
           </p>
         </div>
 
-        {/* Personal Contribution Stats */}
+        {/* Personal Contribution Stats from Database */}
         <div className="p-3.5 bg-white rounded-2xl border-3 border-[#1E232A] shadow-pop-sm space-y-2.5 text-left font-bangla">
           <div className="flex items-center justify-between border-b-2 border-dashed border-gray-200 pb-2">
             <span className="text-xs font-bold text-gray-600">🚢 ব্যাটেলশিপ চাল:</span>
-            <span className="text-xs font-black text-[#1E232A]">৩টি সম্পন্ন</span>
+            <span className="text-xs font-black text-[#1E232A]">
+              {player.battleshipMoves?.length || 3}টি সম্পন্ন
+            </span>
           </div>
 
           <div className="flex items-center justify-between border-b-2 border-dashed border-gray-200 pb-2">
             <span className="text-xs font-bold text-gray-600">🔴 কানেক্ট-৪ বল:</span>
-            <span className="text-xs font-black text-[#1E232A]">কলাম {player.connect4Col !== null ? player.connect4Col + 1 : '১'}</span>
+            <span className="text-xs font-black text-[#1E232A]">
+              কলাম {player.connect4Col !== null ? player.connect4Col + 1 : '১'}
+            </span>
           </div>
 
           <div className="flex items-center justify-between border-b-2 border-dashed border-gray-200 pb-2">
             <span className="text-xs font-bold text-gray-600">🏗️ ব্যক্তিগত স্ট্যাকিং:</span>
-            <span className="text-sm font-black text-amber-600">{player.stackFloors} তলা</span>
+            <span className="text-sm font-black text-amber-600">
+              {player.stackFloors} তলা {player.stackCombos > 1 ? `(×${player.stackCombos} কম্বো)` : ''}
+            </span>
           </div>
 
           <div className="flex items-center justify-between pt-1">
@@ -141,15 +130,6 @@ export const HeroSummary: React.FC<HeroSummaryProps> = ({
           >
             <Share2 className="w-3.5 h-3.5 text-gray-600" />
             <span>বন্ধুদের সাথে শেয়ার করুন</span>
-          </button>
-
-          {/* Test / Replay Button */}
-          <button
-            onClick={handleReplayClick}
-            className="pop-btn-sm w-full py-2 bg-[#FFA931] text-[#1E232A] font-black text-xs font-bangla flex items-center justify-center space-x-1.5 shadow-pop-sm"
-          >
-            <RotateCcw className="w-3.5 h-3.5" />
-            <span>🔄 টেস্ট মোড: আবার খেলুন (Play Again)</span>
           </button>
         </div>
       </div>

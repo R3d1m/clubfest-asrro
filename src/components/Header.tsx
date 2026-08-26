@@ -26,12 +26,22 @@ export const Header: React.FC<HeaderProps> = ({
 
   const getStageTitle = () => {
     switch (currentStage) {
-      case 'STAGE_1_BATTLESHIP': return '১. স্টিলথ ব্যাটেলশিপ';
-      case 'STAGE_2_CONNECT4': return '২. মেগা কানেক্ট-৪';
-      case 'STAGE_3_STACK': return '৩. টাওয়ার স্ট্যাক';
-      case 'STAGE_4_POLL': return '৪. স্পাইসি পোল';
-      case 'COMPLETED': return 'ফলাফল ও ব্যাজ';
-      default: return 'ডিপার্টমেন্ট ক্ল্যাশ';
+      case 'BRIEFING':
+      case 'STAGE_1_INSTRUCTION':
+      case 'STAGE_1_BATTLESHIP':
+        return '১. স্টিলথ ব্যাটেলশিপ';
+      case 'STAGE_2_INSTRUCTION':
+      case 'STAGE_2_CONNECT4':
+        return '২. মেগা কানেক্ট-৪';
+      case 'STAGE_3_INSTRUCTION':
+      case 'STAGE_3_STACK':
+        return '৩. টাওয়ার স্ট্যাক';
+      case 'STAGE_4_POLL':
+        return '৪. স্পাইসি পোল';
+      case 'COMPLETED':
+        return 'ফলাফল ও ব্যাজ';
+      default:
+        return 'ডিপার্টমেন্ট ক্ল্যাশ';
     }
   };
 
@@ -45,7 +55,7 @@ export const Header: React.FC<HeaderProps> = ({
           <h1 className="font-extrabold text-sm sm:text-base leading-tight tracking-wide font-bangla text-[#F9D342]">
             ডিপার্টমেন্ট ক্ল্যাশ ২০২৬
           </h1>
-          <p className="text-xs text-gray-300 font-medium">
+          <p className="text-xs text-gray-300 font-medium font-bangla">
             {getStageTitle()}
           </p>
         </div>

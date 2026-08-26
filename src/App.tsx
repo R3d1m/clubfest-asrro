@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Socket } from 'socket.io-client';
-import { Shield, Sparkles, Trophy, LogIn, AlertCircle, RefreshCw } from 'lucide-react';
+import { io, Socket } from 'socket.io-client';
+import { Sparkles, Trophy, LogIn, AlertCircle, Radio } from 'lucide-react';
 import { 
   ParsedStudent, 
   PlayerRecord, 
@@ -10,10 +10,10 @@ import {
 import { parseStudentID } from './data/departments';
 import { sound } from './utils/sound';
 import { vibrate } from './utils/haptics';
-import { apiFetch, createGameSocket } from './config';
 
 import { Header } from './components/Header';
 import { BanglaBriefing } from './components/BanglaBriefing';
+import { GameInstructionCard } from './components/GameInstructionCard';
 import { BattleshipStage } from './components/BattleshipStage';
 import { Connect4Stage } from './components/Connect4Stage';
 import { StackerStage } from './components/StackerStage';
@@ -33,19 +33,30 @@ export const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showLeaderboardModal, setShowLeaderboardModal] = useState(false);
 
-  // Socket Connection
+  // Socket Connection & URL Route Handling
   useEffect(() => {
-    const socket: Socket = createGameSocket();
+    const socket: Socket = io();
 
     socket.on('state:update', (data: ServerStateSnapshot) => {
       setServerState(data);
     });
 
-    // Check URL parameters for view routing (e.g. ?view=admin or ?view=screen)
+    // Pure Link-based routing for Admin Desk and Projector Screen
     const params = new URLSearchParams(window.location.search);
-    const urlView = params.get('view');
-    if (urlView === 'admin') setView('ADMIN');
-    if (urlView === 'screen') setView('SCREEN');
+    const urlView = params.get('view')?.toLowerCase();
+    const pathname = window.location.pathname.toLowerCase();
+
+    if (urlView === 'admin' || pathname === '/admin' || pathname.startsWith('/admin/')) {
+      setView('ADMIN');
+    } else if (
+      urlView === 'screen' || 
+      urlView === 'projector' || 
+      pathname === '/screen' || 
+      pathname === '/projector' || 
+      pathname.startsWith('/screen/')
+    ) {
+      setView('SCREEN');
+    }
 
     return () => {
       socket.disconnect();
@@ -69,15 +80,26 @@ export const App: React.FC = () => {
 
   const handleStudentLogin = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    if (!studentIdInput.trim() || isLoading) return;
+    const cleanInput = studentIdInput.trim();
+    if (!cleanInput || isLoading) return;
 
     setIsLoading(true);
     sound.playPop();
     setLoginError(null);
 
     try {
-      const res = await apiFetch(`/api/player/${studentIdInput.trim()}`);
-      const data = await res.json();
+      // 1. Try fetching by direct Student ID
+      let res = await fetch(`/api/player/${cleanInput}`);
+      let data = await res.json();
+
+      // 2. If not found by Student ID, try fetching by RFID card tag
+      if (!data.success) {
+        const rfidRes = await fetch(`/api/player/rfid/${cleanInput}`);
+        const rfidData = await rfidRes.json();
+        if (rfidData.success && rfidData.player) {
+          data = rfidData;
+        }
+      }
 
       if (data.success && data.player) {
         const p: PlayerRecord = data.player;
@@ -85,7 +107,7 @@ export const App: React.FC = () => {
         const parsed = parseStudentID(p.studentId);
         setParsedStudent(parsed);
 
-        // Resume at their exact stage checkpoint
+        // Resume at exact stage checkpoint from database
         if (p.status === 'COMPLETED') {
           setCurrentStage('COMPLETED');
         } else {
@@ -109,7 +131,7 @@ export const App: React.FC = () => {
     if (!playerRecord) return;
     setCurrentStage(nextStage);
     try {
-      await apiFetch('/api/player/stage', {
+      await fetch('/api/player/stage', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -122,7 +144,7 @@ export const App: React.FC = () => {
     }
   };
 
-  // Render View Router
+  // Pure Link-based Routing (Players arriving at root won't see these)
   if (view === 'ADMIN') {
     return <AdminDesk serverState={serverState} onBackToPlayer={() => setView('PLAYER')} />;
   }
@@ -140,7 +162,7 @@ export const App: React.FC = () => {
       />
 
       <main className="flex-1 flex flex-col items-center justify-center p-2 sm:p-4">
-        {/* STAGE 0: LOGIN & ID ENTRY */}
+        {/* STAGE 0: LOGIN & ID / RFID ENTRY */}
         {currentStage === 'LOGIN' && (
           <div className="w-full max-w-md p-4 space-y-4 animate-bounce-in">
             <div className="pop-box p-6 bg-[#FFFBEB] border-4 border-[#1E232A] shadow-pop-lg text-center space-y-5">
@@ -155,7 +177,7 @@ export const App: React.FC = () => {
                   ডিপার্টমেন্ট ক্ল্যাশ ২০২৬
                 </h2>
                 <p className="text-xs font-bold text-gray-600 mt-1">
-                  বুথে অনুমোদিত স্টুডেন্ট আইডি প্রবেশ করান:
+                  স্টুডেন্ট আইডি:
                 </p>
               </div>
 
@@ -163,8 +185,7 @@ export const App: React.FC = () => {
                 <div>
                   <input
                     type="text"
-                    inputMode="numeric"
-                    placeholder="e.g. 2204055"
+                    placeholder="e.g. 2204055 বা RFID"
                     value={studentIdInput}
                     onChange={(e) => handleIdInputChange(e.target.value)}
                     className="w-full text-center text-2xl font-black font-display tracking-widest px-4 py-3.5 bg-white border-3 border-[#1E232A] rounded-2xl shadow-pop-sm focus:outline-none focus:ring-2 focus:ring-[#4ECDC4]"
@@ -179,7 +200,7 @@ export const App: React.FC = () => {
                     style={{ backgroundColor: parsedStudent.lightColor, color: '#1E232A' }}
                   >
                     <div>
-                      <span className="block text-[10px] text-gray-500">শনাক্তকৃত ডিপার্টমেন্ট:</span>
+                      <span className="block text-[10px] text-gray-500">ডিপার্টমেন্ট:</span>
                       <span className="text-sm font-black">{parsedStudent.deptName} ({parsedStudent.deptAbbr})</span>
                     </div>
                     <div className="text-right">
@@ -191,9 +212,9 @@ export const App: React.FC = () => {
 
                 <button
                   type="submit"
-                  disabled={!parsedStudent || isLoading}
+                  disabled={!studentIdInput.trim() || isLoading}
                   className={`pop-btn w-full py-3.5 font-black text-base flex items-center justify-center space-x-2 transition-all ${
-                    parsedStudent && !isLoading
+                    studentIdInput.trim() && !isLoading
                       ? 'bg-[#4ECDC4] text-[#1E232A] shadow-pop hover:bg-[#3dbdb5]'
                       : 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-60'
                   }`}
@@ -211,33 +232,23 @@ export const App: React.FC = () => {
                 </div>
               )}
             </div>
-
-            {/* Quick Portal Switchers */}
-            <div className="flex justify-center space-x-3 pt-2">
-              <button
-                onClick={() => setView('ADMIN')}
-                className="pop-btn-sm px-3 py-1.5 bg-white text-xs font-black text-[#1E232A] flex items-center space-x-1"
-              >
-                <Shield className="w-3.5 h-3.5 text-purple-600" />
-                <span>বুথ অ্যাডমিন ডেস্ক</span>
-              </button>
-
-              <button
-                onClick={() => setView('SCREEN')}
-                className="pop-btn-sm px-3 py-1.5 bg-white text-xs font-black text-[#1E232A] flex items-center space-x-1"
-              >
-                <Trophy className="w-3.5 h-3.5 text-amber-500" />
-                <span>প্রজেক্টর স্ক্রিন</span>
-              </button>
-            </div>
           </div>
         )}
 
-        {/* STAGE: BRIEFING */}
+        {/* STAGE: OVERALL BRIEFING */}
         {currentStage === 'BRIEFING' && parsedStudent && (
           <BanglaBriefing
             student={parsedStudent}
-            onStart={() => updateStage('STAGE_1_BATTLESHIP')}
+            onStart={() => updateStage('STAGE_1_INSTRUCTION')}
+          />
+        )}
+
+        {/* GAME 1 INSTRUCTION: BATTLESHIP */}
+        {currentStage === 'STAGE_1_INSTRUCTION' && parsedStudent && (
+          <GameInstructionCard
+            gameIndex={1}
+            student={parsedStudent}
+            onProceed={() => updateStage('STAGE_1_BATTLESHIP')}
           />
         )}
 
@@ -258,7 +269,16 @@ export const App: React.FC = () => {
                 });
               }
             }}
-            onAdvanceToNextStage={() => updateStage('STAGE_2_CONNECT4')}
+            onAdvanceToNextStage={() => updateStage('STAGE_2_INSTRUCTION')}
+          />
+        )}
+
+        {/* GAME 2 INSTRUCTION: CONNECT 4 */}
+        {currentStage === 'STAGE_2_INSTRUCTION' && parsedStudent && (
+          <GameInstructionCard
+            gameIndex={2}
+            student={parsedStudent}
+            onProceed={() => updateStage('STAGE_2_CONNECT4')}
           />
         )}
 
@@ -276,7 +296,16 @@ export const App: React.FC = () => {
                 }
               }
             }}
-            onAdvanceToNextStage={() => updateStage('STAGE_3_STACK')}
+            onAdvanceToNextStage={() => updateStage('STAGE_3_INSTRUCTION')}
+          />
+        )}
+
+        {/* GAME 3 INSTRUCTION: TOWER STACKER */}
+        {currentStage === 'STAGE_3_INSTRUCTION' && parsedStudent && (
+          <GameInstructionCard
+            gameIndex={3}
+            student={parsedStudent}
+            onProceed={() => updateStage('STAGE_3_STACK')}
           />
         )}
 
@@ -316,18 +345,6 @@ export const App: React.FC = () => {
             player={playerRecord}
             serverState={serverState}
             onOpenLeaderboard={() => setShowLeaderboardModal(true)}
-            onReplay={() => {
-              playerRecord.battleshipAP = 3;
-              playerRecord.battleshipMoves = [];
-              playerRecord.connect4Col = null;
-              playerRecord.stackFloors = 0;
-              playerRecord.stackCombos = 0;
-              playerRecord.pollAnswers = {};
-              playerRecord.totalPointsEarned = 0;
-              playerRecord.status = 'IN_PROGRESS';
-              playerRecord.currentStage = 'BRIEFING';
-              setCurrentStage('BRIEFING');
-            }}
           />
         )}
       </main>
@@ -370,7 +387,7 @@ export const App: React.FC = () => {
                     <div>
                       <h4 className="text-xs font-black text-[#1E232A]">{dept.deptName}</h4>
                       <p className="text-[10px] text-gray-500 font-bold">
-                        স্টিলথ: {dept.battleshipScore / 10}% • কানেক্ট-৪: +{dept.connect4Score}
+                        অ্যাটাক: +{dept.battleshipScore} pts • কানেক্ট-৪: +{dept.connect4Score}
                       </p>
                     </div>
                   </div>

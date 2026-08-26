@@ -1,4 +1,6 @@
-import 'dotenv/config';
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express from 'express';
 import http from 'http';
 import { Server as SocketIOServer } from 'socket.io';
@@ -6,6 +8,7 @@ import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { gameEngine } from './gameEngine';
+import { isNeonConnected } from './db';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -26,13 +29,25 @@ app.use(cors({
 }));
 app.use(express.json());
 
+// Middleware to ensure GameEngine state is ready before API processing
+app.use(async (req, res, next) => {
+  await gameEngine.isReady;
+  next();
+});
+
 // Health Check for Render & uptime monitoring
 app.get('/health', (req, res) => {
   return res.json({ status: 'ok', uptime: process.uptime(), timestamp: Date.now() });
 });
 
 app.get('/api/health', (req, res) => {
-  return res.json({ status: 'ok', uptime: process.uptime(), timestamp: Date.now() });
+  return res.json({
+    status: 'online',
+    uptime: process.uptime(),
+    database: isNeonConnected() ? 'Neon PostgreSQL (Cloud)' : 'Local JSON Fallback',
+    playersCount: Object.keys(gameEngine.players).length,
+    timestamp: Date.now()
+  });
 });
 
 // 1. Stall Coordinator Authorizes Student ID (via Web Desk or RFID Terminal)
@@ -158,8 +173,8 @@ app.get('/api/state', (req, res) => {
 });
 
 // 9. Admin Controls (Reset, Toggle Day)
-app.post('/api/admin/reset', (req, res) => {
-  gameEngine.resetAll();
+app.post('/api/admin/reset', async (req, res) => {
+  await gameEngine.resetAll();
   io.emit('state:update', gameEngine.getSnapshot());
   return res.json({ success: true, message: 'বোর্ড রিসেট সফল হয়েছে!' });
 });
@@ -196,8 +211,10 @@ io.on('connection', (socket) => {
 const PORT = Number(process.env.PORT) || 3001;
 const HOST = process.env.HOST || '0.0.0.0';
 
-server.listen(PORT, HOST, () => {
+server.listen(PORT, HOST, async () => {
+  await gameEngine.isReady;
   console.log(`🎮 Department Clash Server running on http://${HOST}:${PORT}`);
+  console.log(`📦 Database mode: ${isNeonConnected() ? '🌐 Neon PostgreSQL (Online Cloud)' : '💾 Local Fallback (server/db.json)'}`);
 });
 
 process.on('SIGTERM', () => {

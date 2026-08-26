@@ -15,8 +15,11 @@ export interface DepartmentConfig {
 export type PlayerStage = 
   | 'LOGIN' 
   | 'BRIEFING' 
+  | 'STAGE_1_INSTRUCTION'
   | 'STAGE_1_BATTLESHIP' 
+  | 'STAGE_2_INSTRUCTION'
   | 'STAGE_2_CONNECT4' 
+  | 'STAGE_3_INSTRUCTION'
   | 'STAGE_3_STACK' 
   | 'STAGE_4_POLL' 
   | 'COMPLETED';
@@ -85,12 +88,19 @@ export interface BattleshipCell {
   reCloaked?: boolean;
 }
 
+export interface BattleshipDeptScore {
+  fragmentsFoundCount: number; // Enemy base tiles found by this dept
+  attackScore: number; // Total offensive attack points
+  friendlyFireCount: number;
+}
+
 export interface BattleshipState {
   gridSize: number; // 35
   fragments: PolyominoFragment[];
-  revealedTiles: Record<string, { deptCode: DepartmentCode; fragmentId: string }>; // Key: `${x},${y}`
+  revealedTiles: Record<string, { deptCode: DepartmentCode; fragmentId: string; revealedByDept?: DepartmentCode }>; // Key: `${x},${y}`
   exploredWater: string[]; // Keys: `${x},${y}`
-  stealthScores: Record<DepartmentCode, {
+  deptScores: Record<DepartmentCode, BattleshipDeptScore>;
+  stealthScores?: Record<DepartmentCode, {
     totalBases: number;
     unrevealedBases: number;
     stealthPercent: number;
@@ -155,6 +165,7 @@ export interface OverallLeaderboardEntry {
   themeColor: string;
   battleshipRank: number;
   battleshipScore: number;
+  battleshipFragmentsFound: number;
   connect4Rank: number;
   connect4Score: number;
   stackRank: number;

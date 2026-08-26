@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { UserCheck, Shield, Users, RefreshCw, CheckCircle2, AlertCircle, ArrowLeft } from 'lucide-react';
+import { UserCheck, Shield, Users, RefreshCw, CheckCircle2, AlertCircle, ArrowLeft, Radio } from 'lucide-react';
 import { parseStudentID } from '../data/departments';
 import { ServerStateSnapshot } from '../types';
 import { sound } from '../utils/sound';
@@ -12,6 +12,7 @@ interface AdminDeskProps {
 
 export const AdminDesk: React.FC<AdminDeskProps> = ({ serverState, onBackToPlayer }) => {
   const [studentIdInput, setStudentIdInput] = useState('');
+  const [rfidInput, setRfidInput] = useState('');
   const [feedback, setFeedback] = useState<{ text: string; type: 'success' | 'danger' } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [parsedPreview, setParsedPreview] = useState<any>(null);
@@ -41,17 +42,21 @@ export const AdminDesk: React.FC<AdminDeskProps> = ({ serverState, onBackToPlaye
       const res = await apiFetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ studentId: studentIdInput.trim() })
+        body: JSON.stringify({ 
+          studentId: studentIdInput.trim(),
+          rfid: rfidInput.trim() || undefined
+        })
       });
 
       const data = await res.json();
       if (data.success) {
         sound.playStreakChime();
         setFeedback({ 
-          text: `✅ ${studentIdInput.trim()} (${parsedPreview?.deptAbbr || ''}) সফলভাবে অনুমোদিত হয়েছে!`, 
+          text: `✅ ${studentIdInput.trim()} (${parsedPreview?.deptAbbr || ''})${rfidInput ? ` [RFID: ${rfidInput.trim()}]` : ''} সফলভাবে অনুমোদিত হয়েছে!`, 
           type: 'success' 
         });
         setStudentIdInput('');
+        setRfidInput('');
         setParsedPreview(null);
       } else {
         sound.playBuzzer();
@@ -89,7 +94,7 @@ export const AdminDesk: React.FC<AdminDeskProps> = ({ serverState, onBackToPlaye
 
         <div className="inline-flex items-center space-x-1.5 px-3 py-1 bg-[#FFF9D2] border-2 border-[#1E232A] rounded-xl text-xs font-black text-[#1E232A]">
           <Shield className="w-4 h-4 text-purple-600" />
-          <span>বুথ অ্যাডমিন প্যানেল</span>
+          <span>বুথ অ্যাডমিন ও RFID প্যানেল</span>
         </div>
       </div>
 
@@ -100,7 +105,7 @@ export const AdminDesk: React.FC<AdminDeskProps> = ({ serverState, onBackToPlaye
             🎟️ নতুন শিক্ষার্থী অনুমোদন
           </h2>
           <p className="text-xs text-gray-600 font-medium">
-            শিক্ষার্থীর আইডি লিখুন (যেমন: 2204055) এবং অনুমোদন বাটনে চাপুন।
+            শিক্ষার্থীর আইডি লিখুন এবং প্রয়োজনে RFID কার্ড স্ক্যান করুন।
           </p>
         </div>
 
@@ -117,6 +122,23 @@ export const AdminDesk: React.FC<AdminDeskProps> = ({ serverState, onBackToPlaye
               onChange={(e) => handleInputChange(e.target.value)}
               className="w-full text-center text-2xl font-black font-display tracking-widest px-4 py-3 bg-white border-3 border-[#1E232A] rounded-2xl shadow-pop-sm focus:outline-none focus:ring-2 focus:ring-[#4ECDC4]"
               autoFocus
+            />
+          </div>
+
+          <div>
+            <label className="flex items-center justify-between text-xs font-black text-gray-700 mb-1">
+              <span className="flex items-center space-x-1">
+                <Radio className="w-3.5 h-3.5 text-blue-600 animate-pulse" />
+                <span>RFID কার্ড ট্যাগ (ঐচ্ছিক / অটো-স্ক্যান):</span>
+              </span>
+              <span className="text-[10px] text-gray-400 font-medium">কার্ড ট্যাপ করুন</span>
+            </label>
+            <input
+              type="text"
+              placeholder="ট্যাপ করলে UID বসবে (যেমন: E2801170...)"
+              value={rfidInput}
+              onChange={(e) => setRfidInput(e.target.value)}
+              className="w-full text-center text-sm font-mono font-bold px-3 py-2 bg-white border-2 border-[#1E232A] rounded-xl shadow-xs focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
           </div>
 
