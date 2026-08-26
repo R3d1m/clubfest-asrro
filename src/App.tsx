@@ -35,7 +35,7 @@ export const App: React.FC = () => {
 
   // Socket Connection & URL Route Handling
   useEffect(() => {
-    const socket: Socket = io();
+    const socket: Socket = io(import.meta.env.VITE_BACKEND_URL);
 
     socket.on('state:update', (data: ServerStateSnapshot) => {
       setServerState(data);
