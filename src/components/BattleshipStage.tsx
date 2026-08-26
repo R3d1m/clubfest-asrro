@@ -56,12 +56,12 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
     if (mode === 'HIDE') {
       const revealed = state.revealedTiles[key];
       if (!revealed) {
-        setFeedback({ text: 'শুধুমাত্র ইতিমধ্যে উন্মোচিত হওয়া বেস লুকানো যাবে!', type: 'info' });
+        setFeedback({ text: 'শুধুমাত্র ইতিমধ্যে Exposed হওয়া ঘাঁটি লুকানো যাবে!', type: 'info' });
         sound.playPop(250);
         return;
       }
       if (revealed.deptCode !== student.deptCode) {
-        setFeedback({ text: 'অন্য ডিপার্টমেন্টের বেস তুমি লুকাতে পারবে না!', type: 'danger' });
+        setFeedback({ text: 'অন্য ডিপার্টমেন্টের ঘাঁটি তুমি লুকাতে পারবে না!', type: 'danger' });
         sound.playBuzzer();
         vibratePattern([50, 50, 50]);
         return;
@@ -69,7 +69,7 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
     } else {
       // ATTACK MODE
       if (state.exploredWater.includes(key) || state.revealedTiles[key]) {
-        setFeedback({ text: 'এই অংশটি ইতিমধ্যে সার্চ করা হয়েছে (নীল পানি / বেস)!', type: 'info' });
+        setFeedback({ text: 'এই অংশে ইতিমধ্যে অভিযান চালানো হয়েছে!', type: 'info' });
         sound.playPop(300);
         return;
       }
@@ -100,7 +100,7 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
 
         if (mode === 'HIDE') {
           sound.playSmokePuff();
-          setFeedback({ text: '🌫️ বেস সফলভাবে ধোঁয়ার আড়ালে লুকানো হয়েছে!', type: 'success' });
+          setFeedback({ text: '🌫️ ঘাঁটি সফলভাবে লুকানো হয়েছে!', type: 'success' });
         } else {
           if (data.result === 'HIT') {
             sound.playExplosion();
@@ -112,7 +112,7 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
             setFeedback({ text: data.message, type: 'danger' });
           } else {
             sound.playExplosion();
-            setFeedback({ text: 'খালি সাগরে আঘাত লেগেছে (নীল পানি উন্মোচিত)!', type: 'info' });
+            setFeedback({ text: 'ব্যর্থ অভিযান!', type: 'info' });
           }
         }
 
@@ -169,7 +169,7 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
         <div>
           <span className="text-[11px] font-bold text-gray-500 font-bangla block">স্টেপ ১: স্টিলথ ব্যাটেলশিপ</span>
           <h2 className="text-sm sm:text-base font-black font-bangla text-[#1E232A]">
-            {mode === 'ATTACK' ? '🎯 শত্রুর ঘাঁটি খুঁজুন' : '🌫️ নিজের ঘাঁটি লুকান'}
+            {mode === 'ATTACK' ? '🎯 ঘাঁটি খুঁজো' : '🌫️ নিজের ঘাঁটি লুকাও'}
           </h2>
         </div>
 
@@ -200,7 +200,7 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
           }`}
         >
           <Target className="w-4 h-4" />
-          <span>🎯 আক্রমণ (ATTACK)</span>
+          <span>🎯 আক্রমণ</span>
         </button>
 
         <button
@@ -212,7 +212,7 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
           }`}
         >
           <CloudRain className="w-4 h-4" />
-          <span>🌫️ লুকানো ({ownExposedCount})</span>
+          <span>🌫️ লুকাও ({ownExposedCount})</span>
         </button>
       </div>
 
@@ -220,7 +220,7 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
       <div className="w-full grid grid-cols-3 gap-1 text-[9px] sm:text-[10px] font-bangla font-bold">
         <div className="bg-[#1A252F] text-gray-300 p-1 rounded-lg border border-[#1E232A] flex items-center space-x-1 justify-center">
           <span className="w-2 h-2 rounded bg-[#2C3A47] border border-gray-500 inline-block"></span>
-          <span>কুয়াশা (ট্যাপ)</span>
+          <span>কুয়াশা</span>
         </div>
 
         <div className="bg-[#E0F7FA] text-[#006064] p-1 rounded-lg border border-[#00BCD4] flex items-center space-x-1 justify-center shadow-xs">
@@ -230,7 +230,7 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
 
         <div className="bg-[#FFF2DC] text-[#D67229] p-1 rounded-lg border border-[#FFA931] flex items-center space-x-1 justify-center">
           <span className="w-2 h-2 rounded bg-[#FF5964] border border-[#1E232A] inline-block"></span>
-          <span>উন্মোচিত বেস</span>
+          <span>উন্মোচিত ঘাঁটি</span>
         </div>
       </div>
 
@@ -239,7 +239,7 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
         <div className="flex items-center justify-between px-2 py-0.5 text-[9px] text-gray-300 font-bangla font-bold">
           <span className="flex items-center space-x-1">
             <Move className="w-3 h-3 text-cyan-300 animate-pulse" />
-            <span>আঙুল দিয়ে টেনে ম্যাপ প্যান করুন</span>
+            <span>আঙুল দিয়ে টেনে ম্যাপে ঘুরতে পারবে</span>
           </span>
           <span className="text-gray-400">৩৫×৩৫ গ্রিড</span>
         </div>
@@ -338,7 +338,7 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
           onClick={() => { sound.playPop(); onAdvanceToNextStage(); }}
           className="pop-btn w-full py-3 bg-[#6BCB77] text-[#1E232A] font-black text-sm sm:text-base font-bangla flex items-center justify-center space-x-2 animate-bounce"
         >
-          <span>৩টি চাল শেষ! পরের গেম (কানেক্ট-৪) এ যাও</span>
+          <span>৩টি চাল শেষ! পরের গেম এ যাও</span>
           <ArrowRight className="w-5 h-5" />
         </button>
       ) : (

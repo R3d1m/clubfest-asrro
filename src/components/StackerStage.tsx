@@ -456,7 +456,7 @@ export const StackerStage: React.FC<StackerStageProps> = ({
       {/* Top Header Card */}
       <div className="w-full pop-box p-3 sm:p-4 bg-white flex items-center justify-between shadow-pop-sm mb-2.5">
         <div>
-          <span className="text-xs font-bold text-gray-500 font-bangla block">স্টেপ ৩: টাওয়ার স্ট্যাক (ব্যক্তিগত স্কোর)</span>
+          <span className="text-xs font-bold text-gray-500 font-bangla block">স্টেপ ৩: নাম কামাও! (ব্যক্তিগত স্কোর)</span>
           <h2 className="text-base sm:text-lg font-black font-bangla text-[#1E232A]">
             🏗️ সর্বোচ্চ তলায় পৌঁছাও!
           </h2>

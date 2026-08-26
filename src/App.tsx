@@ -187,7 +187,7 @@ export const App: React.FC = () => {
                   <input
                     type="text"
                     inputMode="numeric"
-                    placeholder="e.g. 2204055 বা RFID"
+                    placeholder="e.g. 2204055"
                     value={studentIdInput}
                     onChange={(e) => handleIdInputChange(e.target.value)}
                     className="w-full text-center text-2xl font-black font-display tracking-widest px-4 py-4 bg-white border-3 border-[#1E232A] rounded-2xl shadow-pop-sm focus:outline-none focus:ring-2 focus:ring-[#4ECDC4]"
