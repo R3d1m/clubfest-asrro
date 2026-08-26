@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, Sparkles, ArrowRight, CheckCircle2 } from 'lucide-react';
-import confetti from 'canvas-confetti';
+import { ChevronDown, ArrowRight, ShieldAlert, Award, Sparkles, CheckCircle2 } from 'lucide-react';
 import { Connect4State, ParsedStudent } from '../types';
 import { DEPARTMENTS } from '../data/departments';
 import { sound } from '../utils/sound';
@@ -71,21 +70,17 @@ export const Connect4Stage: React.FC<Connect4StageProps> = ({
 
         if (data.streakEarned) {
           sound.playStreakChime();
-          vibratePattern([100, 50, 150, 50, 200]);
-          confetti({
-            particleCount: 80,
-            spread: 70,
-            origin: { y: 0.6 }
-          });
+          vibratePattern([100, 50, 100, 50, 200]);
           setStreakResult({ earned: true, points: data.points });
         } else {
+          sound.playDrop();
           setStreakResult({ earned: false, points: 0 });
         }
 
         onDropComplete({
           col,
-          row: data.row || 0,
-          streakEarned: !!data.streakEarned,
+          row: data.row,
+          streakEarned: data.streakEarned,
           points: data.points || 0,
           newState: data.state?.connect4 || state
         });
@@ -101,34 +96,34 @@ export const Connect4Stage: React.FC<Connect4StageProps> = ({
   const rows = state.rows || 10;
 
   return (
-    <div className="w-full max-w-lg mx-auto p-3 flex flex-col items-center space-y-3 min-h-[calc(100vh-70px)] justify-between">
+    <div className="w-full max-w-md mx-auto p-2 sm:p-3 flex flex-col items-center space-y-2.5 min-h-[calc(100vh-65px)] justify-between">
       {/* Top Banner */}
-      <div className="w-full pop-box p-3.5 bg-white flex items-center justify-between shadow-pop-sm">
+      <div className="w-full pop-box p-3 bg-white flex items-center justify-between shadow-pop-sm">
         <div>
-          <span className="text-xs font-bold text-gray-500 font-bangla block">স্টেপ ২: মেগা কানেক্ট-৪</span>
-          <h2 className="text-base font-black font-bangla text-[#1E232A]">
-            {hasPlayed ? '✅ বল ড্রপ সম্পন্ন হয়েছে!' : '🎯 ১টি কলাম বেছে বল ফেলুন'}
+          <span className="text-[11px] font-bold text-gray-500 font-bangla block">স্টেপ ২: মেগা কানেক্ট-৪</span>
+          <h2 className="text-sm sm:text-base font-black font-bangla text-[#1E232A]">
+            {hasPlayed ? '✅ বল ড্রপ সম্পন্ন!' : '🎯 ১টি কলাম বেছে বল ফেলুন'}
           </h2>
         </div>
 
         <div 
-          className="px-3 py-1.5 rounded-xl border-2 border-[#1E232A] font-black text-xs font-bangla shadow-pop-sm flex items-center space-x-1"
+          className="px-2.5 py-1 rounded-xl border-2 border-[#1E232A] font-black text-xs font-bangla shadow-pop-sm flex items-center space-x-1"
           style={{ backgroundColor: student.themeColor, color: '#1E232A' }}
         >
-          <span>তোমার বল: {student.deptAbbr}</span>
+          <span>{student.deptAbbr} বল</span>
         </div>
       </div>
 
-      {/* Grid Container with Horizontal Scroll on Mobile */}
-      <div className="w-full pop-box p-3 bg-[#F9D342] border-4 border-[#1E232A] relative shadow-pop">
-        <div className="text-[10px] text-[#1E232A] font-bangla text-center mb-2 font-bold">
+      {/* Grid Container with Touch Scroll */}
+      <div className="w-full pop-box p-2 sm:p-3 bg-[#F9D342] border-4 border-[#1E232A] relative shadow-pop">
+        <div className="text-[10px] text-[#1E232A] font-bangla text-center mb-1.5 font-bold">
           {hasPlayed 
             ? '৪টি মিললে বলগুলো ধূসর (Gray) হয়ে স্থায়ী পয়েন্ট লক হয়!' 
-            : '👇 কলামের ওপর তীরচিহ্নে ট্যাপ করে তোমার বলটি ড্রপ করো:'}
+            : '👇 যেকোনো কলামের বাটনে ট্যাপ করে তোমার বলটি ড্রপ করো:'}
         </div>
 
-        <div className="w-full overflow-x-auto pb-2 scroll-smooth">
-          <div className="inline-block min-w-[480px] sm:min-w-full bg-[#1E232A] p-3 rounded-2xl border-3 border-[#1E232A] shadow-inner">
+        <div className="w-full overflow-x-auto pb-2 scroll-smooth touch-pan-x">
+          <div className="inline-block min-w-[420px] bg-[#1E232A] p-2.5 rounded-2xl border-3 border-[#1E232A] shadow-inner">
             {/* Top Drop Arrows */}
             <div className="grid grid-cols-14 gap-1 mb-2">
               {Array.from({ length: cols }).map((_, c) => {
@@ -138,14 +133,15 @@ export const Connect4Stage: React.FC<Connect4StageProps> = ({
                     key={c}
                     onClick={() => handleDrop(c)}
                     disabled={hasPlayed || isDropping || isFull}
-                    className={`h-7 rounded-lg border-2 border-[#1E232A] flex items-center justify-center transition-all ${
+                    className={`h-8 rounded-lg border-2 border-[#1E232A] flex flex-col items-center justify-center transition-all ${
                       hasPlayed || isFull
-                        ? 'bg-gray-600 opacity-30 cursor-not-allowed'
-                        : 'bg-[#FFE66D] hover:bg-[#FFF9D2] active:translate-y-0.5 shadow-pop-sm cursor-pointer'
+                        ? 'bg-gray-700 opacity-20 cursor-not-allowed'
+                        : 'bg-[#FFE66D] hover:bg-[#FFF9D2] active:translate-y-0.5 shadow-pop-sm cursor-pointer active:scale-95'
                     }`}
                     title={`Column ${c + 1}`}
                   >
-                    <ChevronDown className="w-4 h-4 text-[#1E232A]" />
+                    <ChevronDown className="w-3.5 h-3.5 text-[#1E232A]" />
+                    <span className="text-[7px] font-black text-[#1E232A] leading-none">{c + 1}</span>
                   </button>
                 );
               })}
@@ -158,42 +154,39 @@ export const Connect4Stage: React.FC<Connect4StageProps> = ({
                   {Array.from({ length: rows }).map((_, r) => {
                     const cell = state.grid[c]?.[r];
 
+                    // Empty Hole
                     if (!cell) {
                       return (
-                        <div
-                          key={`${c},${r}`}
-                          className="w-full aspect-square rounded-full bg-[#12171E] border border-black/40 shadow-inner"
+                        <div 
+                          key={`${c}-${r}`} 
+                          className="w-[24px] h-[24px] rounded-full bg-[#11161D] border border-white/10 shadow-inner flex items-center justify-center"
                         />
                       );
                     }
 
-                    const dept = DEPARTMENTS[cell.deptCode || '01'];
-
-                    // GRAY LOCKED STREAK
+                    // Gray Locked
                     if (cell.isGrayLocked) {
                       return (
-                        <div
-                          key={`${c},${r}`}
-                          className="w-full aspect-square rounded-full bg-[#6C7A89] border-2 border-white/60 flex items-center justify-center font-black text-[7px] text-white shadow-md select-none animate-pulse"
-                          title={`Locked 4-Streak (${dept?.abbr})`}
+                        <div 
+                          key={`${c}-${r}`} 
+                          className="w-[24px] h-[24px] rounded-full bg-[#7F8C8D] border-2 border-white/50 flex items-center justify-center font-black text-[7px] text-white shadow-sm"
+                          title="Gray Locked Streak (+100 Pts)"
                         >
-                          <span className="truncate">{dept?.abbr}</span>
+                          🔒
                         </div>
                       );
                     }
 
-                    // ACTIVE COLORED TOKEN
+                    // Active Department Ball
+                    const dept = DEPARTMENTS[cell.deptCode || '01'];
                     return (
-                      <div
-                        key={`${c},${r}`}
-                        className="w-full aspect-square rounded-full border-2 border-[#1E232A] flex items-center justify-center font-black text-[7px] shadow-sm select-none"
-                        style={{
-                          backgroundColor: dept?.themeColor || '#4ECDC4',
-                          color: dept?.textColor || '#FFFFFF'
-                        }}
-                        title={`Token: ${dept?.name}`}
+                      <div 
+                        key={`${c}-${r}`} 
+                        className="w-[24px] h-[24px] rounded-full border-2 border-[#1E232A] flex items-center justify-center font-black text-[7px] text-[#1E232A] shadow-sm animate-bounce-in"
+                        style={{ backgroundColor: dept?.themeColor || '#4ECDC4' }}
+                        title={`${dept?.name || 'Dept'} Token`}
                       >
-                        <span className="truncate">{dept?.abbr}</span>
+                        {dept?.abbr || cell.deptCode}
                       </div>
                     );
                   })}
@@ -204,43 +197,43 @@ export const Connect4Stage: React.FC<Connect4StageProps> = ({
         </div>
       </div>
 
-      {/* Streak / Drop Result Banner */}
-      {hasPlayed && streakResult && (
-        <div className={`w-full p-3 rounded-xl border-3 border-[#1E232A] shadow-pop-sm flex items-center space-x-2.5 font-bangla animate-bounce-in ${
-          streakResult.earned ? 'bg-[#D4F8F0] text-[#00897B]' : 'bg-white text-[#1E232A]'
+      {/* Streak / Drop Result Card */}
+      {streakResult && (
+        <div className={`w-full p-2.5 rounded-2xl border-3 border-[#1E232A] shadow-pop-sm flex items-center space-x-2 text-xs font-bangla animate-bounce-in ${
+          streakResult.earned ? 'bg-[#D4F8F0] text-[#00897B]' : 'bg-[#FFFBEB] text-[#1E232A]'
         }`}>
           {streakResult.earned ? (
             <>
-              <Sparkles className="w-6 h-6 text-amber-500 flex-shrink-0" />
+              <Award className="w-6 h-6 text-amber-500 flex-shrink-0 animate-bounce" />
               <div>
-                <strong className="block text-sm font-black">🎉 ৪-ইন-এ-রো কমপ্লিট!</strong>
-                <p className="text-xs">তোমার ড্রপে ডিপার্টমেন্ট অর্জন করেছে <span className="font-black text-emerald-700">+{streakResult.points} পয়েন্ট</span> (গ্রে লক)!</p>
+                <strong className="font-black block text-sm">🎉 ৪-ইন-এ-রো কমপ্লিট!</strong>
+                <span>অভিনন্দন! তোমার ডিপার্টমেন্ট +{streakResult.points} পয়েন্ট অর্জন করেছে!</span>
               </div>
             </>
           ) : (
             <>
-              <CheckCircle2 className="w-5 h-5 text-blue-600 flex-shrink-0" />
-              <div className="text-xs">
-                <strong className="block font-bold">বল সফলভাবে ফেলা হয়েছে!</strong>
-                <p className="text-gray-600">তোমার বলটি গ্রিডে সংরক্ষিত হয়েছে।</p>
+              <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+              <div>
+                <strong className="font-black block">বল সফলভাবে ড্রপ হয়েছে!</strong>
+                <span className="text-gray-600 text-[11px]">তোমার বন্ধুদের বলো তোমার বলের পাশেই বল ড্রপ করতে!</span>
               </div>
             </>
           )}
         </div>
       )}
 
-      {/* Next Stage Button */}
+      {/* Advance to Next Stage Button */}
       {hasPlayed ? (
         <button
           onClick={() => { sound.playPop(); onAdvanceToNextStage(); }}
-          className="pop-btn w-full py-3.5 bg-[#6BCB77] text-[#1E232A] font-black text-base font-bangla flex items-center justify-center space-x-2 animate-bounce"
+          className="pop-btn w-full py-3.5 bg-[#6BCB77] text-[#1E232A] font-black text-sm sm:text-base font-bangla flex items-center justify-center space-x-2 animate-bounce shadow-pop"
         >
-          <span>পরের গেম: টাওয়ার স্ট্যাকিং (৩/৪)</span>
+          <span>পরের গেম (টাওয়ার স্ট্যাক) এ যাও</span>
           <ArrowRight className="w-5 h-5" />
         </button>
       ) : (
         <div className="text-center font-bangla text-xs font-bold text-gray-600">
-          তোমার নির্ধারিত কলামে ১টি বল ড্রপ করে নিশ্চিত করো।
+          একটি কলামে ট্যাপ করলেই তোমার চাল রেকর্ড হয়ে যাবে।
         </div>
       )}
     </div>

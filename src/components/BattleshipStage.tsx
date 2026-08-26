@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Target, CloudRain, AlertCircle, ArrowRight, ShieldCheck, Flame, Waves } from 'lucide-react';
+import { Target, CloudRain, AlertCircle, ArrowRight, ShieldCheck, Flame, Waves, Move } from 'lucide-react';
 import { BattleshipState, ParsedStudent } from '../types';
 import { DEPARTMENTS } from '../data/departments';
 import { sound } from '../utils/sound';
@@ -56,7 +56,7 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
     if (mode === 'HIDE') {
       const revealed = state.revealedTiles[key];
       if (!revealed) {
-        setFeedback({ text: 'শুধুমাত্র ডিপার্টমেন্টের expose হওয়া বেস লুকাতে পারবে!', type: 'info' });
+        setFeedback({ text: 'শুধুমাত্র ইতিমধ্যে উন্মোচিত হওয়া বেস লুকানো যাবে!', type: 'info' });
         sound.playPop(250);
         return;
       }
@@ -69,7 +69,7 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
     } else {
       // ATTACK MODE
       if (state.exploredWater.includes(key) || state.revealedTiles[key]) {
-        setFeedback({ text: 'অলরেডি অভিযান চালানো হয়েছে!', type: 'info' });
+        setFeedback({ text: 'এই অংশটি ইতিমধ্যে সার্চ করা হয়েছে (নীল পানি / বেস)!', type: 'info' });
         sound.playPop(300);
         return;
       }
@@ -100,7 +100,7 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
 
         if (mode === 'HIDE') {
           sound.playSmokePuff();
-          setFeedback({ text: 'ধোঁয়ার আড়ালে লুকানো হয়েছে!', type: 'success' });
+          setFeedback({ text: '🌫️ বেস সফলভাবে ধোঁয়ার আড়ালে লুকানো হয়েছে!', type: 'success' });
         } else {
           if (data.result === 'HIT') {
             sound.playExplosion();
@@ -112,7 +112,7 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
             setFeedback({ text: data.message, type: 'danger' });
           } else {
             sound.playExplosion();
-            setFeedback({ text: 'ব্যর্থ অভিযান!', type: 'info' });
+            setFeedback({ text: 'খালি সাগরে আঘাত লেগেছে (নীল পানি উন্মোচিত)!', type: 'info' });
           }
         }
 
@@ -125,7 +125,7 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
           newState: data.state?.battleship || state
         });
       } else {
-        setFeedback({ text: data.message || 'অভিযান সম্পন্ন করা যায়নি', type: 'danger' });
+        setFeedback({ text: data.message || 'চাল সম্পন্ন করা যায়নি', type: 'danger' });
       }
     } catch {
       setFeedback({ text: 'সার্ভারের সাথে সংযোগ বিচ্ছিন্ন হয়েছে', type: 'danger' });
@@ -163,25 +163,25 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
   ).length;
 
   return (
-    <div className="w-full max-w-lg mx-auto p-3 flex flex-col items-center space-y-3 min-h-[calc(100vh-70px)] justify-between">
+    <div className="w-full max-w-md mx-auto p-2 sm:p-3 flex flex-col items-center space-y-2.5 min-h-[calc(100vh-65px)] justify-between">
       {/* Top Banner: AP Tracker */}
-      <div className="w-full pop-box p-3.5 bg-white flex items-center justify-between shadow-pop-sm">
+      <div className="w-full pop-box p-3 bg-white flex items-center justify-between shadow-pop-sm">
         <div>
-          <span className="text-xs font-bold text-gray-500 font-bangla block">স্টেপ ১: গুপ্ত বনাম প্রকাশ্য</span>
-          <h2 className="text-base font-black font-bangla text-[#1E232A]">
+          <span className="text-[11px] font-bold text-gray-500 font-bangla block">স্টেপ ১: স্টিলথ ব্যাটেলশিপ</span>
+          <h2 className="text-sm sm:text-base font-black font-bangla text-[#1E232A]">
             {mode === 'ATTACK' ? '🎯 শত্রুর ঘাঁটি খুঁজুন' : '🌫️ নিজের ঘাঁটি লুকান'}
           </h2>
         </div>
 
         {/* AP Counter Badges */}
-        <div className="flex items-center space-x-1.5 bg-[#FFF9D2] px-3 py-1.5 rounded-xl border-2 border-[#1E232A]">
-          <span className="text-xs font-black font-bangla text-[#1E232A]">চাল বাকি:</span>
+        <div className="flex items-center space-x-1 bg-[#FFF9D2] px-2.5 py-1 rounded-xl border-2 border-[#1E232A]">
+          <span className="text-xs font-black font-bangla text-[#1E232A]">চাল:</span>
           <div className="flex space-x-1">
             {[1, 2, 3].map(i => (
               <div 
                 key={i} 
-                className={`w-4 h-4 rounded-full border-2 border-[#1E232A] transition-all ${
-                  i <= ap ? 'bg-[#FF6B6B] scale-110' : 'bg-gray-300 opacity-40'
+                className={`w-3.5 h-3.5 rounded-full border-2 border-[#1E232A] transition-all ${
+                  i <= ap ? 'bg-[#FF6B6B] scale-110 shadow-xs' : 'bg-gray-300 opacity-40'
                 }`} 
               />
             ))}
@@ -193,7 +193,7 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
       <div className="w-full grid grid-cols-2 gap-2">
         <button
           onClick={() => { sound.playPop(); setMode('ATTACK'); }}
-          className={`py-2.5 px-3 rounded-xl font-black text-sm font-bangla flex items-center justify-center space-x-2 border-3 border-[#1E232A] shadow-pop-sm transition-all ${
+          className={`py-2 px-2 rounded-xl font-black text-xs sm:text-sm font-bangla flex items-center justify-center space-x-1.5 border-3 border-[#1E232A] shadow-pop-sm transition-all ${
             mode === 'ATTACK' 
               ? 'bg-[#FF6B6B] text-white -translate-y-0.5' 
               : 'bg-white text-gray-700 hover:bg-gray-50'
@@ -205,46 +205,54 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
 
         <button
           onClick={() => { sound.playPop(); setMode('HIDE'); }}
-          className={`py-2.5 px-3 rounded-xl font-black text-sm font-bangla flex items-center justify-center space-x-2 border-3 border-[#1E232A] shadow-pop-sm transition-all ${
+          className={`py-2 px-2 rounded-xl font-black text-xs sm:text-sm font-bangla flex items-center justify-center space-x-1.5 border-3 border-[#1E232A] shadow-pop-sm transition-all ${
             mode === 'HIDE' 
               ? 'bg-[#4ECDC4] text-[#1E232A] -translate-y-0.5' 
               : 'bg-white text-gray-700 hover:bg-gray-50'
           }`}
         >
           <CloudRain className="w-4 h-4" />
-          <span>🌫️ লুকাও ({ownExposedCount} Exposed)</span>
+          <span>🌫️ লুকানো ({ownExposedCount})</span>
         </button>
       </div>
 
       {/* Visual Color Legend for Students */}
-      <div className="w-full grid grid-cols-3 gap-1.5 text-[10px] font-bangla font-bold">
-        <div className="bg-[#1A252F] text-gray-300 p-1.5 rounded-lg border border-[#1E232A] flex items-center space-x-1 justify-center">
-          <span className="w-2.5 h-2.5 rounded bg-[#2C3A47] border border-gray-500 inline-block"></span>
-          <span>এখনো গুপ্ত</span>
+      <div className="w-full grid grid-cols-3 gap-1 text-[9px] sm:text-[10px] font-bangla font-bold">
+        <div className="bg-[#1A252F] text-gray-300 p-1 rounded-lg border border-[#1E232A] flex items-center space-x-1 justify-center">
+          <span className="w-2 h-2 rounded bg-[#2C3A47] border border-gray-500 inline-block"></span>
+          <span>কুয়াশা (ট্যাপ)</span>
         </div>
 
-        <div className="bg-[#E0F7FA] text-[#006064] p-1.5 rounded-lg border border-[#00BCD4] flex items-center space-x-1 justify-center shadow-xs">
-          <span className="w-2.5 h-2.5 rounded bg-[#4DD0E1] border border-[#00838F] inline-block"></span>
-          <span>এক্সপোজড</span>
+        <div className="bg-[#E0F7FA] text-[#006064] p-1 rounded-lg border border-[#00BCD4] flex items-center space-x-1 justify-center shadow-xs">
+          <span className="w-2 h-2 rounded bg-[#4DD0E1] border border-[#00838F] inline-block"></span>
+          <span>খালি পানি</span>
         </div>
 
-        <div className="bg-[#FFF2DC] text-[#D67229] p-1.5 rounded-lg border border-[#FFA931] flex items-center space-x-1 justify-center">
-          <span className="w-2.5 h-2.5 rounded bg-[#FF5964] border border-[#1E232A] inline-block"></span>
-          <span>উন্মোচিত</span>
+        <div className="bg-[#FFF2DC] text-[#D67229] p-1 rounded-lg border border-[#FFA931] flex items-center space-x-1 justify-center">
+          <span className="w-2 h-2 rounded bg-[#FF5964] border border-[#1E232A] inline-block"></span>
+          <span>উন্মোচিত বেস</span>
         </div>
       </div>
 
       {/* Interactive 35x35 Grid Viewport with Pan & Touch */}
-      <div className="w-full pop-box p-2 bg-[#2C3E50] border-4 border-[#1E232A] relative overflow-hidden shadow-pop">
+      <div className="w-full pop-box p-1.5 bg-[#2C3E50] border-4 border-[#1E232A] relative overflow-hidden shadow-pop">
+        <div className="flex items-center justify-between px-2 py-0.5 text-[9px] text-gray-300 font-bangla font-bold">
+          <span className="flex items-center space-x-1">
+            <Move className="w-3 h-3 text-cyan-300 animate-pulse" />
+            <span>আঙুল দিয়ে টেনে ম্যাপ প্যান করুন</span>
+          </span>
+          <span className="text-gray-400">৩৫×৩৫ গ্রিড</span>
+        </div>
+
         <div 
           ref={gridContainerRef}
-          className="w-full h-[320px] sm:h-[360px] overflow-auto rounded-xl bg-[#1A252F] border-2 border-[#1E232A] relative scroll-smooth cursor-crosshair"
+          className="w-full h-[290px] sm:h-[340px] overflow-auto rounded-xl bg-[#1A252F] border-2 border-[#1E232A] relative scroll-smooth cursor-crosshair touch-pan-x touch-pan-y"
         >
           <div 
-            className="grid gap-[1.5px] p-2"
+            className="grid gap-[2px] p-2"
             style={{
-              gridTemplateColumns: `repeat(${gridSize}, 24px)`,
-              gridTemplateRows: `repeat(${gridSize}, 24px)`
+              gridTemplateColumns: `repeat(${gridSize}, 26px)`,
+              gridTemplateRows: `repeat(${gridSize}, 26px)`
             }}
           >
             {Array.from({ length: gridSize }).map((_, y) => 
@@ -256,7 +264,7 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
                   return (
                     <div
                       key={`${x},${y}`}
-                      className="w-6 h-6 rounded-md border-2 border-[#1E232A] flex items-center justify-center font-black text-[8px] shadow-sm select-none animate-bounce-in"
+                      className="w-[26px] h-[26px] rounded-md border-2 border-[#1E232A] flex items-center justify-center font-black text-[8px] shadow-sm select-none animate-bounce-in"
                       style={{ backgroundColor: status.themeColor, color: status.textColor }}
                       title={`Exposed ${status.deptAbbr} Base`}
                     >
@@ -272,7 +280,7 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
                       key={`${x},${y}`}
                       onClick={() => handleCellClick(x, y)}
                       disabled={isSubmitting || ap <= 0}
-                      className="w-6 h-6 rounded-md border-2 border-red-500 bg-[#FF5964] text-white flex items-center justify-center font-black text-[8px] animate-pulse-glow"
+                      className="w-[26px] h-[26px] rounded-md border-2 border-red-500 bg-[#FF5964] text-white flex items-center justify-center font-black text-[8px] animate-pulse-glow"
                       title="নিজের উন্মোচিত বেস! ট্যাপ করে লুকান"
                     >
                       {status.deptAbbr}
@@ -280,12 +288,12 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
                   );
                 }
 
-                // 3. EXPLORED BLANK WATER (Distinct Bright Cyan Wave - Obvious to Students)
+                // 3. EXPLORED BLANK WATER
                 if (status.type === 'EXPLORED_WATER') {
                   return (
                     <div
                       key={`${x},${y}`}
-                      className="w-6 h-6 rounded-md bg-[#4DD0E1] border border-[#00ACC1] flex items-center justify-center text-[9px] font-black text-[#006064] select-none shadow-inner"
+                      className="w-[26px] h-[26px] rounded-md bg-[#4DD0E1] border border-[#00ACC1] flex items-center justify-center text-[9px] font-black text-[#006064] select-none shadow-inner"
                       title="Explored Empty Water"
                     >
                       〰️
@@ -299,7 +307,7 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
                     key={`${x},${y}`}
                     onClick={() => handleCellClick(x, y)}
                     disabled={isSubmitting || ap <= 0}
-                    className="w-6 h-6 rounded-md bg-[#2C3A47] hover:bg-[#3D4D5C] active:bg-[#4E6173] border border-[#1E232A]/60 transition-colors flex items-center justify-center text-[7px] text-gray-500 font-bold"
+                    className="w-[26px] h-[26px] rounded-md bg-[#2C3A47] hover:bg-[#3D4D5C] active:bg-[#4E6173] border border-[#1E232A]/60 transition-colors flex items-center justify-center text-[8px] text-gray-400 font-bold active:scale-95"
                   >
                     ☁️
                   </button>
@@ -312,7 +320,7 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
 
       {/* Live In-Game Feedback Alert */}
       {feedback && (
-        <div className={`w-full p-2.5 rounded-xl border-2 border-[#1E232A] shadow-pop-sm flex items-center space-x-2 text-xs font-bold font-bangla animate-bounce-in ${
+        <div className={`w-full p-2 rounded-xl border-2 border-[#1E232A] shadow-pop-sm flex items-center space-x-2 text-xs font-bold font-bangla animate-bounce-in ${
           feedback.type === 'success' ? 'bg-[#D4F8F0] text-[#00897B]' :
           feedback.type === 'danger' ? 'bg-[#FFE0E2] text-[#D32F2F]' :
           'bg-[#FFF9D2] text-[#8D6E63]'
@@ -328,14 +336,14 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
       {ap === 0 ? (
         <button
           onClick={() => { sound.playPop(); onAdvanceToNextStage(); }}
-          className="pop-btn w-full py-3 bg-[#6BCB77] text-[#1E232A] font-black text-base font-bangla flex items-center justify-center space-x-2 animate-bounce"
+          className="pop-btn w-full py-3 bg-[#6BCB77] text-[#1E232A] font-black text-sm sm:text-base font-bangla flex items-center justify-center space-x-2 animate-bounce"
         >
           <span>৩টি চাল শেষ! পরের গেম (কানেক্ট-৪) এ যাও</span>
           <ArrowRight className="w-5 h-5" />
         </button>
       ) : (
         <div className="text-center font-bangla text-xs font-bold text-gray-600">
-          বাকি চাল: <strong className="text-red-600">{ap} টি</strong>। চাল শেষ হলে স্বয়ংক্রিয়ভাবে পরবর্তী স্টেপে যাবে।
+          বাকি চাল: <strong className="text-red-600 font-bold">{ap} টি</strong> (চাল শেষ হলে পরবর্তী গেমে যাবে)
         </div>
       )}
     </div>
