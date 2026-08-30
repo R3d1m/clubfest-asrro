@@ -128,7 +128,7 @@ export const GameInstructionCard: React.FC<GameInstructionCardProps> = ({
   const data = getGameData();
 
   return (
-    <div className="w-full flex flex-col py-2 animate-bounce-in">
+    <div className="w-full flex-1 flex flex-col justify-center py-2 animate-bounce-in" style={{ minHeight: 'calc(100vh - 80px)' }}>
       <div className="pop-box w-full p-4 sm:p-6 bg-[#FFFBEB] flex flex-col space-y-4 shadow-pop-lg">
         {/* Top Header Row */}
         <div className="flex items-center justify-between border-b-2 border-dashed border-[#1E232A]/20 pb-3">

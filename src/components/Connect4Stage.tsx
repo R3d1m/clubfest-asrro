@@ -96,7 +96,7 @@ export const Connect4Stage: React.FC<Connect4StageProps> = ({
   const rows = state.rows || 10;
 
   return (
-    <div className="w-full max-w-full min-w-0 flex flex-col gap-3 animate-bounce-in">
+    <div className="w-full max-w-full min-w-0 flex flex-col gap-3 animate-bounce-in" style={{ minHeight: 'calc(100vh - 80px)' }}>
       {/* Top Banner */}
       <div className="w-full pop-box p-3 sm:p-4 bg-white flex items-center justify-between shadow-pop-sm">
         <div>

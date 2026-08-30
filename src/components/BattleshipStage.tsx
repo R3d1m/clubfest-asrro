@@ -163,7 +163,7 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
   ).length;
 
   return (
-    <div className="w-full max-w-full min-w-0 flex flex-col gap-2.5 animate-bounce-in">
+    <div className="w-full max-w-full min-w-0 flex flex-col gap-2.5 animate-bounce-in" style={{ minHeight: 'calc(100vh - 80px)' }}>
       {/* Top Banner: AP Tracker */}
       <div className="w-full pop-box p-3 sm:p-4 bg-white flex items-center justify-between shadow-pop-sm">
         <div>
@@ -235,7 +235,7 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
       </div>
 
       {/* Interactive 35x35 Grid Viewport with Pan & Touch */}
-      <div className="w-full max-w-full min-w-0 pop-box p-2 bg-[#2C3E50] border-4 border-[#1E232A] relative flex flex-col shadow-pop overflow-hidden">
+      <div className="w-full max-w-full min-w-0 flex-1 pop-box p-2 bg-[#2C3E50] border-4 border-[#1E232A] relative flex flex-col shadow-pop overflow-hidden">
         <div className="flex items-center justify-between px-2 py-1 text-[10px] text-gray-300 font-bangla font-bold">
           <span className="flex items-center space-x-1">
             <Move className="w-3.5 h-3.5 text-cyan-300 animate-pulse" />
@@ -253,7 +253,7 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
             overflowY: 'auto',
             WebkitOverflowScrolling: 'touch'
           }}
-          className="h-[55vh] max-h-[500px] rounded-xl bg-[#1A252F] border-2 border-[#1E232A] relative scroll-smooth cursor-crosshair touch-pan-x touch-pan-y"
+          className="flex-1 min-h-[250px] rounded-xl bg-[#1A252F] border-2 border-[#1E232A] relative scroll-smooth cursor-crosshair touch-pan-x touch-pan-y"
         >
           <div 
             className="grid gap-[2px] p-2"
