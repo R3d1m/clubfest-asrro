@@ -163,7 +163,7 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
   ).length;
 
   return (
-    <div className="w-full flex-1 flex flex-col gap-2.5 animate-bounce-in">
+    <div className="w-full max-w-full min-w-0 flex flex-col gap-2.5 animate-bounce-in">
       {/* Top Banner: AP Tracker */}
       <div className="w-full pop-box p-3 sm:p-4 bg-white flex items-center justify-between shadow-pop-sm">
         <div>
@@ -235,7 +235,7 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
       </div>
 
       {/* Interactive 35x35 Grid Viewport with Pan & Touch */}
-      <div className="w-full pop-box p-2 bg-[#2C3E50] border-4 border-[#1E232A] relative flex-1 min-h-[360px] sm:min-h-[420px] flex flex-col justify-between shadow-pop overflow-hidden">
+      <div className="w-full max-w-full min-w-0 pop-box p-2 bg-[#2C3E50] border-4 border-[#1E232A] relative flex flex-col shadow-pop overflow-hidden">
         <div className="flex items-center justify-between px-2 py-1 text-[10px] text-gray-300 font-bangla font-bold">
           <span className="flex items-center space-x-1">
             <Move className="w-3.5 h-3.5 text-cyan-300 animate-pulse" />
@@ -246,7 +246,7 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
 
         <div 
           ref={gridContainerRef}
-          className="w-full flex-1 h-full min-h-[300px] overflow-auto rounded-xl bg-[#1A252F] border-2 border-[#1E232A] relative scroll-smooth cursor-crosshair touch-pan-x touch-pan-y"
+          className="w-full max-w-full min-w-0 h-[280px] sm:h-[320px] overflow-auto rounded-xl bg-[#1A252F] border-2 border-[#1E232A] relative scroll-smooth cursor-crosshair touch-pan-x touch-pan-y"
         >
           <div 
             className="grid gap-[2px] p-2"

@@ -155,26 +155,26 @@ export const App: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#F9D342] flex flex-col font-bangla select-none w-full">
+    <div className="min-h-screen bg-[#F9D342] flex flex-col font-bangla select-none w-full max-w-full overflow-x-hidden">
       <Header
         student={parsedStudent}
         currentStage={currentStage}
         onOpenLeaderboard={() => setShowLeaderboardModal(true)}
       />
 
-      <main className="flex-1 w-full max-w-lg mx-auto flex flex-col p-2.5 sm:p-4">
+      <main className="flex-1 w-full max-w-md mx-auto min-w-0 flex flex-col p-3 pb-6">
         {/* STAGE 0: LOGIN & ID / RFID ENTRY */}
         {currentStage === 'LOGIN' && (
           <div className="w-full flex-1 flex flex-col justify-center py-2 animate-bounce-in">
-            <div className="pop-box w-full p-5 sm:p-6 bg-[#FFFBEB] flex flex-col space-y-5 shadow-pop-lg">
+            <div className="pop-box w-full p-5 bg-[#FFFBEB] flex flex-col space-y-5 shadow-pop-lg">
               {/* Logo / Badge */}
-              <div className="w-20 h-20 mx-auto rounded-3xl bg-[#FFE66D] border-4 border-[#1E232A] shadow-pop flex flex-col items-center justify-center animate-bounce">
+              <div className="w-18 h-18 mx-auto rounded-3xl bg-[#FFE66D] border-4 border-[#1E232A] shadow-pop flex flex-col items-center justify-center animate-bounce">
                 <span className="text-3xl">🎮</span>
                 <span className="text-[10px] font-black text-[#1E232A] mt-0.5 font-display">FEST ARENA</span>
               </div>
 
               <div className="text-center">
-                <h2 className="text-2xl sm:text-3xl font-black text-[#1E232A] leading-tight font-bangla">
+                <h2 className="text-2xl font-black text-[#1E232A] leading-tight font-bangla">
                   ডিপার্টমেন্ট ক্ল্যাশ ২০২৬
                 </h2>
                 <p className="text-xs sm:text-sm font-bold text-gray-600 mt-1 font-bangla">
@@ -182,7 +182,7 @@ export const App: React.FC = () => {
                 </p>
               </div>
 
-              <form onSubmit={handleStudentLogin} className="space-y-4">
+              <form onSubmit={handleStudentLogin} className="space-y-3.5">
                 <div>
                   <input
                     type="text"
@@ -190,7 +190,7 @@ export const App: React.FC = () => {
                     placeholder="e.g. 2204055"
                     value={studentIdInput}
                     onChange={(e) => handleIdInputChange(e.target.value)}
-                    className="w-full text-center text-2xl font-black font-display tracking-widest px-4 py-4 bg-white border-3 border-[#1E232A] rounded-2xl shadow-pop-sm focus:outline-none focus:ring-2 focus:ring-[#4ECDC4]"
+                    className="w-full text-center text-2xl font-black font-display tracking-widest px-4 py-3.5 bg-white border-3 border-[#1E232A] rounded-2xl shadow-pop-sm focus:outline-none focus:ring-2 focus:ring-[#4ECDC4]"
                     autoFocus
                   />
                 </div>
@@ -198,7 +198,7 @@ export const App: React.FC = () => {
                 {/* Auto-Decoded Preview */}
                 {parsedStudent && (
                   <div 
-                    className="p-3.5 rounded-xl border-2 border-[#1E232A] text-left text-xs font-black flex items-center justify-between animate-bounce-in shadow-pop-sm"
+                    className="p-3 rounded-xl border-2 border-[#1E232A] text-left text-xs font-black flex items-center justify-between animate-bounce-in shadow-pop-sm"
                     style={{ backgroundColor: parsedStudent.lightColor, color: '#1E232A' }}
                   >
                     <div>
@@ -215,7 +215,7 @@ export const App: React.FC = () => {
                 <button
                   type="submit"
                   disabled={!studentIdInput.trim() || isLoading}
-                  className={`pop-btn w-full py-4 font-black text-lg flex items-center justify-center space-x-2 transition-all cursor-pointer ${
+                  className={`pop-btn w-full py-3.5 font-black text-base flex items-center justify-center space-x-2 transition-all cursor-pointer ${
                     studentIdInput.trim() && !isLoading
                       ? 'bg-[#4ECDC4] text-[#1E232A] shadow-pop hover:bg-[#3dbdb5]'
                       : 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-60'
