@@ -246,11 +246,21 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
 
         <div 
           ref={gridContainerRef}
-          className="w-full max-w-full min-w-0 h-[280px] sm:h-[320px] overflow-auto rounded-xl bg-[#1A252F] border-2 border-[#1E232A] relative scroll-smooth cursor-crosshair touch-pan-x touch-pan-y"
+          style={{
+            width: '100%',
+            maxWidth: '100%',
+            overflowX: 'auto',
+            overflowY: 'auto',
+            WebkitOverflowScrolling: 'touch'
+          }}
+          className="h-[300px] sm:h-[340px] rounded-xl bg-[#1A252F] border-2 border-[#1E232A] relative scroll-smooth cursor-crosshair touch-pan-x touch-pan-y"
         >
           <div 
             className="grid gap-[2px] p-2"
             style={{
+              display: 'inline-grid',
+              width: 'max-content',
+              minWidth: 'max-content',
               gridTemplateColumns: `repeat(${gridSize}, 26px)`,
               gridTemplateRows: `repeat(${gridSize}, 26px)`
             }}

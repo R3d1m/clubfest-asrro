@@ -96,7 +96,7 @@ export const Connect4Stage: React.FC<Connect4StageProps> = ({
   const rows = state.rows || 10;
 
   return (
-    <div className="w-full flex-1 flex flex-col gap-3 animate-bounce-in">
+    <div className="w-full max-w-full min-w-0 flex flex-col gap-3 animate-bounce-in">
       {/* Top Banner */}
       <div className="w-full pop-box p-3 sm:p-4 bg-white flex items-center justify-between shadow-pop-sm">
         <div>
@@ -115,15 +115,26 @@ export const Connect4Stage: React.FC<Connect4StageProps> = ({
       </div>
 
       {/* Grid Container with Touch Scroll */}
-      <div className="w-full pop-box p-3 bg-[#F9D342] border-4 border-[#1E232A] relative flex-1 min-h-[360px] flex flex-col justify-between shadow-pop">
+      <div className="w-full max-w-full min-w-0 pop-box p-3 bg-[#F9D342] border-4 border-[#1E232A] relative flex flex-col shadow-pop overflow-hidden">
         <div className="text-xs text-[#1E232A] font-bangla text-center mb-1 font-bold">
           {hasPlayed 
             ? '৪টি মিললে বলগুলো ধূসর (Gray) হয়ে স্থায়ী পয়েন্ট লক হয়!' 
             : '👇 যেকোনো কলামের বাটনে ট্যাপ করে তোমার বলটি ড্রপ করো:'}
         </div>
 
-        <div className="w-full overflow-x-auto pb-2 scroll-smooth touch-pan-x flex-1 flex items-center justify-center">
-          <div className="inline-block min-w-[420px] bg-[#1E232A] p-3 rounded-2xl border-3 border-[#1E232A] shadow-inner">
+        <div 
+          style={{
+            width: '100%',
+            maxWidth: '100%',
+            overflowX: 'auto',
+            WebkitOverflowScrolling: 'touch'
+          }}
+          className="pb-2 scroll-smooth touch-pan-x flex items-center justify-start sm:justify-center"
+        >
+          <div 
+            style={{ width: 'max-content', minWidth: 'max-content' }}
+            className="inline-block bg-[#1E232A] p-3 rounded-2xl border-3 border-[#1E232A] shadow-inner"
+          >
             {/* Top Drop Arrows */}
             <div className="grid grid-cols-14 gap-1 mb-2">
               {Array.from({ length: cols }).map((_, c) => {
