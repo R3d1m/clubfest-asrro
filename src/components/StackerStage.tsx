@@ -450,13 +450,11 @@ export const StackerStage: React.FC<StackerStageProps> = ({
   };
 
   return (
-    <div 
-      className="w-full flex-1 flex flex-col justify-between py-2 px-1 sm:px-3 touch-none select-none cursor-pointer"
-    >
+    <div className="w-full flex-1 flex flex-col gap-2.5 touch-none select-none cursor-pointer animate-bounce-in">
       {/* Top Header Card */}
-      <div className="w-full pop-box p-3 sm:p-4 bg-white flex items-center justify-between shadow-pop-sm mb-2.5">
+      <div className="w-full pop-box p-3 sm:p-4 bg-white flex items-center justify-between shadow-pop-sm">
         <div>
-          <span className="text-xs font-bold text-gray-500 font-bangla block">স্টেপ ৩: নাম কামাও! (ব্যক্তিগত স্কোর)</span>
+          <span className="text-xs font-bold text-gray-500 font-bangla block">স্টেপ ৩: টাওয়ার স্ট্যাক (ব্যক্তিগত স্কোর)</span>
           <h2 className="text-base sm:text-lg font-black font-bangla text-[#1E232A]">
             🏗️ সর্বোচ্চ তলায় পৌঁছাও!
           </h2>
@@ -545,7 +543,7 @@ export const StackerStage: React.FC<StackerStageProps> = ({
       </div>
 
       {/* Floating Instructions Footer */}
-      <div className="text-center font-bangla text-xs font-bold text-gray-600 mt-2">
+      <div className="text-center font-bangla text-xs sm:text-sm font-bold text-gray-700 py-1">
         {uiState === 'PLAYING' ? (
           <span className="text-emerald-800 font-black animate-pulse">👆 স্ক্রিনের যেকোনো জায়গায় (উপরে/নিচে/মাঝে) ট্যাপ করলেই ব্লক ড্রপ হবে!</span>
         ) : (

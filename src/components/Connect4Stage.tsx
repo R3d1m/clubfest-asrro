@@ -96,18 +96,18 @@ export const Connect4Stage: React.FC<Connect4StageProps> = ({
   const rows = state.rows || 10;
 
   return (
-    <div className="w-full max-w-md mx-auto p-2 sm:p-3 flex flex-col items-center space-y-2.5 min-h-[calc(100vh-65px)] justify-between">
+    <div className="w-full flex-1 flex flex-col gap-3 animate-bounce-in">
       {/* Top Banner */}
-      <div className="w-full pop-box p-3 bg-white flex items-center justify-between shadow-pop-sm">
+      <div className="w-full pop-box p-3 sm:p-4 bg-white flex items-center justify-between shadow-pop-sm">
         <div>
-          <span className="text-[11px] font-bold text-gray-500 font-bangla block">স্টেপ ২: মেগা কানেক্ট-৪</span>
-          <h2 className="text-sm sm:text-base font-black font-bangla text-[#1E232A]">
+          <span className="text-xs font-bold text-gray-500 font-bangla block">স্টেপ ২: মেগা কানেক্ট-৪</span>
+          <h2 className="text-base sm:text-lg font-black font-bangla text-[#1E232A]">
             {hasPlayed ? '✅ বল ড্রপ সম্পন্ন!' : '🎯 ১টি কলাম বেছে বল ফেলুন'}
           </h2>
         </div>
 
         <div 
-          className="px-2.5 py-1 rounded-xl border-2 border-[#1E232A] font-black text-xs font-bangla shadow-pop-sm flex items-center space-x-1"
+          className="px-3 py-1.5 rounded-xl border-2 border-[#1E232A] font-black text-xs sm:text-sm font-bangla shadow-pop-sm flex items-center space-x-1"
           style={{ backgroundColor: student.themeColor, color: '#1E232A' }}
         >
           <span>{student.deptAbbr} বল</span>
@@ -115,15 +115,15 @@ export const Connect4Stage: React.FC<Connect4StageProps> = ({
       </div>
 
       {/* Grid Container with Touch Scroll */}
-      <div className="w-full pop-box p-2 sm:p-3 bg-[#F9D342] border-4 border-[#1E232A] relative shadow-pop">
-        <div className="text-[10px] text-[#1E232A] font-bangla text-center mb-1.5 font-bold">
+      <div className="w-full pop-box p-3 bg-[#F9D342] border-4 border-[#1E232A] relative flex-1 min-h-[360px] flex flex-col justify-between shadow-pop">
+        <div className="text-xs text-[#1E232A] font-bangla text-center mb-1 font-bold">
           {hasPlayed 
             ? '৪টি মিললে বলগুলো ধূসর (Gray) হয়ে স্থায়ী পয়েন্ট লক হয়!' 
             : '👇 যেকোনো কলামের বাটনে ট্যাপ করে তোমার বলটি ড্রপ করো:'}
         </div>
 
-        <div className="w-full overflow-x-auto pb-2 scroll-smooth touch-pan-x">
-          <div className="inline-block min-w-[420px] bg-[#1E232A] p-2.5 rounded-2xl border-3 border-[#1E232A] shadow-inner">
+        <div className="w-full overflow-x-auto pb-2 scroll-smooth touch-pan-x flex-1 flex items-center justify-center">
+          <div className="inline-block min-w-[420px] bg-[#1E232A] p-3 rounded-2xl border-3 border-[#1E232A] shadow-inner">
             {/* Top Drop Arrows */}
             <div className="grid grid-cols-14 gap-1 mb-2">
               {Array.from({ length: cols }).map((_, c) => {
@@ -199,14 +199,14 @@ export const Connect4Stage: React.FC<Connect4StageProps> = ({
 
       {/* Streak / Drop Result Card */}
       {streakResult && (
-        <div className={`w-full p-2.5 rounded-2xl border-3 border-[#1E232A] shadow-pop-sm flex items-center space-x-2 text-xs font-bangla animate-bounce-in ${
+        <div className={`w-full p-3 rounded-2xl border-3 border-[#1E232A] shadow-pop-sm flex items-center space-x-2.5 text-xs sm:text-sm font-bangla animate-bounce-in ${
           streakResult.earned ? 'bg-[#D4F8F0] text-[#00897B]' : 'bg-[#FFFBEB] text-[#1E232A]'
         }`}>
           {streakResult.earned ? (
             <>
               <Award className="w-6 h-6 text-amber-500 flex-shrink-0 animate-bounce" />
               <div>
-                <strong className="font-black block text-sm">🎉 ৪-ইন-এ-রো কমপ্লিট!</strong>
+                <strong className="font-black block text-sm sm:text-base">🎉 ৪-ইন-এ-রো কমপ্লিট!</strong>
                 <span>অভিনন্দন! তোমার ডিপার্টমেন্ট +{streakResult.points} পয়েন্ট অর্জন করেছে!</span>
               </div>
             </>
@@ -215,7 +215,7 @@ export const Connect4Stage: React.FC<Connect4StageProps> = ({
               <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />
               <div>
                 <strong className="font-black block">বল সফলভাবে ড্রপ হয়েছে!</strong>
-                <span className="text-gray-600 text-[11px]">তোমার বন্ধুদের বলো তোমার বলের পাশেই বল ড্রপ করতে!</span>
+                <span className="text-gray-600 text-xs">তোমার বন্ধুদের বলো তোমার বলের পাশেই বল ড্রপ করতে!</span>
               </div>
             </>
           )}
@@ -226,13 +226,13 @@ export const Connect4Stage: React.FC<Connect4StageProps> = ({
       {hasPlayed ? (
         <button
           onClick={() => { sound.playPop(); onAdvanceToNextStage(); }}
-          className="pop-btn w-full py-3.5 bg-[#6BCB77] text-[#1E232A] font-black text-sm sm:text-base font-bangla flex items-center justify-center space-x-2 animate-bounce shadow-pop"
+          className="pop-btn w-full py-4 bg-[#6BCB77] text-[#1E232A] font-black text-base sm:text-lg font-bangla flex items-center justify-center space-x-2 animate-bounce shadow-pop cursor-pointer"
         >
           <span>পরের গেম (টাওয়ার স্ট্যাক) এ যাও</span>
           <ArrowRight className="w-5 h-5" />
         </button>
       ) : (
-        <div className="text-center font-bangla text-xs font-bold text-gray-600">
+        <div className="text-center font-bangla text-xs sm:text-sm font-bold text-gray-700 py-1">
           একটি কলামে ট্যাপ করলেই তোমার চাল রেকর্ড হয়ে যাবে।
         </div>
       )}
