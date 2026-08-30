@@ -1,18 +1,16 @@
 import React from 'react';
-import { Volume2, VolumeX, Shield, Trophy } from 'lucide-react';
+import { Volume2, VolumeX, Shield } from 'lucide-react';
 import { sound } from '../utils/sound';
 import { ParsedStudent, PlayerStage } from '../types';
 
 interface HeaderProps {
   student?: ParsedStudent | null;
   currentStage?: PlayerStage;
-  onOpenLeaderboard?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   student,
-  currentStage,
-  onOpenLeaderboard
+  currentStage
 }) => {
   const [muted, setMuted] = React.useState(!sound.enabled);
 
@@ -61,25 +59,15 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
       </div>
 
-      <div className="flex items-center space-x-1.5">
+      <div className="flex items-center space-x-2">
         {student && (
           <div 
-            className="px-2 py-1 rounded-lg text-xs font-black border-2 border-[#1E232A] flex items-center space-x-1 shadow-pop-sm"
+            className="px-2.5 py-1 rounded-lg text-xs font-black border-2 border-[#1E232A] flex items-center space-x-1 shadow-pop-sm"
             style={{ backgroundColor: student.themeColor, color: '#1E232A' }}
           >
             <Shield className="w-3 h-3" />
             <span>{student.deptAbbr} '{student.batchShort}</span>
           </div>
-        )}
-
-        {onOpenLeaderboard && (
-          <button
-            onClick={() => { sound.playPop(); onOpenLeaderboard(); }}
-            className="p-1.5 rounded-xl bg-[#3585DA] border-2 border-[#1E232A] text-white shadow-pop-sm active:translate-y-0.5 cursor-pointer"
-            title="লিডারবোর্ড"
-          >
-            <Trophy className="w-4 h-4 text-[#FFE66D]" />
-          </button>
         )}
 
         <button

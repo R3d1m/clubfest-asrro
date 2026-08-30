@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Socket } from 'socket.io-client';
-import { Sparkles, Trophy, LogIn, AlertCircle } from 'lucide-react';
+import { Sparkles, LogIn, AlertCircle } from 'lucide-react';
 import { 
   ParsedStudent, 
   PlayerRecord, 
@@ -32,7 +32,6 @@ export const App: React.FC = () => {
   const [serverState, setServerState] = useState<ServerStateSnapshot | null>(null);
   const [loginError, setLoginError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [showLeaderboardModal, setShowLeaderboardModal] = useState(false);
 
   // Socket Connection & URL Route Handling
   useEffect(() => {
@@ -159,7 +158,6 @@ export const App: React.FC = () => {
       <Header
         student={parsedStudent}
         currentStage={currentStage}
-        onOpenLeaderboard={() => setShowLeaderboardModal(true)}
       />
 
       <main className="flex-1 min-h-0 w-full flex flex-col p-2 sm:p-3 overflow-hidden">
@@ -345,69 +343,9 @@ export const App: React.FC = () => {
           <HeroSummary
             student={parsedStudent}
             player={playerRecord}
-            serverState={serverState}
-            onOpenLeaderboard={() => setShowLeaderboardModal(true)}
           />
         )}
       </main>
-
-      {/* Global Leaderboard Modal */}
-      {showLeaderboardModal && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 animate-bounce-in">
-          <div className="pop-box w-full max-w-lg max-h-[85vh] bg-white p-4 sm:p-5 border-4 border-[#1E232A] flex flex-col space-y-3 shadow-pop-lg">
-            <div className="flex items-center justify-between border-b-3 border-[#1E232A] pb-2">
-              <div className="flex items-center space-x-2">
-                <Trophy className="w-6 h-6 text-amber-500" />
-                <h3 className="text-lg font-black text-[#1E232A]">লাইভ লিডারবোর্ড</h3>
-              </div>
-
-              <button
-                onClick={() => { sound.playPop(); setShowLeaderboardModal(false); }}
-                className="w-8 h-8 rounded-xl bg-[#FF5964] text-white font-black border-2 border-[#1E232A] shadow-pop-sm flex items-center justify-center cursor-pointer"
-              >
-                ✕
-              </button>
-            </div>
-
-            <div className="flex-1 overflow-y-auto space-y-2 pr-1">
-              {serverState?.overallLeaderboard.map((dept, idx) => (
-                <div
-                  key={dept.deptCode}
-                  className="p-3 rounded-2xl border-2 border-[#1E232A] flex items-center justify-between shadow-pop-sm"
-                  style={{ backgroundColor: idx === 0 ? '#FFE66D' : '#F8F9FA' }}
-                >
-                  <div className="flex items-center space-x-3">
-                    <span className="font-display font-black text-sm w-6 text-center">
-                      {idx === 0 ? '👑' : `#${idx + 1}`}
-                    </span>
-                    <div 
-                      className="w-8 h-8 rounded-xl border-2 border-[#1E232A] flex items-center justify-center font-black text-xs text-white shadow-sm"
-                      style={{ backgroundColor: dept.themeColor }}
-                    >
-                      {dept.deptAbbr}
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-black text-[#1E232A]">{dept.deptName}</h4>
-                      <p className="text-[10px] text-gray-500 font-bold">
-                        অ্যাটাক: +{dept.battleshipScore} pts • কানেক্ট-৪: +{dept.connect4Score}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="text-right">
-                    <span className="text-sm font-black text-emerald-700 font-display block">
-                      {dept.grandScore} Pts
-                    </span>
-                    <span className="text-[9px] text-gray-500 font-bold">
-                      {dept.participationCount} জন খেলেছে
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
