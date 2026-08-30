@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { Trophy, Maximize, Minimize, Flame, Shield, Award, Users, Layers, Activity, Target } from 'lucide-react';
+import { Trophy, Maximize, Minimize, Users } from 'lucide-react';
 import { ServerStateSnapshot } from '../types';
-import { DEPARTMENT_LIST } from '../data/departments';
 
 interface SpectatorScreenProps {
   serverState?: ServerStateSnapshot | null;
@@ -27,6 +26,10 @@ export const SpectatorScreen: React.FC<SpectatorScreenProps> = ({ serverState, o
   const topStackers = serverState?.stackerTopRecords || [];
   const poll = serverState?.pollStats;
   const recentActivities = serverState?.recentActivities || [];
+
+  const hasAnyBattleship = battleshipRanks.some(d => d.battleshipScore > 0 || d.battleshipFragmentsFound > 0);
+  const hasAnyConnect4 = connect4Ranks.some(d => d.connect4Score > 0);
+  const hasAnyGrand = leaderboard.some(d => d.grandScore > 0);
 
   return (
     <div className="w-full min-h-screen bg-[#F9D342] text-[#1E232A] p-3 sm:p-5 flex flex-col justify-between font-bangla select-none">
@@ -77,34 +80,37 @@ export const SpectatorScreen: React.FC<SpectatorScreenProps> = ({ serverState, o
           </div>
 
           <div className="space-y-1.5 flex-1 overflow-y-auto pr-1">
-            {battleshipRanks.slice(0, 7).map((dept, idx) => (
-              <div
-                key={dept.deptCode}
-                className="p-2 rounded-xl border-2 border-[#1E232A] flex items-center justify-between text-xs font-black shadow-pop-sm"
-                style={{ backgroundColor: idx === 0 ? '#FFE66D' : '#F8F9FA' }}
-              >
-                <div className="flex items-center space-x-2">
-                  <span className="w-5 text-center font-bold text-gray-500">
-                    {idx === 0 ? '👑' : `#${idx + 1}`}
-                  </span>
-                  <span 
-                    className="px-1.5 py-0.5 rounded-md text-[10px] text-white border border-[#1E232A]"
-                    style={{ backgroundColor: dept.themeColor }}
-                  >
-                    {dept.deptAbbr}
-                  </span>
-                  <span className="truncate max-w-[85px]">{dept.deptName}</span>
+            {battleshipRanks.slice(0, 7).map((dept, idx) => {
+              const isLeader = hasAnyBattleship && idx === 0 && (dept.battleshipScore > 0 || dept.battleshipFragmentsFound > 0);
+              return (
+                <div
+                  key={dept.deptCode}
+                  className="p-2 rounded-xl border-2 border-[#1E232A] flex items-center justify-between text-xs font-black shadow-pop-sm"
+                  style={{ backgroundColor: isLeader ? '#FFE66D' : '#F8F9FA' }}
+                >
+                  <div className="flex items-center space-x-2">
+                    <span className="w-5 text-center font-bold text-gray-500">
+                      {isLeader ? '👑' : `#${idx + 1}`}
+                    </span>
+                    <span 
+                      className="px-1.5 py-0.5 rounded-md text-[10px] text-white border border-[#1E232A]"
+                      style={{ backgroundColor: dept.themeColor }}
+                    >
+                      {dept.deptAbbr}
+                    </span>
+                    <span className="truncate max-w-[85px]">{dept.deptName}</span>
+                  </div>
+                  <div className="text-right">
+                    <span className="font-display font-black text-red-600 block leading-tight">
+                      +{dept.battleshipScore} pts
+                    </span>
+                    <span className="text-[9px] text-gray-500 font-bold block">
+                      {dept.battleshipFragmentsFound}টি ঘাঁটি ফাঁদ
+                    </span>
+                  </div>
                 </div>
-                <div className="text-right">
-                  <span className="font-display font-black text-red-600 block leading-tight">
-                    +{dept.battleshipScore} pts
-                  </span>
-                  <span className="text-[9px] text-gray-500 font-bold block">
-                    {dept.battleshipFragmentsFound}টি ঘাঁটি ফাঁদ
-                  </span>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
@@ -121,29 +127,32 @@ export const SpectatorScreen: React.FC<SpectatorScreenProps> = ({ serverState, o
           </div>
 
           <div className="space-y-1.5 flex-1 overflow-y-auto pr-1">
-            {connect4Ranks.slice(0, 7).map((dept, idx) => (
-              <div
-                key={dept.deptCode}
-                className="p-2 rounded-xl border-2 border-[#1E232A] flex items-center justify-between text-xs font-black shadow-pop-sm"
-                style={{ backgroundColor: idx === 0 ? '#D4F8F0' : '#F8F9FA' }}
-              >
-                <div className="flex items-center space-x-2">
-                  <span className="w-5 text-center font-bold text-gray-500">
-                    {idx === 0 ? '👑' : `#${idx + 1}`}
+            {connect4Ranks.slice(0, 7).map((dept, idx) => {
+              const isLeader = hasAnyConnect4 && idx === 0 && dept.connect4Score > 0;
+              return (
+                <div
+                  key={dept.deptCode}
+                  className="p-2 rounded-xl border-2 border-[#1E232A] flex items-center justify-between text-xs font-black shadow-pop-sm"
+                  style={{ backgroundColor: isLeader ? '#D4F8F0' : '#F8F9FA' }}
+                >
+                  <div className="flex items-center space-x-2">
+                    <span className="w-5 text-center font-bold text-gray-500">
+                      {isLeader ? '👑' : `#${idx + 1}`}
+                    </span>
+                    <span 
+                      className="px-1.5 py-0.5 rounded-md text-[10px] text-white border border-[#1E232A]"
+                      style={{ backgroundColor: dept.themeColor }}
+                    >
+                      {dept.deptAbbr}
+                    </span>
+                    <span className="truncate max-w-[90px]">{dept.deptName}</span>
+                  </div>
+                  <span className="font-display font-black text-[#3585DA]">
+                    +{dept.connect4Score} pts
                   </span>
-                  <span 
-                    className="px-1.5 py-0.5 rounded-md text-[10px] text-white border border-[#1E232A]"
-                    style={{ backgroundColor: dept.themeColor }}
-                  >
-                    {dept.deptAbbr}
-                  </span>
-                  <span className="truncate max-w-[90px]">{dept.deptName}</span>
                 </div>
-                <span className="font-display font-black text-[#3585DA]">
-                  +{dept.connect4Score} pts
-                </span>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
@@ -258,38 +267,37 @@ export const SpectatorScreen: React.FC<SpectatorScreenProps> = ({ serverState, o
           </div>
 
           <div className="flex items-center space-x-2 overflow-x-auto max-w-full pb-1 sm:pb-0">
-            {leaderboard.slice(0, 5).map((dept, idx) => (
-              <div
-                key={dept.deptCode}
-                className="px-3 py-1.5 rounded-xl border-2 border-[#1E232A] flex items-center space-x-2 text-xs font-black shadow-pop-sm flex-shrink-0"
-                style={{ backgroundColor: idx === 0 ? '#FFE66D' : '#FFFFFF' }}
-              >
-                <span>{idx === 0 ? '👑 ১.' : `${idx + 1}.`}</span>
-                <span 
-                  className="px-1.5 py-0.5 rounded text-[10px] text-white border border-[#1E232A]"
-                  style={{ backgroundColor: dept.themeColor }}
+            {leaderboard.slice(0, 5).map((dept, idx) => {
+              const isLeader = hasAnyGrand && idx === 0 && dept.grandScore > 0;
+              return (
+                <div
+                  key={dept.deptCode}
+                  className="px-3 py-1.5 rounded-xl border-2 border-[#1E232A] flex items-center space-x-2 text-xs font-black shadow-pop-sm flex-shrink-0"
+                  style={{ backgroundColor: isLeader ? '#FFE66D' : '#FFFFFF' }}
                 >
-                  {dept.deptAbbr}
-                </span>
-                <span className="font-display font-black">{dept.grandScore} Pts</span>
-              </div>
-            ))}
+                  <span>{isLeader ? '👑 ১.' : `${idx + 1}.`}</span>
+                  <span 
+                    className="px-1.5 py-0.5 rounded text-[10px] text-white border border-[#1E232A]"
+                    style={{ backgroundColor: dept.themeColor }}
+                  >
+                    {dept.deptAbbr}
+                  </span>
+                  <span className="font-display font-black">{dept.grandScore} Pts</span>
+                </div>
+              );
+            })}
           </div>
         </div>
 
         {/* Live Activity Ticker */}
-        <div className="pop-box-sm px-3 py-1.5 bg-[#1E232A] text-white border-2 border-[#1E232A] flex items-center space-x-2 text-xs font-medium overflow-hidden">
-          <div className="flex items-center space-x-1 text-[#F9D342] font-black flex-shrink-0">
-            <Activity className="w-3.5 h-3.5 animate-pulse" />
-            <span>লাইভ টিকার:</span>
+        <div className="pop-box p-2.5 bg-[#1E232A] text-white border-3 border-[#1E232A] flex items-center space-x-3 overflow-hidden shadow-pop-sm">
+          <div className="px-2 py-0.5 rounded-md bg-[#FF5964] text-white text-[10px] font-black flex-shrink-0 animate-pulse">
+            LIVE
           </div>
-
-          <div className="truncate text-gray-200">
-            {recentActivities.length > 0 ? (
-              <span>{recentActivities[recentActivities.length - 1].text}</span>
-            ) : (
-              <span>ফেস্ট গেম অ্যারেনায় সবাইকে স্বাগতম! বুথে আইডি রেজিস্টার করে খেলা শুরু করুন।</span>
-            )}
+          <div className="text-xs font-medium truncate flex-1 text-gray-200">
+            {recentActivities.length > 0 
+              ? recentActivities[recentActivities.length - 1]?.text 
+              : 'ফেস্টের সরাসরি কার্যক্রম ও লড়াই শুরু হওয়ার অপেক্ষায়...'}
           </div>
         </div>
       </div>

@@ -596,17 +596,29 @@ export class GameEngine {
     });
 
     // Rank Battleship (Highest attack points & enemy bases found leads)
+    const hasAnyBattleship = list.some(d => d.battleshipScore > 0 || d.battleshipFragmentsFound > 0);
     list.sort((a, b) => b.battleshipScore - a.battleshipScore || b.battleshipFragmentsFound - a.battleshipFragmentsFound);
-    list.forEach((item, idx) => item.battleshipRank = idx + 1);
+    list.forEach((item, idx) => {
+      item.battleshipRank = hasAnyBattleship && (item.battleshipScore > 0 || item.battleshipFragmentsFound > 0) ? idx + 1 : 0;
+    });
 
+    const hasAnyConnect4 = list.some(d => d.connect4Score > 0);
     list.sort((a, b) => b.connect4Score - a.connect4Score);
-    list.forEach((item, idx) => item.connect4Rank = idx + 1);
+    list.forEach((item, idx) => {
+      item.connect4Rank = hasAnyConnect4 && item.connect4Score > 0 ? idx + 1 : 0;
+    });
 
+    const hasAnyStack = list.some(d => d.stackScore > 0);
     list.sort((a, b) => b.stackScore - a.stackScore);
-    list.forEach((item, idx) => item.stackRank = idx + 1);
+    list.forEach((item, idx) => {
+      item.stackRank = hasAnyStack && item.stackScore > 0 ? idx + 1 : 0;
+    });
 
+    const hasAnyGrand = list.some(d => d.grandScore > 0);
     list.sort((a, b) => b.grandScore - a.grandScore);
-    list.forEach((item, idx) => item.overallRank = idx + 1);
+    list.forEach((item, idx) => {
+      item.overallRank = hasAnyGrand && item.grandScore > 0 ? idx + 1 : 0;
+    });
 
     return list;
   }
