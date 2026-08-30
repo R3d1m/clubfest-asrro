@@ -48,40 +48,40 @@ export const PollStage: React.FC<PollStageProps> = ({ student, onPollSubmit }) =
   };
 
   return (
-    <div className="w-full flex flex-col gap-3 animate-bounce-in" style={{ minHeight: 'calc(100vh - 80px)' }}>
-      {/* Top Banner */}
-      <div className="w-full pop-box p-3 sm:p-4 bg-white flex items-center justify-between shadow-pop-sm">
+    <div className="w-full h-full flex flex-col justify-between gap-1.5 animate-bounce-in overflow-hidden">
+      {/* 1. Top Banner */}
+      <div className="w-full pop-box p-2.5 bg-white flex items-center justify-between shadow-pop-sm flex-shrink-0">
         <div>
-          <span className="text-xs font-bold text-gray-500 font-bangla block">স্টেপ ৪: স্পাইসি ফেস্ট সার্ভে</span>
-          <h2 className="text-base sm:text-lg font-black font-bangla text-[#1E232A]">
+          <span className="text-[11px] font-bold text-gray-500 font-bangla block leading-none">স্টেপ ৪: স্পাইসি ফেস্ট সার্ভে</span>
+          <h2 className="text-sm sm:text-base font-black font-bangla text-[#1E232A] mt-0.5">
             🌶️ গোপন ভোট ও পরিসংখ্যান
           </h2>
         </div>
 
-        <div className="bg-[#FFE0E2] p-2 rounded-xl border-2 border-[#1E232A]">
-          <Flame className="w-5 h-5 text-[#FF5964]" />
+        <div className="bg-[#FFE0E2] p-1.5 rounded-xl border-2 border-[#1E232A]">
+          <Flame className="w-4 h-4 text-[#FF5964]" />
         </div>
       </div>
 
-      {/* 3 Questions Container */}
-      <div className="w-full space-y-2.5">
+      {/* 2. 3 Questions Container (Fills remaining middle space) */}
+      <div className="w-full flex-1 min-h-0 flex flex-col justify-between gap-1.5 overflow-hidden">
         {/* Question 1 */}
-        <div className="pop-box p-3 sm:p-4 bg-[#FFFBEB] border-3 border-[#1E232A] space-y-2 shadow-pop-sm">
-          <div className="flex items-center space-x-2">
-            <Moon className="w-4 h-4 text-purple-600 flex-shrink-0" />
-            <h3 className="text-xs sm:text-sm font-black font-bangla text-[#1E232A]">
+        <div className="pop-box p-2 bg-[#FFFBEB] border-2.5 border-[#1E232A] flex flex-col justify-between shadow-pop-sm flex-1 min-h-0">
+          <div className="flex items-center space-x-1.5 mb-1">
+            <Moon className="w-3.5 h-3.5 text-purple-600 flex-shrink-0" />
+            <h3 className="text-[11px] sm:text-xs font-black font-bangla text-[#1E232A] leading-tight">
               ১. সবচেয়ে চিল ও ঘুমন্ত ডিপার্টমেন্ট কোনটি?
             </h3>
           </div>
 
-          <div className="grid grid-cols-4 sm:grid-cols-6 gap-1.5">
+          <div className="grid grid-cols-4 sm:grid-cols-6 gap-1">
             {DEPARTMENT_LIST.map((dept) => (
               <button
                 key={dept.code}
                 onClick={() => { sound.playPop(); setQ1(dept.abbr); }}
-                className={`py-2 px-1 rounded-xl text-xs font-black border-2 border-[#1E232A] transition-all truncate select-none active:scale-95 cursor-pointer ${
+                className={`py-1 px-0.5 rounded-lg text-[10px] sm:text-xs font-black border-2 border-[#1E232A] transition-all truncate select-none active:scale-95 cursor-pointer ${
                   q1 === dept.abbr 
-                    ? 'bg-[#845EC2] text-white -translate-y-0.5 shadow-pop-sm scale-105' 
+                    ? 'bg-[#845EC2] text-white shadow-pop-sm scale-105' 
                     : 'bg-white text-gray-700 hover:bg-gray-50'
                 }`}
               >
@@ -92,22 +92,22 @@ export const PollStage: React.FC<PollStageProps> = ({ student, onPollSubmit }) =
         </div>
 
         {/* Question 2 */}
-        <div className="pop-box p-3 sm:p-4 bg-[#FFFBEB] border-3 border-[#1E232A] space-y-2 shadow-pop-sm">
-          <div className="flex items-center space-x-2">
-            <Zap className="w-4 h-4 text-amber-500 flex-shrink-0" />
-            <h3 className="text-xs sm:text-sm font-black font-bangla text-[#1E232A]">
+        <div className="pop-box p-2 bg-[#FFFBEB] border-2.5 border-[#1E232A] flex flex-col justify-between shadow-pop-sm flex-1 min-h-0">
+          <div className="flex items-center space-x-1.5 mb-1">
+            <Zap className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" />
+            <h3 className="text-[11px] sm:text-xs font-black font-bangla text-[#1E232A] leading-tight">
               ২. ফেস্টে সবচেয়ে বেশি হাইপ কার?
             </h3>
           </div>
 
-          <div className="grid grid-cols-4 sm:grid-cols-6 gap-1.5">
+          <div className="grid grid-cols-4 sm:grid-cols-6 gap-1">
             {DEPARTMENT_LIST.map((dept) => (
               <button
                 key={dept.code}
                 onClick={() => { sound.playPop(); setQ2(dept.abbr); }}
-                className={`py-2 px-1 rounded-xl text-xs font-black border-2 border-[#1E232A] transition-all truncate select-none active:scale-95 cursor-pointer ${
+                className={`py-1 px-0.5 rounded-lg text-[10px] sm:text-xs font-black border-2 border-[#1E232A] transition-all truncate select-none active:scale-95 cursor-pointer ${
                   q2 === dept.abbr 
-                    ? 'bg-[#FFA931] text-[#1E232A] -translate-y-0.5 shadow-pop-sm scale-105' 
+                    ? 'bg-[#FFA931] text-[#1E232A] shadow-pop-sm scale-105' 
                     : 'bg-white text-gray-700 hover:bg-gray-50'
                 }`}
               >
@@ -118,22 +118,22 @@ export const PollStage: React.FC<PollStageProps> = ({ student, onPollSubmit }) =
         </div>
 
         {/* Question 3 */}
-        <div className="pop-box p-3 sm:p-4 bg-[#FFFBEB] border-3 border-[#1E232A] space-y-2 shadow-pop-sm">
-          <div className="flex items-center space-x-2">
-            <Coffee className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-            <h3 className="text-xs sm:text-sm font-black font-bangla text-[#1E232A]">
+        <div className="pop-box p-2 bg-[#FFFBEB] border-2.5 border-[#1E232A] flex flex-col justify-between shadow-pop-sm flex-1 min-h-0">
+          <div className="flex items-center space-x-1.5 mb-1">
+            <Coffee className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
+            <h3 className="text-[11px] sm:text-xs font-black font-bangla text-[#1E232A] leading-tight">
               ৩. ক্যান্টিনের আড্ডায় সবচেয়ে সেরা কে?
             </h3>
           </div>
 
-          <div className="grid grid-cols-4 sm:grid-cols-6 gap-1.5">
+          <div className="grid grid-cols-4 sm:grid-cols-6 gap-1">
             {DEPARTMENT_LIST.map((dept) => (
               <button
                 key={dept.code}
                 onClick={() => { sound.playPop(); setQ3(dept.abbr); }}
-                className={`py-2 px-1 rounded-xl text-xs font-black border-2 border-[#1E232A] transition-all truncate select-none active:scale-95 cursor-pointer ${
+                className={`py-1 px-0.5 rounded-lg text-[10px] sm:text-xs font-black border-2 border-[#1E232A] transition-all truncate select-none active:scale-95 cursor-pointer ${
                   q3 === dept.abbr 
-                    ? 'bg-[#00C9A7] text-[#1E232A] -translate-y-0.5 shadow-pop-sm scale-105' 
+                    ? 'bg-[#00C9A7] text-[#1E232A] shadow-pop-sm scale-105' 
                     : 'bg-white text-gray-700 hover:bg-gray-50'
                 }`}
               >
@@ -144,20 +144,22 @@ export const PollStage: React.FC<PollStageProps> = ({ student, onPollSubmit }) =
         </div>
       </div>
 
-      {/* Submit Button */}
-      <button
-        onClick={handleSubmit}
-        disabled={!isComplete || isSubmitting}
-        className={`pop-btn w-full py-4 font-black text-base sm:text-lg font-bangla flex items-center justify-center space-x-2 transition-all cursor-pointer ${
-          isComplete && !isSubmitting
-            ? 'bg-[#4ECDC4] text-[#1E232A] shadow-pop hover:bg-[#3dbdb5] active:translate-y-0.5'
-            : 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-60'
-        }`}
-      >
-        <CheckCircle className="w-5 h-5" />
-        <span>{isSubmitting ? 'জমা হচ্ছে...' : 'ভোট জমা দাও ও ফাইনাল ব্যাজ দেখো'}</span>
-        <Sparkles className="w-4 h-4 text-[#F9D342]" />
-      </button>
+      {/* 3. Submit Button */}
+      <div className="w-full flex-shrink-0">
+        <button
+          onClick={handleSubmit}
+          disabled={!isComplete || isSubmitting}
+          className={`pop-btn w-full py-3.5 font-black text-sm sm:text-base font-bangla flex items-center justify-center space-x-2 transition-all cursor-pointer ${
+            isComplete && !isSubmitting
+              ? 'bg-[#4ECDC4] text-[#1E232A] shadow-pop hover:bg-[#3dbdb5] active:translate-y-0.5'
+              : 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-60'
+          }`}
+        >
+          <CheckCircle className="w-4 h-4" />
+          <span>{isSubmitting ? 'জমা হচ্ছে...' : 'ভোট জমা দাও ও ফাইনাল ব্যাজ দেখো'}</span>
+          <Sparkles className="w-4 h-4 text-[#F9D342]" />
+        </button>
+      </div>
     </div>
   );
 };

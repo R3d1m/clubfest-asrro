@@ -163,24 +163,24 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
   ).length;
 
   return (
-    <div className="w-full max-w-full min-w-0 flex flex-col gap-2.5 animate-bounce-in" style={{ minHeight: 'calc(100vh - 80px)' }}>
-      {/* Top Banner: AP Tracker */}
-      <div className="w-full pop-box p-3 sm:p-4 bg-white flex items-center justify-between shadow-pop-sm">
+    <div className="w-full h-full flex flex-col justify-between gap-1.5 animate-bounce-in overflow-hidden">
+      {/* 1. Top Banner: AP Tracker */}
+      <div className="w-full pop-box p-2.5 bg-white flex items-center justify-between shadow-pop-sm flex-shrink-0">
         <div>
-          <span className="text-xs font-bold text-gray-500 font-bangla block">স্টেপ ১: স্টিলথ ব্যাটেলশিপ</span>
-          <h2 className="text-base sm:text-lg font-black font-bangla text-[#1E232A]">
+          <span className="text-[11px] font-bold text-gray-500 font-bangla block leading-none">স্টেপ ১: স্টিলথ ব্যাটেলশিপ</span>
+          <h2 className="text-sm sm:text-base font-black font-bangla text-[#1E232A] mt-0.5">
             {mode === 'ATTACK' ? '🎯 শত্রুর ঘাঁটি খুঁজুন' : '🌫️ নিজের ঘাঁটি লুকান'}
           </h2>
         </div>
 
         {/* AP Counter Badges */}
-        <div className="flex items-center space-x-1.5 bg-[#FFF9D2] px-3 py-1.5 rounded-xl border-2 border-[#1E232A]">
+        <div className="flex items-center space-x-1.5 bg-[#FFF9D2] px-2.5 py-1 rounded-xl border-2 border-[#1E232A]">
           <span className="text-xs font-black font-bangla text-[#1E232A]">চাল:</span>
           <div className="flex space-x-1">
             {[1, 2, 3].map(i => (
               <div 
                 key={i} 
-                className={`w-4 h-4 rounded-full border-2 border-[#1E232A] transition-all ${
+                className={`w-3.5 h-3.5 rounded-full border-2 border-[#1E232A] transition-all ${
                   i <= ap ? 'bg-[#FF6B6B] scale-110 shadow-xs' : 'bg-gray-300 opacity-40'
                 }`} 
               />
@@ -189,56 +189,56 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
         </div>
       </div>
 
-      {/* Mode Selector Toggle */}
-      <div className="w-full grid grid-cols-2 gap-2">
+      {/* 2. Mode Selector Toggle */}
+      <div className="w-full grid grid-cols-2 gap-1.5 flex-shrink-0">
         <button
           onClick={() => { sound.playPop(); setMode('ATTACK'); }}
-          className={`py-2.5 px-3 rounded-xl font-black text-sm font-bangla flex items-center justify-center space-x-2 border-3 border-[#1E232A] shadow-pop-sm transition-all cursor-pointer ${
+          className={`py-2 px-2 rounded-xl font-black text-xs sm:text-sm font-bangla flex items-center justify-center space-x-1.5 border-3 border-[#1E232A] shadow-pop-sm transition-all cursor-pointer ${
             mode === 'ATTACK' 
               ? 'bg-[#FF6B6B] text-white -translate-y-0.5' 
               : 'bg-white text-gray-700 hover:bg-gray-50'
           }`}
         >
-          <Target className="w-4 h-4" />
+          <Target className="w-3.5 h-3.5" />
           <span>🎯 আক্রমণ (ATTACK)</span>
         </button>
 
         <button
           onClick={() => { sound.playPop(); setMode('HIDE'); }}
-          className={`py-2.5 px-3 rounded-xl font-black text-sm font-bangla flex items-center justify-center space-x-2 border-3 border-[#1E232A] shadow-pop-sm transition-all cursor-pointer ${
+          className={`py-2 px-2 rounded-xl font-black text-xs sm:text-sm font-bangla flex items-center justify-center space-x-1.5 border-3 border-[#1E232A] shadow-pop-sm transition-all cursor-pointer ${
             mode === 'HIDE' 
               ? 'bg-[#4ECDC4] text-[#1E232A] -translate-y-0.5' 
               : 'bg-white text-gray-700 hover:bg-gray-50'
           }`}
         >
-          <CloudRain className="w-4 h-4" />
+          <CloudRain className="w-3.5 h-3.5" />
           <span>🌫️ লুকাও ({ownExposedCount})</span>
         </button>
       </div>
 
-      {/* Visual Color Legend for Students */}
-      <div className="w-full grid grid-cols-3 gap-1.5 text-[10px] font-bangla font-bold">
-        <div className="bg-[#1A252F] text-gray-300 p-1.5 rounded-xl border-2 border-[#1E232A] flex items-center space-x-1.5 justify-center">
-          <span className="w-2.5 h-2.5 rounded bg-[#2C3A47] border border-gray-500 inline-block"></span>
+      {/* 3. Visual Color Legend */}
+      <div className="w-full grid grid-cols-3 gap-1 text-[9px] font-bangla font-bold flex-shrink-0">
+        <div className="bg-[#1A252F] text-gray-300 py-1 px-1.5 rounded-xl border-2 border-[#1E232A] flex items-center space-x-1 justify-center">
+          <span className="w-2 h-2 rounded-full bg-[#2C3A47] border border-gray-500 inline-block"></span>
           <span>কুয়াশা</span>
         </div>
 
-        <div className="bg-[#E0F7FA] text-[#006064] p-1.5 rounded-xl border-2 border-[#00BCD4] flex items-center space-x-1.5 justify-center shadow-xs">
-          <span className="w-2.5 h-2.5 rounded bg-[#4DD0E1] border border-[#00838F] inline-block"></span>
+        <div className="bg-[#E0F7FA] text-[#006064] py-1 px-1.5 rounded-xl border-2 border-[#00BCD4] flex items-center space-x-1 justify-center">
+          <span className="w-2 h-2 rounded-full bg-[#4DD0E1] border border-[#00838F] inline-block"></span>
           <span>খালি পানি</span>
         </div>
 
-        <div className="bg-[#FFF2DC] text-[#D67229] p-1.5 rounded-xl border-2 border-[#FFA931] flex items-center space-x-1.5 justify-center">
-          <span className="w-2.5 h-2.5 rounded bg-[#FF5964] border border-[#1E232A] inline-block"></span>
+        <div className="bg-[#FFF2DC] text-[#D67229] py-1 px-1.5 rounded-xl border-2 border-[#FFA931] flex items-center space-x-1 justify-center">
+          <span className="w-2 h-2 rounded-full bg-[#FF5964] border border-[#1E232A] inline-block"></span>
           <span>উন্মোচিত ঘাঁটি</span>
         </div>
       </div>
 
-      {/* Interactive 35x35 Grid Viewport with Pan & Touch */}
-      <div className="w-full max-w-full min-w-0 flex-1 pop-box p-2 bg-[#2C3E50] border-4 border-[#1E232A] relative flex flex-col shadow-pop overflow-hidden">
-        <div className="flex items-center justify-between px-2 py-1 text-[10px] text-gray-300 font-bangla font-bold">
+      {/* 4. Interactive 35x35 Grid Viewport (Fills remaining middle space) */}
+      <div className="w-full flex-1 min-h-0 pop-box p-2 bg-[#2C3E50] border-3.5 border-[#1E232A] relative flex flex-col shadow-pop overflow-hidden">
+        <div className="flex items-center justify-between px-1 pb-1 text-[9px] text-gray-300 font-bangla font-bold flex-shrink-0">
           <span className="flex items-center space-x-1">
-            <Move className="w-3.5 h-3.5 text-cyan-300 animate-pulse" />
+            <Move className="w-3 h-3 text-cyan-300 animate-pulse" />
             <span>আঙুল দিয়ে টেনে ম্যাপে ঘুরতে পারবে</span>
           </span>
           <span className="text-gray-400">৩৫×৩৫ গ্রিড</span>
@@ -253,7 +253,7 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
             overflowY: 'auto',
             WebkitOverflowScrolling: 'touch'
           }}
-          className="flex-1 min-h-[250px] rounded-xl bg-[#1A252F] border-2 border-[#1E232A] relative scroll-smooth cursor-crosshair touch-pan-x touch-pan-y"
+          className="flex-1 min-h-0 w-full rounded-xl bg-[#1A252F] border-2 border-[#1E232A] relative scroll-smooth cursor-crosshair touch-pan-x touch-pan-y"
         >
           <div 
             className="grid gap-[2px] p-2"
@@ -328,9 +328,9 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
         </div>
       </div>
 
-      {/* Live In-Game Feedback Alert */}
+      {/* 5. Live Feedback Alert (if active) */}
       {feedback && (
-        <div className={`w-full p-2.5 rounded-xl border-2 border-[#1E232A] shadow-pop-sm flex items-center space-x-2 text-xs sm:text-sm font-bold font-bangla animate-bounce-in ${
+        <div className={`w-full p-2 rounded-xl border-2 border-[#1E232A] shadow-pop-sm flex items-center space-x-2 text-xs font-bold font-bangla animate-bounce-in flex-shrink-0 ${
           feedback.type === 'success' ? 'bg-[#D4F8F0] text-[#00897B]' :
           feedback.type === 'danger' ? 'bg-[#FFE0E2] text-[#D32F2F]' :
           'bg-[#FFF9D2] text-[#8D6E63]'
@@ -338,24 +338,26 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
           {feedback.type === 'success' ? <Flame className="w-4 h-4 text-emerald-600 flex-shrink-0" /> :
            feedback.type === 'danger' ? <AlertCircle className="w-4 h-4 text-red-600 flex-shrink-0" /> :
            <ShieldCheck className="w-4 h-4 text-amber-600 flex-shrink-0" />}
-          <span className="flex-1">{feedback.text}</span>
+          <span className="flex-1 leading-tight">{feedback.text}</span>
         </div>
       )}
 
-      {/* Bottom Advancement Button */}
-      {ap === 0 ? (
-        <button
-          onClick={() => { sound.playPop(); onAdvanceToNextStage(); }}
-          className="pop-btn w-full py-4 bg-[#6BCB77] text-[#1E232A] font-black text-base sm:text-lg font-bangla flex items-center justify-center space-x-2 animate-bounce shadow-pop cursor-pointer"
-        >
-          <span>৩টি চাল শেষ! পরের গেম (কানেক্ট-৪) এ যাও</span>
-          <ArrowRight className="w-5 h-5" />
-        </button>
-      ) : (
-        <div className="text-center font-bangla text-xs sm:text-sm font-bold text-gray-700 py-1">
-          বাকি চাল: <strong className="text-red-600 font-black text-sm sm:text-base">{ap} টি</strong> (চাল শেষ হলে পরবর্তী গেমে যেতে পারবে)
-        </div>
-      )}
+      {/* 6. Bottom Advancement Button */}
+      <div className="w-full flex-shrink-0">
+        {ap === 0 ? (
+          <button
+            onClick={() => { sound.playPop(); onAdvanceToNextStage(); }}
+            className="pop-btn w-full py-3.5 bg-[#6BCB77] text-[#1E232A] font-black text-sm sm:text-base font-bangla flex items-center justify-center space-x-2 animate-bounce shadow-pop cursor-pointer"
+          >
+            <span>৩টি চাল শেষ! পরের গেম (কানেক্ট-৪) এ যাও</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        ) : (
+          <div className="text-center font-bangla text-xs font-bold text-gray-800 py-1 bg-white/60 rounded-xl border border-[#1E232A]/20">
+            বাকি চাল: <strong className="text-red-600 font-black text-sm">{ap} টি</strong> (চাল শেষ হলে পরবর্তী গেমে যেতে পারবে)
+          </div>
+        )}
+      </div>
     </div>
   );
 };

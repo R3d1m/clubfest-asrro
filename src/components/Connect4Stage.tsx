@@ -96,27 +96,27 @@ export const Connect4Stage: React.FC<Connect4StageProps> = ({
   const rows = state.rows || 10;
 
   return (
-    <div className="w-full max-w-full min-w-0 flex flex-col gap-3 animate-bounce-in" style={{ minHeight: 'calc(100vh - 80px)' }}>
-      {/* Top Banner */}
-      <div className="w-full pop-box p-3 sm:p-4 bg-white flex items-center justify-between shadow-pop-sm">
+    <div className="w-full h-full flex flex-col justify-between gap-1.5 animate-bounce-in overflow-hidden">
+      {/* 1. Top Banner */}
+      <div className="w-full pop-box p-2.5 bg-white flex items-center justify-between shadow-pop-sm flex-shrink-0">
         <div>
-          <span className="text-xs font-bold text-gray-500 font-bangla block">স্টেপ ২: মেগা কানেক্ট-৪</span>
-          <h2 className="text-base sm:text-lg font-black font-bangla text-[#1E232A]">
+          <span className="text-[11px] font-bold text-gray-500 font-bangla block leading-none">স্টেপ ২: মেগা কানেক্ট-৪</span>
+          <h2 className="text-sm sm:text-base font-black font-bangla text-[#1E232A] mt-0.5">
             {hasPlayed ? '✅ বল ড্রপ সম্পন্ন!' : '🎯 ১টি কলাম বেছে বল ফেলুন'}
           </h2>
         </div>
 
         <div 
-          className="px-3 py-1.5 rounded-xl border-2 border-[#1E232A] font-black text-xs sm:text-sm font-bangla shadow-pop-sm flex items-center space-x-1"
+          className="px-2.5 py-1 rounded-xl border-2 border-[#1E232A] font-black text-xs font-bangla shadow-pop-sm flex items-center space-x-1"
           style={{ backgroundColor: student.themeColor, color: '#1E232A' }}
         >
           <span>{student.deptAbbr} বল</span>
         </div>
       </div>
 
-      {/* Grid Container with Touch Scroll */}
-      <div className="w-full max-w-full min-w-0 pop-box p-3 bg-[#F9D342] border-4 border-[#1E232A] relative flex flex-col shadow-pop overflow-hidden">
-        <div className="text-xs text-[#1E232A] font-bangla text-center mb-1 font-bold">
+      {/* 2. Grid Container with Touch Scroll (Fills remaining middle space) */}
+      <div className="w-full flex-1 min-h-0 pop-box p-2 bg-[#F9D342] border-3.5 border-[#1E232A] relative flex flex-col justify-center shadow-pop overflow-hidden">
+        <div className="text-[11px] text-[#1E232A] font-bangla text-center mb-1 font-bold flex-shrink-0">
           {hasPlayed 
             ? '৪টি মিললে বলগুলো ধূসর (Gray) হয়ে স্থায়ী পয়েন্ট লক হয়!' 
             : '👇 যেকোনো কলামের বাটনে ট্যাপ করে তোমার বলটি ড্রপ করো:'}
@@ -129,14 +129,14 @@ export const Connect4Stage: React.FC<Connect4StageProps> = ({
             overflowX: 'auto',
             WebkitOverflowScrolling: 'touch'
           }}
-          className="pb-2 scroll-smooth touch-pan-x flex items-center justify-start sm:justify-center"
+          className="flex-1 min-h-0 w-full scroll-smooth touch-pan-x flex items-center justify-start sm:justify-center"
         >
           <div 
             style={{ width: 'max-content', minWidth: 'max-content' }}
-            className="inline-block bg-[#1E232A] p-3 rounded-2xl border-3 border-[#1E232A] shadow-inner"
+            className="inline-block bg-[#1E232A] p-2.5 rounded-2xl border-3 border-[#1E232A] shadow-inner"
           >
             {/* Top Drop Arrows */}
-            <div className="grid grid-cols-14 gap-1 mb-2">
+            <div className="grid grid-cols-14 gap-1 mb-1.5">
               {Array.from({ length: cols }).map((_, c) => {
                 const isFull = state.grid[c] && state.grid[c][0] !== null;
                 return (
@@ -144,14 +144,14 @@ export const Connect4Stage: React.FC<Connect4StageProps> = ({
                     key={c}
                     onClick={() => handleDrop(c)}
                     disabled={hasPlayed || isDropping || isFull}
-                    className={`h-8 rounded-lg border-2 border-[#1E232A] flex flex-col items-center justify-center transition-all ${
+                    className={`h-7 rounded-lg border-2 border-[#1E232A] flex flex-col items-center justify-center transition-all ${
                       hasPlayed || isFull
                         ? 'bg-gray-700 opacity-20 cursor-not-allowed'
                         : 'bg-[#FFE66D] hover:bg-[#FFF9D2] active:translate-y-0.5 shadow-pop-sm cursor-pointer active:scale-95'
                     }`}
                     title={`Column ${c + 1}`}
                   >
-                    <ChevronDown className="w-3.5 h-3.5 text-[#1E232A]" />
+                    <ChevronDown className="w-3 h-3 text-[#1E232A]" />
                     <span className="text-[7px] font-black text-[#1E232A] leading-none">{c + 1}</span>
                   </button>
                 );
@@ -170,7 +170,7 @@ export const Connect4Stage: React.FC<Connect4StageProps> = ({
                       return (
                         <div 
                           key={`${c}-${r}`} 
-                          className="w-[24px] h-[24px] rounded-full bg-[#11161D] border border-white/10 shadow-inner flex items-center justify-center"
+                          className="w-[22px] h-[22px] rounded-full bg-[#11161D] border border-white/10 shadow-inner flex items-center justify-center"
                         />
                       );
                     }
@@ -180,7 +180,7 @@ export const Connect4Stage: React.FC<Connect4StageProps> = ({
                       return (
                         <div 
                           key={`${c}-${r}`} 
-                          className="w-[24px] h-[24px] rounded-full bg-[#7F8C8D] border-2 border-white/50 flex items-center justify-center font-black text-[7px] text-white shadow-sm"
+                          className="w-[22px] h-[22px] rounded-full bg-[#7F8C8D] border-2 border-white/50 flex items-center justify-center font-black text-[7px] text-white shadow-sm"
                           title="Gray Locked Streak (+100 Pts)"
                         >
                           🔒
@@ -193,7 +193,7 @@ export const Connect4Stage: React.FC<Connect4StageProps> = ({
                     return (
                       <div 
                         key={`${c}-${r}`} 
-                        className="w-[24px] h-[24px] rounded-full border-2 border-[#1E232A] flex items-center justify-center font-black text-[7px] text-[#1E232A] shadow-sm animate-bounce-in"
+                        className="w-[22px] h-[22px] rounded-full border-2 border-[#1E232A] flex items-center justify-center font-black text-[7px] text-[#1E232A] shadow-sm animate-bounce-in"
                         style={{ backgroundColor: dept?.themeColor || '#4ECDC4' }}
                         title={`${dept?.name || 'Dept'} Token`}
                       >
@@ -208,45 +208,47 @@ export const Connect4Stage: React.FC<Connect4StageProps> = ({
         </div>
       </div>
 
-      {/* Streak / Drop Result Card */}
+      {/* 3. Streak / Drop Result Card (if played) */}
       {streakResult && (
-        <div className={`w-full p-3 rounded-2xl border-3 border-[#1E232A] shadow-pop-sm flex items-center space-x-2.5 text-xs sm:text-sm font-bangla animate-bounce-in ${
+        <div className={`w-full p-2 rounded-xl border-2 border-[#1E232A] shadow-pop-sm flex items-center space-x-2 text-xs font-bangla animate-bounce-in flex-shrink-0 ${
           streakResult.earned ? 'bg-[#D4F8F0] text-[#00897B]' : 'bg-[#FFFBEB] text-[#1E232A]'
         }`}>
           {streakResult.earned ? (
             <>
-              <Award className="w-6 h-6 text-amber-500 flex-shrink-0 animate-bounce" />
+              <Award className="w-5 h-5 text-amber-500 flex-shrink-0 animate-bounce" />
               <div>
-                <strong className="font-black block text-sm sm:text-base">🎉 ৪-ইন-এ-রো কমপ্লিট!</strong>
-                <span>অভিনন্দন! তোমার ডিপার্টমেন্ট +{streakResult.points} পয়েন্ট অর্জন করেছে!</span>
+                <strong className="font-black block text-xs">🎉 ৪-ইন-এ-রো কমপ্লিট!</strong>
+                <span className="text-[11px]">অভিনন্দন! তোমার ডিপার্টমেন্ট +{streakResult.points} পয়েন্ট অর্জন করেছে!</span>
               </div>
             </>
           ) : (
             <>
-              <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
               <div>
-                <strong className="font-black block">বল সফলভাবে ড্রপ হয়েছে!</strong>
-                <span className="text-gray-600 text-xs">তোমার বন্ধুদের বলো তোমার বলের পাশেই বল ড্রপ করতে!</span>
+                <strong className="font-black block text-xs">বল সফলভাবে ড্রপ হয়েছে!</strong>
+                <span className="text-gray-600 text-[10px]">বন্ধুদের বলো তোমার বলের পাশেই বল ড্রপ করতে!</span>
               </div>
             </>
           )}
         </div>
       )}
 
-      {/* Advance to Next Stage Button */}
-      {hasPlayed ? (
-        <button
-          onClick={() => { sound.playPop(); onAdvanceToNextStage(); }}
-          className="pop-btn w-full py-4 bg-[#6BCB77] text-[#1E232A] font-black text-base sm:text-lg font-bangla flex items-center justify-center space-x-2 animate-bounce shadow-pop cursor-pointer"
-        >
-          <span>পরের গেম (টাওয়ার স্ট্যাক) এ যাও</span>
-          <ArrowRight className="w-5 h-5" />
-        </button>
-      ) : (
-        <div className="text-center font-bangla text-xs sm:text-sm font-bold text-gray-700 py-1">
-          একটি কলামে ট্যাপ করলেই তোমার চাল রেকর্ড হয়ে যাবে।
-        </div>
-      )}
+      {/* 4. Advance to Next Stage Button */}
+      <div className="w-full flex-shrink-0">
+        {hasPlayed ? (
+          <button
+            onClick={() => { sound.playPop(); onAdvanceToNextStage(); }}
+            className="pop-btn w-full py-3.5 bg-[#6BCB77] text-[#1E232A] font-black text-sm sm:text-base font-bangla flex items-center justify-center space-x-2 animate-bounce shadow-pop cursor-pointer"
+          >
+            <span>পরের গেম (টাওয়ার স্ট্যাক) এ যাও</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        ) : (
+          <div className="text-center font-bangla text-xs font-bold text-gray-800 py-1 bg-white/60 rounded-xl border border-[#1E232A]/20">
+            একটি কলামে ট্যাপ করলেই তোমার চাল রেকর্ড হয়ে যাবে।
+          </div>
+        )}
+      </div>
     </div>
   );
 };

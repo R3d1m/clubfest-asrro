@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Volume2, VolumeX, Shield, Trophy } from 'lucide-react';
 import { sound } from '../utils/sound';
 import { ParsedStudent, PlayerStage } from '../types';
@@ -14,7 +14,7 @@ export const Header: React.FC<HeaderProps> = ({
   currentStage,
   onOpenLeaderboard
 }) => {
-  const [muted, setMuted] = useState(!sound.enabled);
+  const [muted, setMuted] = React.useState(!sound.enabled);
 
   const toggleSound = () => {
     sound.enabled = !sound.enabled;
@@ -46,36 +46,36 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <header className="w-full bg-[#1E232A] text-white px-3 sm:px-4 py-2.5 sm:py-3 border-b-4 border-[#1E232A] shadow-md flex items-center justify-between sticky top-0 z-50">
+    <header className="w-full bg-[#1E232A] text-white px-3 py-2 border-b-3 border-[#1E232A] shadow-md flex items-center justify-between flex-shrink-0 z-50">
       <div className="flex items-center space-x-2">
-        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#F9D342] text-[#1E232A] flex items-center justify-center font-black text-lg shadow-pop-sm border-2 border-[#1E232A] flex-shrink-0">
+        <div className="w-8 h-8 rounded-xl bg-[#F9D342] text-[#1E232A] flex items-center justify-center font-black text-base shadow-pop-sm border-2 border-[#1E232A] flex-shrink-0">
           ⚔️
         </div>
         <div>
-          <h1 className="font-extrabold text-sm sm:text-base leading-tight tracking-wide font-bangla text-[#F9D342]">
+          <h1 className="font-extrabold text-sm leading-tight tracking-wide font-bangla text-[#F9D342]">
             ডিপার্টমেন্ট ক্ল্যাশ ২০২৬
           </h1>
-          <p className="text-xs text-gray-300 font-medium font-bangla">
+          <p className="text-[10px] text-gray-300 font-medium font-bangla leading-none mt-0.5">
             {getStageTitle()}
           </p>
         </div>
       </div>
 
-      <div className="flex items-center space-x-2">
+      <div className="flex items-center space-x-1.5">
         {student && (
           <div 
-            className="px-2.5 py-1 rounded-lg text-xs font-black border-2 border-[#1E232A] flex items-center space-x-1 shadow-pop-sm"
+            className="px-2 py-1 rounded-lg text-xs font-black border-2 border-[#1E232A] flex items-center space-x-1 shadow-pop-sm"
             style={{ backgroundColor: student.themeColor, color: '#1E232A' }}
           >
-            <Shield className="w-3.5 h-3.5" />
-            <span>{student.deptAbbr}-{student.batchShort}</span>
+            <Shield className="w-3 h-3" />
+            <span>{student.deptAbbr} '{student.batchShort}</span>
           </div>
         )}
 
         {onOpenLeaderboard && (
           <button
             onClick={() => { sound.playPop(); onOpenLeaderboard(); }}
-            className="p-2 rounded-xl bg-[#3585DA] border-2 border-[#1E232A] text-white shadow-pop-sm active:translate-y-0.5 cursor-pointer"
+            className="p-1.5 rounded-xl bg-[#3585DA] border-2 border-[#1E232A] text-white shadow-pop-sm active:translate-y-0.5 cursor-pointer"
             title="লিডারবোর্ড"
           >
             <Trophy className="w-4 h-4 text-[#FFE66D]" />
@@ -84,7 +84,7 @@ export const Header: React.FC<HeaderProps> = ({
 
         <button
           onClick={toggleSound}
-          className="p-2 rounded-xl bg-[#6C7A89] border-2 border-[#1E232A] text-white shadow-pop-sm active:translate-y-0.5 cursor-pointer"
+          className="p-1.5 rounded-xl bg-[#6C7A89] border-2 border-[#1E232A] text-white shadow-pop-sm active:translate-y-0.5 cursor-pointer"
           title="সাউন্ড চালু/বন্ধ"
         >
           {muted ? <VolumeX className="w-4 h-4 text-red-300" /> : <Volume2 className="w-4 h-4 text-green-300" />}

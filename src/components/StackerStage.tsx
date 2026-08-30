@@ -450,36 +450,35 @@ export const StackerStage: React.FC<StackerStageProps> = ({
   };
 
   return (
-    <div className="w-full flex-1 min-h-0 flex flex-col gap-2.5 touch-none select-none cursor-pointer animate-bounce-in">
-      {/* Top Header Card */}
-      <div className="w-full pop-box p-3 sm:p-4 bg-white flex items-center justify-between shadow-pop-sm">
+    <div className="w-full h-full flex flex-col justify-between gap-1.5 touch-none select-none cursor-pointer animate-bounce-in overflow-hidden">
+      {/* 1. Top Header Card */}
+      <div className="w-full pop-box p-2.5 bg-white flex items-center justify-between shadow-pop-sm flex-shrink-0">
         <div>
-          <span className="text-xs font-bold text-gray-500 font-bangla block">স্টেপ ৩: টাওয়ার স্ট্যাক (ব্যক্তিগত স্কোর)</span>
-          <h2 className="text-base sm:text-lg font-black font-bangla text-[#1E232A]">
+          <span className="text-[11px] font-bold text-gray-500 font-bangla block leading-none">স্টেপ ৩: টাওয়ার স্ট্যাক (ব্যক্তিগত স্কোর)</span>
+          <h2 className="text-sm sm:text-base font-black font-bangla text-[#1E232A] mt-0.5">
             🏗️ সর্বোচ্চ তলায় পৌঁছাও!
           </h2>
         </div>
 
-        <div className="flex items-center space-x-2">
-          <div className="bg-[#FFF9D2] px-3 py-1 rounded-xl border-2 border-[#1E232A] text-center shadow-pop-sm">
-            <span className="text-[10px] font-bold text-gray-600 block leading-none">উচ্চতা</span>
-            <span className="text-base sm:text-lg font-black text-[#1E232A] leading-tight">{floors} তলা</span>
+        <div className="flex items-center space-x-1.5">
+          <div className="bg-[#FFF9D2] px-2.5 py-1 rounded-xl border-2 border-[#1E232A] text-center shadow-pop-sm">
+            <span className="text-[9px] font-bold text-gray-600 block leading-none">উচ্চতা</span>
+            <span className="text-sm sm:text-base font-black text-[#1E232A] leading-tight">{floors} তলা</span>
           </div>
 
           {combos > 1 && (
-            <div className="bg-[#4ECDC4] px-2.5 py-1 rounded-xl border-2 border-[#1E232A] text-center shadow-pop-sm animate-bounce">
-              <span className="text-[9px] font-bold text-[#1E232A] block leading-none">কম্বো</span>
+            <div className="bg-[#4ECDC4] px-2 py-1 rounded-xl border-2 border-[#1E232A] text-center shadow-pop-sm animate-bounce">
+              <span className="text-[8px] font-bold text-[#1E232A] block leading-none">কম্বো</span>
               <span className="text-xs font-black text-[#1E232A] leading-tight">×{combos} 🔥</span>
             </div>
           )}
         </div>
       </div>
 
-      {/* Main Full-Screen Touch Canvas Container */}
+      {/* 2. Main Full-Screen Touch Canvas Container (Fills remaining middle space) */}
       <div 
         ref={containerRef}
-        className="w-full flex-1 pop-box p-1.5 bg-[#FFFBEB] border-4 border-[#1E232A] relative flex flex-col items-center justify-center shadow-pop overflow-hidden"
-        style={{ minHeight: 'calc(100vh - 200px)' }}
+        className="w-full flex-1 min-h-0 pop-box p-1.5 bg-[#FFFBEB] border-3.5 border-[#1E232A] relative flex flex-col items-center justify-center shadow-pop overflow-hidden"
       >
         <canvas
           ref={canvasRef}
@@ -489,16 +488,16 @@ export const StackerStage: React.FC<StackerStageProps> = ({
         {/* Overlay: Ready State */}
         {uiState === 'READY' && (
           <div className="absolute inset-0 bg-black/45 backdrop-blur-xs rounded-2xl flex flex-col items-center justify-center p-4 text-white text-center animate-bounce-in pointer-events-none">
-            <div className="w-16 h-16 rounded-3xl bg-[#FFE66D] border-3 border-[#1E232A] shadow-pop flex items-center justify-center text-3xl mb-3 animate-bounce">
+            <div className="w-14 h-14 rounded-3xl bg-[#FFE66D] border-3 border-[#1E232A] shadow-pop flex items-center justify-center text-2xl mb-2 animate-bounce">
               🏗️
             </div>
-            <h3 className="text-2xl font-black font-bangla text-[#FFE66D]">
+            <h3 className="text-xl font-black font-bangla text-[#FFE66D]">
               স্ক্রিনের যেকোনো জায়গায় ট্যাপ করো!
             </h3>
-            <p className="text-xs sm:text-sm text-gray-200 mt-1 font-bangla max-w-xs leading-relaxed">
+            <p className="text-xs text-gray-200 mt-1 font-bangla max-w-xs leading-snug">
               স্লাইডিং ব্লকটি আগের ব্লকের ঠিক ওপরে পড়লে নিখুঁত কম্বো পাবে। যত উঁচু উঠবে, তত বেশি পয়েন্ট!
             </p>
-            <div className="mt-4 px-6 py-3 bg-[#4ECDC4] text-[#1E232A] rounded-2xl border-3 border-[#1E232A] font-black text-base font-bangla shadow-pop animate-pulse">
+            <div className="mt-3 px-5 py-2.5 bg-[#4ECDC4] text-[#1E232A] rounded-2xl border-3 border-[#1E232A] font-black text-sm font-bangla shadow-pop animate-pulse">
               👆 যেকোনো জায়গায় ট্যাপ করে শুরু করো
             </div>
           </div>
@@ -508,24 +507,24 @@ export const StackerStage: React.FC<StackerStageProps> = ({
         {uiState === 'GAME_OVER' && (
           <div 
             onPointerDown={(e) => e.stopPropagation()}
-            className="absolute inset-0 bg-[#1E232A]/90 backdrop-blur-xs rounded-2xl flex flex-col items-center justify-center p-5 text-white text-center animate-bounce-in space-y-3 cursor-default"
+            className="absolute inset-0 bg-[#1E232A]/90 backdrop-blur-xs rounded-2xl flex flex-col items-center justify-center p-4 text-white text-center animate-bounce-in space-y-2.5 cursor-default"
           >
-            <div className="w-14 h-14 rounded-3xl bg-[#FF6B6B] border-3 border-white flex items-center justify-center text-3xl shadow-pop">
+            <div className="w-12 h-12 rounded-2xl bg-[#FF6B6B] border-3 border-white flex items-center justify-center text-2xl shadow-pop">
               🏢
             </div>
 
-            <h3 className="text-2xl font-black font-bangla text-[#FFE66D]">
+            <h3 className="text-xl font-black font-bangla text-[#FFE66D]">
               টাওয়ার পড়ে গেছে!
             </h3>
 
-            <div className="bg-white/10 p-4 rounded-2xl border-2 border-white/20 w-full max-w-xs space-y-2">
-              <div className="flex justify-between items-center text-sm font-bangla">
+            <div className="bg-white/10 p-3 rounded-2xl border-2 border-white/20 w-full max-w-xs space-y-1.5">
+              <div className="flex justify-between items-center text-xs font-bangla">
                 <span className="text-gray-300">সর্বোচ্চ উচ্চতা:</span>
-                <strong className="text-xl text-[#4ECDC4] font-black">{floors} তলা</strong>
+                <strong className="text-lg text-[#4ECDC4] font-black">{floors} তলা</strong>
               </div>
-              <div className="flex justify-between items-center text-sm font-bangla">
+              <div className="flex justify-between items-center text-xs font-bangla">
                 <span className="text-gray-300">ম্যাক্স কম্বো:</span>
-                <strong className="text-xl text-amber-300 font-black">×{maxCombos} 🔥</strong>
+                <strong className="text-lg text-amber-300 font-black">×{maxCombos} 🔥</strong>
               </div>
             </div>
 
@@ -534,17 +533,17 @@ export const StackerStage: React.FC<StackerStageProps> = ({
                 sound.playPop();
                 onAdvanceToNextStage();
               }}
-              className="pop-btn w-full py-4 bg-[#6BCB77] text-[#1E232A] font-black text-base font-bangla flex items-center justify-center space-x-2 shadow-pop animate-bounce cursor-pointer mt-2"
+              className="pop-btn w-full py-3 bg-[#6BCB77] text-[#1E232A] font-black text-sm sm:text-base font-bangla flex items-center justify-center space-x-2 shadow-pop animate-bounce cursor-pointer mt-1"
             >
               <span>শেষ ধাপ (স্পাইসি পোল) এ যাও</span>
-              <ArrowRight className="w-5 h-5" />
+              <ArrowRight className="w-4 h-4" />
             </button>
           </div>
         )}
       </div>
 
-      {/* Floating Instructions Footer */}
-      <div className="text-center font-bangla text-xs sm:text-sm font-bold text-gray-700 py-1">
+      {/* 3. Floating Instructions Footer */}
+      <div className="text-center font-bangla text-[11px] font-bold text-gray-800 py-1 bg-white/60 rounded-xl border border-[#1E232A]/20 flex-shrink-0">
         {uiState === 'PLAYING' ? (
           <span className="text-emerald-800 font-black animate-pulse">👆 স্ক্রিনের যেকোনো জায়গায় (উপরে/নিচে/মাঝে) ট্যাপ করলেই ব্লক ড্রপ হবে!</span>
         ) : (

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Socket } from 'socket.io-client';
-import { Sparkles, Trophy, LogIn, AlertCircle, Radio } from 'lucide-react';
+import { Sparkles, Trophy, LogIn, AlertCircle } from 'lucide-react';
 import { 
   ParsedStudent, 
   PlayerRecord, 
@@ -10,7 +10,7 @@ import {
 import { parseStudentID } from './data/departments';
 import { sound } from './utils/sound';
 import { vibrate } from './utils/haptics';
-import { apiFetch, createGameSocket, BACKEND_URL } from './config';
+import { apiFetch, createGameSocket } from './config';
 
 import { Header } from './components/Header';
 import { BanglaBriefing } from './components/BanglaBriefing';
@@ -155,34 +155,34 @@ export const App: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#F9D342] flex flex-col font-bangla select-none w-full max-w-full overflow-x-hidden">
+    <div className="h-[100dvh] max-h-[100dvh] w-full max-w-full bg-[#F9D342] flex flex-col font-bangla select-none overflow-hidden">
       <Header
         student={parsedStudent}
         currentStage={currentStage}
         onOpenLeaderboard={() => setShowLeaderboardModal(true)}
       />
 
-      <main className="flex-1 w-full min-w-0 flex flex-col px-2.5 pt-2 pb-6 gap-0 overflow-x-hidden">
+      <main className="flex-1 min-h-0 w-full flex flex-col p-2 sm:p-3 overflow-hidden">
         {/* STAGE 0: LOGIN & ID / RFID ENTRY */}
         {currentStage === 'LOGIN' && (
-          <div className="w-full flex flex-col justify-center min-h-[calc(100vh-80px)] py-4 animate-bounce-in">
-            <div className="pop-box w-full p-5 bg-[#FFFBEB] flex flex-col space-y-5 shadow-pop-lg">
+          <div className="w-full h-full flex flex-col justify-center animate-bounce-in">
+            <div className="pop-box w-full p-4 sm:p-5 bg-[#FFFBEB] flex flex-col space-y-4 shadow-pop-lg">
               {/* Logo / Badge */}
-              <div className="w-18 h-18 mx-auto rounded-3xl bg-[#FFE66D] border-4 border-[#1E232A] shadow-pop flex flex-col items-center justify-center animate-bounce">
-                <span className="text-3xl">🎮</span>
-                <span className="text-[10px] font-black text-[#1E232A] mt-0.5 font-display">FEST ARENA</span>
+              <div className="w-16 h-16 mx-auto rounded-3xl bg-[#FFE66D] border-3.5 border-[#1E232A] shadow-pop flex flex-col items-center justify-center animate-bounce">
+                <span className="text-2xl">🎮</span>
+                <span className="text-[9px] font-black text-[#1E232A] mt-0.5 font-display">FEST ARENA</span>
               </div>
 
               <div className="text-center">
-                <h2 className="text-2xl font-black text-[#1E232A] leading-tight font-bangla">
+                <h2 className="text-xl sm:text-2xl font-black text-[#1E232A] leading-tight font-bangla">
                   ডিপার্টমেন্ট ক্ল্যাশ ২০২৬
                 </h2>
-                <p className="text-xs sm:text-sm font-bold text-gray-600 mt-1 font-bangla">
+                <p className="text-xs font-bold text-gray-600 mt-1 font-bangla">
                   বুথে অনুমোদিত স্টুডেন্ট আইডি অথবা RFID ট্যাপ করুন:
                 </p>
               </div>
 
-              <form onSubmit={handleStudentLogin} className="space-y-3.5">
+              <form onSubmit={handleStudentLogin} className="space-y-3">
                 <div>
                   <input
                     type="text"
@@ -190,7 +190,7 @@ export const App: React.FC = () => {
                     placeholder="e.g. 2204055"
                     value={studentIdInput}
                     onChange={(e) => handleIdInputChange(e.target.value)}
-                    className="w-full text-center text-2xl font-black font-display tracking-widest px-4 py-3.5 bg-white border-3 border-[#1E232A] rounded-2xl shadow-pop-sm focus:outline-none focus:ring-2 focus:ring-[#4ECDC4]"
+                    className="w-full text-center text-2xl font-black font-display tracking-widest px-3 py-3 bg-white border-3 border-[#1E232A] rounded-2xl shadow-pop-sm focus:outline-none focus:ring-2 focus:ring-[#4ECDC4]"
                     autoFocus
                   />
                 </div>
@@ -198,16 +198,16 @@ export const App: React.FC = () => {
                 {/* Auto-Decoded Preview */}
                 {parsedStudent && (
                   <div 
-                    className="p-3 rounded-xl border-2 border-[#1E232A] text-left text-xs font-black flex items-center justify-between animate-bounce-in shadow-pop-sm"
+                    className="p-2.5 rounded-xl border-2 border-[#1E232A] text-left text-xs font-black flex items-center justify-between animate-bounce-in shadow-pop-sm"
                     style={{ backgroundColor: parsedStudent.lightColor, color: '#1E232A' }}
                   >
                     <div>
                       <span className="block text-[10px] text-gray-500">শনাক্তকৃত ডিপার্টমেন্ট:</span>
-                      <span className="text-sm font-black">{parsedStudent.deptName} ({parsedStudent.deptAbbr})</span>
+                      <span className="text-xs font-black">{parsedStudent.deptName} ({parsedStudent.deptAbbr})</span>
                     </div>
                     <div className="text-right">
                       <span className="block text-[10px] text-gray-500">ব্যাচ:</span>
-                      <span className="text-sm font-black">{parsedStudent.batchShort} ব্যাচ</span>
+                      <span className="text-xs font-black">{parsedStudent.batchShort} ব্যাচ</span>
                     </div>
                   </div>
                 )}
@@ -215,7 +215,7 @@ export const App: React.FC = () => {
                 <button
                   type="submit"
                   disabled={!studentIdInput.trim() || isLoading}
-                  className={`pop-btn w-full py-3.5 font-black text-base flex items-center justify-center space-x-2 transition-all cursor-pointer ${
+                  className={`pop-btn w-full py-3 font-black text-base flex items-center justify-center space-x-2 transition-all cursor-pointer ${
                     studentIdInput.trim() && !isLoading
                       ? 'bg-[#4ECDC4] text-[#1E232A] shadow-pop hover:bg-[#3dbdb5]'
                       : 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-60'
@@ -223,12 +223,12 @@ export const App: React.FC = () => {
                 >
                   <LogIn className="w-5 h-5" />
                   <span>{isLoading ? 'যাচাই করা হচ্ছে...' : 'লগইন করুন ও খেলুন'}</span>
-                  <Sparkles className="w-5 h-5 text-[#F9D342]" />
+                  <Sparkles className="w-4 h-4 text-[#F9D342]" />
                 </button>
               </form>
 
               {loginError && (
-                <div className="p-3 bg-[#FFE0E2] border-2 border-[#FF5964] rounded-xl text-xs font-bold text-[#D32F2F] flex items-start space-x-2 text-left animate-bounce-in">
+                <div className="p-2.5 bg-[#FFE0E2] border-2 border-[#FF5964] rounded-xl text-xs font-bold text-[#D32F2F] flex items-start space-x-2 text-left animate-bounce-in">
                   <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
                   <span>{loginError}</span>
                 </div>
