@@ -48,7 +48,7 @@ export const PollStage: React.FC<PollStageProps> = ({ student, onPollSubmit }) =
   };
 
   return (
-    <div className="w-full flex-1 flex flex-col gap-3 animate-bounce-in">
+    <div className="w-full flex flex-col gap-3 animate-bounce-in">
       {/* Top Banner */}
       <div className="w-full pop-box p-3 sm:p-4 bg-white flex items-center justify-between shadow-pop-sm">
         <div>

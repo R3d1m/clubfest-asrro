@@ -45,7 +45,7 @@ export const HeroSummary: React.FC<HeroSummaryProps> = ({
   };
 
   return (
-    <div className="w-full max-w-md mx-auto p-4 flex flex-col items-center justify-center min-h-[calc(100vh-65px)] space-y-4">
+    <div className="w-full flex flex-col items-center justify-center min-h-[calc(100vh-65px)] space-y-4 py-4">
       {/* Hero Badge Card */}
       <div className="pop-box w-full p-6 bg-[#FFFBEB] border-4 border-[#1E232A] text-center space-y-5 animate-bounce-in shadow-pop-lg">
         {/* Top Dept Emblem */}

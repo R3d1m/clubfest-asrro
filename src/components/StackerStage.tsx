@@ -450,7 +450,7 @@ export const StackerStage: React.FC<StackerStageProps> = ({
   };
 
   return (
-    <div className="w-full flex-1 flex flex-col gap-2.5 touch-none select-none cursor-pointer animate-bounce-in">
+    <div className="w-full flex-1 min-h-0 flex flex-col gap-2.5 touch-none select-none cursor-pointer animate-bounce-in">
       {/* Top Header Card */}
       <div className="w-full pop-box p-3 sm:p-4 bg-white flex items-center justify-between shadow-pop-sm">
         <div>
@@ -478,7 +478,8 @@ export const StackerStage: React.FC<StackerStageProps> = ({
       {/* Main Full-Screen Touch Canvas Container */}
       <div 
         ref={containerRef}
-        className="w-full flex-1 min-h-[380px] sm:min-h-[440px] pop-box p-1.5 bg-[#FFFBEB] border-4 border-[#1E232A] relative flex flex-col items-center justify-center shadow-pop overflow-hidden"
+        className="w-full flex-1 pop-box p-1.5 bg-[#FFFBEB] border-4 border-[#1E232A] relative flex flex-col items-center justify-center shadow-pop overflow-hidden"
+        style={{ minHeight: 'calc(100vh - 200px)' }}
       >
         <canvas
           ref={canvasRef}

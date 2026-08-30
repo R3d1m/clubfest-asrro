@@ -162,10 +162,10 @@ export const App: React.FC = () => {
         onOpenLeaderboard={() => setShowLeaderboardModal(true)}
       />
 
-      <main className="flex-1 w-full max-w-md mx-auto min-w-0 flex flex-col p-3 pb-6">
+      <main className="flex-1 w-full min-w-0 flex flex-col px-2.5 pt-2 pb-6 gap-0 overflow-x-hidden">
         {/* STAGE 0: LOGIN & ID / RFID ENTRY */}
         {currentStage === 'LOGIN' && (
-          <div className="w-full flex-1 flex flex-col justify-center py-2 animate-bounce-in">
+          <div className="w-full flex flex-col justify-center min-h-[calc(100vh-80px)] py-4 animate-bounce-in">
             <div className="pop-box w-full p-5 bg-[#FFFBEB] flex flex-col space-y-5 shadow-pop-lg">
               {/* Logo / Badge */}
               <div className="w-18 h-18 mx-auto rounded-3xl bg-[#FFE66D] border-4 border-[#1E232A] shadow-pop flex flex-col items-center justify-center animate-bounce">

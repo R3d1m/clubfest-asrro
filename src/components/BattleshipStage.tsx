@@ -253,7 +253,7 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
             overflowY: 'auto',
             WebkitOverflowScrolling: 'touch'
           }}
-          className="h-[300px] sm:h-[340px] rounded-xl bg-[#1A252F] border-2 border-[#1E232A] relative scroll-smooth cursor-crosshair touch-pan-x touch-pan-y"
+          className="h-[55vh] max-h-[500px] rounded-xl bg-[#1A252F] border-2 border-[#1E232A] relative scroll-smooth cursor-crosshair touch-pan-x touch-pan-y"
         >
           <div 
             className="grid gap-[2px] p-2"
