@@ -9,11 +9,7 @@ import {
   ArrowLeft, 
   Radio, 
   Search, 
-  Filter, 
-  RotateCcw,
-  Clock,
-  Layers,
-  Award
+  RotateCcw
 } from 'lucide-react';
 import { parseStudentID, DEPARTMENT_LIST, DEPARTMENTS } from '../data/departments';
 import { ServerStateSnapshot, PlayerRecord } from '../types';
@@ -45,7 +41,7 @@ export const AdminDesk: React.FC<AdminDeskProps> = ({ serverState, onBackToPlaye
     try {
       const res = await apiFetch('/api/admin/players');
       const data = await res.json();
-      if (data.success && Array.query !== null) {
+      if (data.success && Array.isArray(data.players)) {
         setPlayersList(data.players || []);
       }
     } catch (err) {
@@ -132,6 +128,7 @@ export const AdminDesk: React.FC<AdminDeskProps> = ({ serverState, onBackToPlaye
     }
   };
 
+  /* Emergency Reset Board Handler (Commented Out)
   const handleResetBoard = async () => {
     if (!confirm('আপনি কি নিশ্চিত যে পুরো গেমের সমস্ত ডেটা ও স্কোর রিসেট করতে চান?')) return;
     try {
@@ -143,6 +140,7 @@ export const AdminDesk: React.FC<AdminDeskProps> = ({ serverState, onBackToPlaye
       alert('রিসেট ব্যর্থ হয়েছে');
     }
   };
+  */
 
   // Filter & Search computation
   const filteredPlayers = useMemo(() => {
@@ -472,7 +470,7 @@ export const AdminDesk: React.FC<AdminDeskProps> = ({ serverState, onBackToPlaye
         </div>
       </div>
 
-      {/* Emergency Control / Danger Zone */}
+      {/* Emergency Control / Danger Zone (Commented Out)
       <div className="pop-box p-3.5 bg-white border-3 border-[#1E232A] flex items-center justify-between shadow-pop-sm">
         <div>
           <h4 className="text-xs font-black text-red-600">জরুরি কন্ট্রোল (Emergency Reset)</h4>
@@ -487,6 +485,7 @@ export const AdminDesk: React.FC<AdminDeskProps> = ({ serverState, onBackToPlaye
           <span>রিসেট অল</span>
         </button>
       </div>
-    </div>
+      */}
+    </div> 
   );
 };
