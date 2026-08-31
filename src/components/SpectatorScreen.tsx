@@ -57,7 +57,7 @@ export const SpectatorScreen: React.FC<SpectatorScreenProps> = ({ serverState, o
 
           <button
             onClick={toggleFullscreen}
-            className="p-2 rounded-xl bg-[#6C7A89] border-2 border-white/40 text-white shadow-pop-sm hover:bg-[#586470]"
+            className="p-2 rounded-xl bg-[#6C7A89] border-2 border-white/40 text-white shadow-pop-sm hover:bg-[#586470] cursor-pointer"
             title="ফুলস্ক্রিন"
           >
             {isFullscreen ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
@@ -67,20 +67,20 @@ export const SpectatorScreen: React.FC<SpectatorScreenProps> = ({ serverState, o
 
       {/* 4 Main Arena Quadrants (Side-by-Side) */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3.5 my-3.5 flex-1">
-        {/* Quadrant 1: Battleship Base Hunters */}
-        <div className="pop-box p-4 bg-white border-3 border-[#1E232A] flex flex-col shadow-pop">
-          <div className="flex items-center justify-between border-b-3 border-[#1E232A] pb-2 mb-2.5">
+        {/* Quadrant 1: Battleship Base Hunters (All 12 Depts) */}
+        <div className="pop-box p-4 bg-white border-3 border-[#1E232A] flex flex-col shadow-pop max-h-[580px]">
+          <div className="flex items-center justify-between border-b-3 border-[#1E232A] pb-2 mb-2.5 flex-shrink-0">
             <div className="flex items-center space-x-1.5">
               <span className="text-xl">🎯</span>
               <h2 className="font-black text-sm text-[#1E232A]">গুপ্ত বনাম প্রকাশ্য</h2>
             </div>
             <span className="text-[10px] font-black px-2 py-0.5 bg-[#FFE0E2] border border-[#1E232A] rounded-md text-[#D32F2F]">
-              শত্রু ঘাঁটি উন্মোচন
+              শত্রু ঘাঁটি উন্মোচন ({battleshipRanks.length})
             </span>
           </div>
 
           <div className="space-y-1.5 flex-1 overflow-y-auto pr-1">
-            {battleshipRanks.slice(0, 7).map((dept, idx) => {
+            {battleshipRanks.map((dept, idx) => {
               const isLeader = hasAnyBattleship && idx === 0 && (dept.battleshipScore > 0 || dept.battleshipFragmentsFound > 0);
               return (
                 <div
@@ -114,20 +114,20 @@ export const SpectatorScreen: React.FC<SpectatorScreenProps> = ({ serverState, o
           </div>
         </div>
 
-        {/* Quadrant 2: Mega Connect-4 */}
-        <div className="pop-box p-4 bg-white border-3 border-[#1E232A] flex flex-col shadow-pop">
-          <div className="flex items-center justify-between border-b-3 border-[#1E232A] pb-2 mb-2.5">
+        {/* Quadrant 2: Mega Connect-4 (All 12 Depts) */}
+        <div className="pop-box p-4 bg-white border-3 border-[#1E232A] flex flex-col shadow-pop max-h-[580px]">
+          <div className="flex items-center justify-between border-b-3 border-[#1E232A] pb-2 mb-2.5 flex-shrink-0">
             <div className="flex items-center space-x-1.5">
               <span className="text-xl">🔴</span>
               <h2 className="font-black text-sm text-[#1E232A]">ডিপার্টমেন্টাল বন্ডিং</h2>
             </div>
             <span className="text-[10px] font-black px-2 py-0.5 bg-[#D4F8F0] border border-[#1E232A] rounded-md text-[#00897B]">
-              গ্রে লক পয়েন্ট
+              গ্রে লক পয়েন্ট ({connect4Ranks.length})
             </span>
           </div>
 
           <div className="space-y-1.5 flex-1 overflow-y-auto pr-1">
-            {connect4Ranks.slice(0, 7).map((dept, idx) => {
+            {connect4Ranks.map((dept, idx) => {
               const isLeader = hasAnyConnect4 && idx === 0 && dept.connect4Score > 0;
               return (
                 <div
@@ -157,8 +157,8 @@ export const SpectatorScreen: React.FC<SpectatorScreenProps> = ({ serverState, o
         </div>
 
         {/* Quadrant 3: Individual Stacker Hall of Fame */}
-        <div className="pop-box p-4 bg-white border-3 border-[#1E232A] flex flex-col shadow-pop">
-          <div className="flex items-center justify-between border-b-3 border-[#1E232A] pb-2 mb-2.5">
+        <div className="pop-box p-4 bg-white border-3 border-[#1E232A] flex flex-col shadow-pop max-h-[580px]">
+          <div className="flex items-center justify-between border-b-3 border-[#1E232A] pb-2 mb-2.5 flex-shrink-0">
             <div className="flex items-center space-x-1.5">
               <span className="text-xl">🏗️</span>
               <h2 className="font-black text-sm text-[#1E232A]">নাম কামাও!</h2>
@@ -170,7 +170,7 @@ export const SpectatorScreen: React.FC<SpectatorScreenProps> = ({ serverState, o
 
           <div className="space-y-1.5 flex-1 overflow-y-auto pr-1">
             {topStackers.length > 0 ? (
-              topStackers.slice(0, 7).map((record, idx) => (
+              topStackers.slice(0, 15).map((record, idx) => (
                 <div
                   key={record.studentId + idx}
                   className="p-2 rounded-xl border-2 border-[#1E232A] flex items-center justify-between text-xs font-black shadow-pop-sm"
@@ -200,8 +200,8 @@ export const SpectatorScreen: React.FC<SpectatorScreenProps> = ({ serverState, o
         </div>
 
         {/* Quadrant 4: Spicy Fest Poll Infographics */}
-        <div className="pop-box p-4 bg-white border-3 border-[#1E232A] flex flex-col shadow-pop">
-          <div className="flex items-center justify-between border-b-3 border-[#1E232A] pb-2 mb-2.5">
+        <div className="pop-box p-4 bg-white border-3 border-[#1E232A] flex flex-col shadow-pop max-h-[580px]">
+          <div className="flex items-center justify-between border-b-3 border-[#1E232A] pb-2 mb-2.5 flex-shrink-0">
             <div className="flex items-center space-x-1.5">
               <span className="text-xl">🌶️</span>
               <h2 className="font-black text-sm text-[#1E232A]">স্পাইসি ফেস্ট পোল</h2>
@@ -256,18 +256,18 @@ export const SpectatorScreen: React.FC<SpectatorScreenProps> = ({ serverState, o
 
       {/* Bottom Grand Standings & Live Activity Ticker */}
       <div className="space-y-2">
-        {/* Overall Grand Podium Bar */}
+        {/* Overall Grand Podium Bar (All 12 Depts) */}
         <div className="pop-box p-3 bg-[#FFFBEB] border-4 border-[#1E232A] shadow-pop flex flex-col sm:flex-row items-center justify-between gap-2">
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 flex-shrink-0">
             <Trophy className="w-7 h-7 text-amber-500 flex-shrink-0 animate-bounce" />
             <div>
               <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest block">গ্র্যান্ড চ্যাম্পিয়নশিপ</span>
-              <h3 className="text-sm font-black text-[#1E232A]">সামগ্রিক শীর্ষ ডিপার্টমেন্ট:</h3>
+              <h3 className="text-sm font-black text-[#1E232A]">১২টি ডিপার্টমেন্টের সামগ্রিক র‍্যাঙ্কিং:</h3>
             </div>
           </div>
 
           <div className="flex items-center space-x-2 overflow-x-auto max-w-full pb-1 sm:pb-0">
-            {leaderboard.slice(0, 5).map((dept, idx) => {
+            {leaderboard.map((dept, idx) => {
               const isLeader = hasAnyGrand && idx === 0 && dept.grandScore > 0;
               return (
                 <div
