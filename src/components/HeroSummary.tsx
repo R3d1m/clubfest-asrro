@@ -59,9 +59,9 @@ export const HeroSummary: React.FC<HeroSummaryProps> = ({
   // Number of unveiled enemy bases
   const hitCount = useMemo(() => {
     return (player.battleshipMoves || []).filter(
-      m => m.result === 'HIT' && m.hitDept && m.hitDept !== player.deptCode
+      m => m.result === 'HIT'
     ).length;
-  }, [player.battleshipMoves, player.deptCode]);
+  }, [player.battleshipMoves]);
 
   useEffect(() => {
     sound.playStreakChime();

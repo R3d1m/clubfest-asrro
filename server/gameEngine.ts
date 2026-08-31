@@ -187,7 +187,7 @@ export class GameEngine {
     x: number, 
     y: number, 
     action: 'ATTACK' | 'HIDE'
-  ): { success: boolean; result?: string; message: string; state?: ServerStateSnapshot } {
+  ): { success: boolean; result?: string; hitDept?: DepartmentCode; points?: number; message: string; state?: ServerStateSnapshot } {
     const player = this.players[studentId];
     if (!player) return { success: false, message: 'শিক্ষার্থী রেজিস্টার্ড নয়!' };
     if (player.battleshipAP <= 0) return { success: false, message: 'সব চাল শেষ হয়েছে!' };
@@ -262,6 +262,8 @@ export class GameEngine {
         return { 
           success: true, 
           result: 'HIT', 
+          hitDept: hitFrag.deptCode,
+          points: pts,
           message: `🎯 সফল আক্রমণ! ${DEPARTMENTS[hitFrag.deptCode].name} এর বেস ফাঁস হয়েছে (+${pts} pts)!`,
           state: this.getSnapshot()
         };

@@ -258,14 +258,23 @@ export const App: React.FC = () => {
             student={parsedStudent}
             initialState={serverState.battleship}
             remainingAP={playerRecord?.battleshipAP ?? 3}
-            onMoveComplete={(res) => {
+            onMoveComplete={(res: any) => {
               if (playerRecord) {
-                playerRecord.battleshipAP--;
-                playerRecord.battleshipMoves.push({
-                  x: res.x,
-                  y: res.y,
-                  action: res.action,
-                  result: res.resultType as any
+                const updatedMoves = [
+                  ...(playerRecord.battleshipMoves || []),
+                  {
+                    x: res.x,
+                    y: res.y,
+                    action: res.action,
+                    hitDept: res.hitDept,
+                    result: res.resultType as any
+                  }
+                ];
+                setPlayerRecord({
+                  ...playerRecord,
+                  battleshipAP: Math.max(0, playerRecord.battleshipAP - 1),
+                  battleshipMoves: updatedMoves,
+                  totalPointsEarned: playerRecord.totalPointsEarned + (res.points || 0)
                 });
               }
             }}

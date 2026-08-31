@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Target, CloudRain, AlertCircle, ArrowRight, ShieldCheck, Flame, Waves, Move } from 'lucide-react';
-import { BattleshipState, ParsedStudent } from '../types';
+import { BattleshipState, ParsedStudent, DepartmentCode } from '../types';
 import { DEPARTMENTS } from '../data/departments';
 import { sound } from '../utils/sound';
 import { vibrate, vibratePattern } from '../utils/haptics';
@@ -15,6 +15,8 @@ interface BattleshipStageProps {
     y: number;
     action: 'ATTACK' | 'HIDE';
     resultType: string;
+    hitDept?: DepartmentCode;
+    points?: number;
     message: string;
     newState: BattleshipState;
   }) => void;
@@ -121,6 +123,8 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
           y,
           action: mode,
           resultType: data.result,
+          hitDept: data.hitDept,
+          points: data.points,
           message: data.message,
           newState: data.state?.battleship || state
         });
