@@ -175,8 +175,8 @@ app.get('/api/state', (req, res) => {
 // 9. Admin Controls (List Registered Students, Reset, Toggle Day)
 app.get('/api/admin/players', (req, res) => {
   const players = Object.values(gameEngine.players).sort((a, b) => {
-    const timeA = a.registeredAt ? new Date(a.registeredAt).getTime() : 0;
-    const timeB = b.registeredAt ? new Date(b.registeredAt).getTime() : 0;
+    const timeA = a.authorizedAt || 0;
+    const timeB = b.authorizedAt || 0;
     return timeB - timeA;
   });
   return res.json({ success: true, count: players.length, players });
