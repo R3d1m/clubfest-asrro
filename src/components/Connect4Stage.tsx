@@ -74,14 +74,14 @@ export const Connect4Stage: React.FC<Connect4StageProps> = ({
           setStreakResult({ earned: true, points: data.points });
         } else {
           sound.playDrop();
-          setStreakResult({ earned: false, points: 0 });
+          setStreakResult({ earned: false, points: data.points || 10 });
         }
 
         onDropComplete({
           col,
           row: data.row,
           streakEarned: data.streakEarned,
-          points: data.points || 0,
+          points: data.points || 10,
           newState: data.state?.connect4 || state
         });
       }
@@ -225,8 +225,8 @@ export const Connect4Stage: React.FC<Connect4StageProps> = ({
             <>
               <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
               <div>
-                <strong className="font-black block text-xs">বল সফলভাবে ড্রপ হয়েছে!</strong>
-                <span className="text-gray-600 text-[10px]">বন্ধুদের বলো তোমার বলের পাশেই বল ড্রপ করতে!</span>
+                <strong className="font-black block text-xs">বল সফলভাবে ড্রপ হয়েছে (+{streakResult.points || 10} pts)!</strong>
+                <span className="text-gray-600 text-[10px]">তোমার ডিপার্টমেন্ট পয়েন্ট পেয়েছে। বন্ধুদের বলো পাশেই ড্রপ করতে!</span>
               </div>
             </>
           )}

@@ -307,14 +307,21 @@ export class GameEngine {
     this.connect4.grid[col][targetRow] = newCell;
     player.connect4Col = col;
 
+    // 1. Base Ball Drop Participation Bonus (+10 Pts for Department & Player)
+    const dropPoints = 10;
+    this.connect4.streakScores[player.deptCode].points += dropPoints;
+    player.totalPointsEarned += dropPoints;
+
     const streak = this.checkConnect4Streak(col, targetRow, player.deptCode);
     let streakEarned = false;
-    let points = 0;
+    let totalPoints = dropPoints;
 
     if (streak) {
       streakEarned = true;
       const streakId = `STREAK_${Date.now()}`;
-      points = Math.round(100 * DEPARTMENTS[player.deptCode].multiplier);
+      // Fair Department Multiplier for 4-in-a-row completion
+      const streakBonus = Math.round(100 * DEPARTMENTS[player.deptCode].multiplier);
+      totalPoints += streakBonus;
 
       streak.forEach(([c, r]) => {
         const cell = this.connect4.grid[c][r];
@@ -328,16 +335,16 @@ export class GameEngine {
         streakId,
         deptCode: player.deptCode,
         cells: streak,
-        points
+        points: streakBonus
       });
 
       this.connect4.streakScores[player.deptCode].count++;
-      this.connect4.streakScores[player.deptCode].points += points;
-      player.totalPointsEarned += points;
+      this.connect4.streakScores[player.deptCode].points += streakBonus;
+      player.totalPointsEarned += streakBonus;
 
-      this.addActivity(`🔴 ৪-ইন-এ-রো! ${DEPARTMENTS[player.deptCode].abbr} ৪টি বল মিলিয়ে গ্রে লক করেছে! (+${points} pts)`, 'CONNECT4_STREAK', player.deptCode);
+      this.addActivity(`🔴 ৪-ইন-এ-রো! ${DEPARTMENTS[player.deptCode].abbr} ৪টি বল মিলিয়ে গ্রে লক করেছে! (+${totalPoints} pts)`, 'CONNECT4_STREAK', player.deptCode);
     } else {
-      this.addActivity(`${DEPARTMENTS[player.deptCode].abbr} কলাম ${col + 1}-এ বল ড্রপ করেছে!`, 'CONNECT4_BLOCK', player.deptCode);
+      this.addActivity(`${DEPARTMENTS[player.deptCode].abbr} কলাম ${col + 1}-এ বল ড্রপ করেছে! (+${dropPoints} pts)`, 'CONNECT4_BLOCK', player.deptCode);
     }
 
     this.saveState();
@@ -346,8 +353,10 @@ export class GameEngine {
       success: true,
       row: targetRow,
       streakEarned,
-      points,
-      message: streakEarned ? `🎉 অভিনন্দন! ৪টি বল মিলিয়ে ${points} পয়েন্ট অর্জন করেছো!` : 'বল সফলভাবে ড্রপ করা হয়েছে!',
+      points: totalPoints,
+      message: streakEarned 
+        ? `🎉 অভিনন্দন! বল ড্রপ (+${dropPoints}) ও ৪-ইন-এ-রো মিলিয়ে মোট +${totalPoints} পয়েন্ট পেয়েছো!` 
+        : `বল সফলভাবে ড্রপ হয়েছে (+${dropPoints} pts)!`,
       state: this.getSnapshot()
     };
   }

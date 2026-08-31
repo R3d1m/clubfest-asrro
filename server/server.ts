@@ -172,7 +172,16 @@ app.get('/api/state', (req, res) => {
   return res.json(gameEngine.getSnapshot());
 });
 
-// 9. Admin Controls (Reset, Toggle Day)
+// 9. Admin Controls (List Registered Students, Reset, Toggle Day)
+app.get('/api/admin/players', (req, res) => {
+  const players = Object.values(gameEngine.players).sort((a, b) => {
+    const timeA = a.registeredAt ? new Date(a.registeredAt).getTime() : 0;
+    const timeB = b.registeredAt ? new Date(b.registeredAt).getTime() : 0;
+    return timeB - timeA;
+  });
+  return res.json({ success: true, count: players.length, players });
+});
+
 app.post('/api/admin/reset', async (req, res) => {
   await gameEngine.resetAll();
   io.emit('state:update', gameEngine.getSnapshot());

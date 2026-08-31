@@ -291,9 +291,7 @@ export const App: React.FC = () => {
             onDropComplete={(res) => {
               if (playerRecord) {
                 playerRecord.connect4Col = res.col;
-                if (res.streakEarned) {
-                  playerRecord.totalPointsEarned += res.points;
-                }
+                playerRecord.totalPointsEarned += res.points;
               }
             }}
             onAdvanceToNextStage={() => updateStage('STAGE_3_INSTRUCTION')}
