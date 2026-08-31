@@ -167,9 +167,9 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
       {/* 1. Top Banner: AP Tracker */}
       <div className="w-full pop-box p-2.5 bg-white flex items-center justify-between shadow-pop-sm flex-shrink-0">
         <div>
-          <span className="text-[11px] font-bold text-gray-500 font-bangla block leading-none">স্টেপ ১: স্টিলথ ব্যাটেলশিপ</span>
+          <span className="text-[11px] font-bold text-gray-500 font-bangla block leading-none">স্টেপ ১: গুপ্ত বনাম প্রকাশ্য</span>
           <h2 className="text-sm sm:text-base font-black font-bangla text-[#1E232A] mt-0.5">
-            {mode === 'ATTACK' ? '🎯 শত্রুর ঘাঁটি খুঁজুন' : '🌫️ নিজের ঘাঁটি লুকান'}
+            {mode === 'ATTACK' ? 'গুপ্ত ঘাঁটি খুঁজো' : 'নিজের ঘাঁটি লুকাও'}
           </h2>
         </div>
 
@@ -225,12 +225,12 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
 
         <div className="bg-[#E0F7FA] text-[#006064] py-1 px-1.5 rounded-xl border-2 border-[#00BCD4] flex items-center space-x-1 justify-center">
           <span className="w-2 h-2 rounded-full bg-[#4DD0E1] border border-[#00838F] inline-block"></span>
-          <span>খালি পানি</span>
+          <span>ব্যর্থ অভিযান</span>
         </div>
 
         <div className="bg-[#FFF2DC] text-[#D67229] py-1 px-1.5 rounded-xl border-2 border-[#FFA931] flex items-center space-x-1 justify-center">
           <span className="w-2 h-2 rounded-full bg-[#FF5964] border border-[#1E232A] inline-block"></span>
-          <span>উন্মোচিত ঘাঁটি</span>
+          <span>Exposed!</span>
         </div>
       </div>
 
@@ -349,7 +349,7 @@ export const BattleshipStage: React.FC<BattleshipStageProps> = ({
             onClick={() => { sound.playPop(); onAdvanceToNextStage(); }}
             className="pop-btn w-full py-3.5 bg-[#6BCB77] text-[#1E232A] font-black text-sm sm:text-base font-bangla flex items-center justify-center space-x-2 animate-bounce shadow-pop cursor-pointer"
           >
-            <span>৩টি চাল শেষ! পরের গেম (কানেক্ট-৪) এ যাও</span>
+            <span>৩টি চাল শেষ! পরের গেম এ যাও</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         ) : (

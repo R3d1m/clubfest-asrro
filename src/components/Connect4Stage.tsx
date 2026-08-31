@@ -100,7 +100,7 @@ export const Connect4Stage: React.FC<Connect4StageProps> = ({
       {/* 1. Top Banner */}
       <div className="w-full pop-box p-2.5 bg-white flex items-center justify-between shadow-pop-sm flex-shrink-0">
         <div>
-          <span className="text-[11px] font-bold text-gray-500 font-bangla block leading-none">স্টেপ ২: মেগা কানেক্ট-৪</span>
+          <span className="text-[11px] font-bold text-gray-500 font-bangla block leading-none">স্টেপ ২: ডিপার্টমেন্টাল বন্ডিং</span>
           <h2 className="text-sm sm:text-base font-black font-bangla text-[#1E232A] mt-0.5">
             {hasPlayed ? '✅ বল ড্রপ সম্পন্ন!' : '🎯 ১টি কলাম বেছে বল ফেলুন'}
           </h2>
@@ -217,7 +217,7 @@ export const Connect4Stage: React.FC<Connect4StageProps> = ({
             <>
               <Award className="w-5 h-5 text-amber-500 flex-shrink-0 animate-bounce" />
               <div>
-                <strong className="font-black block text-xs">🎉 ৪-ইন-এ-রো কমপ্লিট!</strong>
+                <strong className="font-black block text-xs">🎉 পরপর ৪ কমপ্লিট!</strong>
                 <span className="text-[11px]">অভিনন্দন! তোমার ডিপার্টমেন্ট +{streakResult.points} পয়েন্ট অর্জন করেছে!</span>
               </div>
             </>

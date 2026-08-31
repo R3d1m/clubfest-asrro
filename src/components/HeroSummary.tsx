@@ -10,6 +10,42 @@ interface HeroSummaryProps {
   player: PlayerRecord;
 }
 
+// Canvas Text-Wrapping Helper
+function wrapCanvasText(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  x: number,
+  y: number,
+  maxWidth: number,
+  lineHeight: number,
+  maxLines: number = 3
+) {
+  const words = text.split(' ');
+  let line = '';
+  let currentY = y;
+  let linesDrawn = 0;
+
+  for (let n = 0; n < words.length; n++) {
+    const testLine = line + (line ? ' ' : '') + words[n];
+    const metrics = ctx.measureText(testLine);
+    const testWidth = metrics.width;
+    if (testWidth > maxWidth && n > 0) {
+      ctx.fillText(line, x, currentY);
+      line = words[n];
+      currentY += lineHeight;
+      linesDrawn++;
+      if (linesDrawn >= maxLines - 1) {
+        const remaining = words.slice(n).join(' ');
+        ctx.fillText(remaining, x, currentY);
+        return;
+      }
+    } else {
+      line = testLine;
+    }
+  }
+  ctx.fillText(line, x, currentY);
+}
+
 export const HeroSummary: React.FC<HeroSummaryProps> = ({
   student,
   player
@@ -19,6 +55,13 @@ export const HeroSummary: React.FC<HeroSummaryProps> = ({
   const cardData = useMemo(() => {
     return generateHeroCardData(student, player);
   }, [student, player]);
+
+  // Number of unveiled enemy bases
+  const hitCount = useMemo(() => {
+    return (player.battleshipMoves || []).filter(
+      m => m.result === 'HIT' && m.hitDept && m.hitDept !== player.deptCode
+    ).length;
+  }, [player.battleshipMoves, player.deptCode]);
 
   useEffect(() => {
     sound.playStreakChime();
@@ -52,7 +95,7 @@ export const HeroSummary: React.FC<HeroSummaryProps> = ({
       ctx.fillRect(0, 0, width, height);
 
       // Starry Dust Particles
-      for (let i = 0; i < 110; i++) {
+      for (let i = 0; i < 120; i++) {
         const sx = Math.random() * width;
         const sy = Math.random() * height;
         const sr = Math.random() * 2.2 + 0.4;
@@ -68,35 +111,48 @@ export const HeroSummary: React.FC<HeroSummaryProps> = ({
       ctx.strokeRect(30, 30, width - 60, height - 60);
 
       // 2. Header Banner
+      const headerY = 55;
+      const headerH = 150;
       ctx.fillStyle = '#1E232A';
-      ctx.fillRect(60, 60, width - 120, 160);
+      ctx.fillRect(60, headerY, width - 120, headerH);
       ctx.strokeStyle = '#FFFFFF';
       ctx.lineWidth = 4;
-      ctx.strokeRect(60, 60, width - 120, 160);
+      ctx.strokeRect(60, headerY, width - 120, headerH);
 
       // Fest Title & Subtitle
       ctx.fillStyle = '#F9D342';
-      ctx.font = '900 38px sans-serif';
+      ctx.font = '900 30px sans-serif';
       ctx.textAlign = 'left';
-      ctx.fillText('⚔️ DEPARTMENT CLASH 2026', 100, 125);
+      ctx.fillText('⚔️ DEPARTMENT CLASH 2026', 85, headerY + 60);
 
       ctx.fillStyle = '#94A3B8';
-      ctx.font = 'bold 24px sans-serif';
-      ctx.fillText('ASRRO FEST ARENA • OFFICIAL CELESTIAL HERO CARD', 100, 175);
+      ctx.font = 'bold 20px sans-serif';
+      ctx.fillText('ASRRO FEST ARENA • HERO ID CARD', 85, headerY + 105);
 
       // Rarity Pill (Top Right)
+      const pillW = 300;
+      const pillH = 46;
+      const pillX = width - 85 - pillW;
+      const pillY = headerY + 45;
+
       ctx.fillStyle = cardData.rarityColor;
       ctx.beginPath();
-      ctx.roundRect(width - 430, 95, 350, 50, 25);
+      ctx.roundRect(pillX, pillY, pillW, pillH, 23);
       ctx.fill();
+      ctx.strokeStyle = '#1E232A';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
       ctx.fillStyle = '#1E232A';
-      ctx.font = '900 20px sans-serif';
+      ctx.font = '900 18px sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText(cardData.rarityLabel, width - 255, 128);
+      ctx.textBaseline = 'middle';
+      ctx.fillText(cardData.rarityLabel, pillX + pillW / 2, pillY + pillH / 2);
+      ctx.textBaseline = 'alphabetic';
 
       // 3. Center Constellation Hologram Box
-      const constBoxY = 250;
-      const constBoxH = 590;
+      const constBoxY = 225;
+      const constBoxH = 610;
       ctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
       ctx.fillRect(60, constBoxY, width - 120, constBoxH);
       ctx.strokeStyle = student.themeColor || '#4ECDC4';
@@ -105,19 +161,19 @@ export const HeroSummary: React.FC<HeroSummaryProps> = ({
 
       // Constellation Box Label
       ctx.fillStyle = student.themeColor || '#4ECDC4';
-      ctx.font = '900 28px sans-serif';
+      ctx.font = '900 26px sans-serif';
       ctx.textAlign = 'left';
-      ctx.fillText(`✨ ${cardData.constellationName} • ${student.deptAbbr}`, 90, constBoxY + 50);
+      ctx.fillText(`✨ ${cardData.constellationName} • ${student.deptAbbr}`, 90, constBoxY + 48);
 
       ctx.fillStyle = '#E2E8F0';
-      ctx.font = '22px sans-serif';
-      ctx.fillText(cardData.constellationMythBangla, 90, constBoxY + 85);
+      ctx.font = 'bold 20px sans-serif';
+      ctx.fillText(cardData.constellationMythBangla, 90, constBoxY + 82);
 
       // Draw Constellation Edges
       const cLeft = 120;
-      const cTop = constBoxY + 120;
+      const cTop = constBoxY + 110;
       const cW = width - 240;
-      const cH = constBoxH - 180;
+      const cH = constBoxH - 160;
 
       ctx.strokeStyle = 'rgba(78, 205, 196, 0.75)';
       ctx.lineWidth = 4;
@@ -161,59 +217,80 @@ export const HeroSummary: React.FC<HeroSummaryProps> = ({
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(n.digitLabel || `${idx + 1}`, nx, ny + 1);
+        ctx.textBaseline = 'alphabetic';
       });
 
-      // 4. Student Identity & Constellation Reason Banner
-      const idBoxY = 870;
+      // 4. Student Identity & Constellation Reason Banner (Auto-Wrapping)
+      const idBoxY = 855;
+      const idBoxH = 210;
       ctx.fillStyle = '#FFFBEB';
-      ctx.fillRect(60, idBoxY, width - 120, 170);
+      ctx.fillRect(60, idBoxY, width - 120, idBoxH);
       ctx.strokeStyle = '#1E232A';
       ctx.lineWidth = 5;
-      ctx.strokeRect(60, idBoxY, width - 120, 170);
+      ctx.strokeRect(60, idBoxY, width - 120, idBoxH);
 
+      // Student ID & Dept Abbr
       ctx.fillStyle = '#1E232A';
-      ctx.font = '900 44px sans-serif';
+      ctx.font = '900 38px sans-serif';
       ctx.textAlign = 'left';
-      ctx.textBaseline = 'alphabetic';
-      ctx.fillText(`${student.studentId} • ${student.deptName} (${student.deptAbbr})`, 90, idBoxY + 55);
+      ctx.fillText(`${student.studentId} • ${student.deptAbbr} '${student.batchShort}`, 90, idBoxY + 48);
 
-      ctx.fillStyle = '#0F766E';
+      // Full Dept Name
+      ctx.fillStyle = '#475569';
       ctx.font = 'bold 22px sans-serif';
-      ctx.fillText(`💡 বরাদ্দ পাওয়ার কারণ: ${cardData.constellationReason}`, 90, idBoxY + 105);
+      ctx.fillText(student.deptName, 90, idBoxY + 82);
 
-      ctx.fillStyle = '#64748B';
-      ctx.font = 'bold 22px sans-serif';
-      ctx.fillText(`পদবী: ${cardData.archetypeTitle}`, 90, idBoxY + 148);
+      // Multi-Line Auto-Wrapped Constellation Assignment Reason
+      ctx.fillStyle = '#065F46';
+      ctx.font = 'bold 19px sans-serif';
+      wrapCanvasText(
+        ctx,
+        `💡 Why you got this: ${cardData.constellationReason}`,
+        90,
+        idBoxY + 120,
+        width - 180,
+        28,
+        2
+      );
+
+      // Persona Archetype
+      ctx.fillStyle = '#C2410C';
+      ctx.font = 'bold 20px sans-serif';
+      ctx.fillText(`Achieved Rank: ${cardData.archetypeTitle}`, 90, idBoxY + 185);
 
       // 5. In-Game Tactical Achievements Grid
-      const statsY = 1070;
+      const statsY = 1085;
+      const statsH = 220;
       ctx.fillStyle = '#FFFFFF';
-      ctx.fillRect(60, statsY, width - 120, 230);
+      ctx.fillRect(60, statsY, width - 120, statsH);
       ctx.strokeStyle = '#1E232A';
       ctx.lineWidth = 5;
-      ctx.strokeRect(60, statsY, width - 120, 230);
+      ctx.strokeRect(60, statsY, width - 120, statsH);
+
+      // Battleship line with count of uncovered enemy bases
 
       ctx.fillStyle = '#1E232A';
-      ctx.font = 'bold 26px sans-serif';
-      ctx.fillText(`🚢 ব্যাটেলশিপ: ${player.battleshipMoves?.length || 3}টি চাল সম্পন্ন`, 90, statsY + 60);
-      ctx.fillText(`🔴 কানেক্ট-৪: কলাম ${player.connect4Col !== null ? player.connect4Col + 1 : 1} ড্রপ (+10 pts)`, 90, statsY + 115);
-      ctx.fillText(`🏗️ টাওয়ার স্ট্যাকিং: ${player.stackFloors} তলা (×${player.stackCombos} কম্বো)`, 90, statsY + 170);
+      ctx.font = 'bold 24px sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(`🚢 গুপ্ত শনাক্ত: ${hitCount}টি ঘাঁটি`, 90, statsY + 60);
+      ctx.fillText(`🔴 ডিপার্টমেন্টাল বন্ডিং: কলাম ${player.connect4Col !== null ? player.connect4Col + 1 : 1} ড্রপ (+10 pts)`, 90, statsY + 115);
+      ctx.fillText(`🏗️ নাম কামাও: ${player.stackFloors} তলা (×${player.stackCombos} কম্বো)`, 90, statsY + 170);
 
       // Total Score Highlight
       ctx.fillStyle = '#059669';
-      ctx.font = '900 36px sans-serif';
+      ctx.font = '900 40px sans-serif';
       ctx.textAlign = 'right';
-      ctx.fillText(`+${player.totalPointsEarned} PTS`, width - 90, statsY + 120);
+      ctx.fillText(`+${player.totalPointsEarned} PTS`, width - 90, statsY + 105);
 
       ctx.fillStyle = '#64748B';
       ctx.font = 'bold 20px sans-serif';
-      ctx.fillText('মোট অর্জিত পয়েন্ট', width - 90, statsY + 160);
+      ctx.fillText('Total Points Earned', width - 90, statsY + 145);
 
       // 6. Footer Verification Stamp
       ctx.fillStyle = '#F9D342';
-      ctx.font = 'bold 22px sans-serif';
+      ctx.font = 'bold 20px sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('ASRRO • CUET Club FEST 2026', width / 2, height - 85);
+      ctx.fillText('ASRRO • CUET CLUB FEST 2026', width / 2, height - 75);
 
       // Download file
       const link = document.createElement('a');
@@ -229,11 +306,12 @@ export const HeroSummary: React.FC<HeroSummaryProps> = ({
 
   const handleShare = () => {
     sound.playPop();
-    const shareText = `আমি ${student.deptName} এর জন্য লড়াই করে ${player.totalPointsEarned} পয়েন্ট অর্জন করেছি! ${cardData.constellationName} নক্ষত্রমণ্ডলে আমার পদবী: ${cardData.archetypeTitle} 🚀`;
+    const hitMention = hitCount > 0 ? ` and ${hitCount} enemy bases uncovered!` : '';
+    const shareText = `I fought for ${student.deptName} and earned ${player.totalPointsEarned} points${hitMention} in the ${cardData.constellationName} constellation! My rank: ${cardData.archetypeTitle} 🚀`;
 
     if (navigator.share) {
       navigator.share({
-        title: 'ডিপার্টমেন্ট ক্ল্যাশ ২০২৬ • নক্ষত্রমণ্ডল হিরো কার্ড',
+        title: 'ডিপার্টমেন্ট ক্ল্যাশ ২০২৬ • ASRRO ARENA',
         text: shareText,
         url: window.location.origin
       }).catch(() => {});
@@ -251,13 +329,13 @@ export const HeroSummary: React.FC<HeroSummaryProps> = ({
         <div className="flex items-center justify-between border-b-2 border-white/20 pb-2 flex-shrink-0">
           <div className="flex items-center space-x-2">
             <div 
-              className="w-10 h-10 rounded-xl border-2 border-white flex flex-col items-center justify-center text-lg shadow-sm"
+              className="w-10 h-10 rounded-xl border-2 border-white flex flex-col items-center justify-center text-lg shadow-sm flex-shrink-0"
               style={{ backgroundColor: student.themeColor }}
             >
               <span>{cardData.constellationSymbol}</span>
             </div>
 
-            <div className="text-left">
+            <div className="text-left overflow-hidden">
               <div className="flex items-center space-x-1.5">
                 <span className="font-mono font-black text-base tracking-wider text-[#F9D342]">
                   {student.studentId}
@@ -266,14 +344,14 @@ export const HeroSummary: React.FC<HeroSummaryProps> = ({
                   {student.deptAbbr} '{student.batchShort}
                 </span>
               </div>
-              <p className="text-[10px] text-teal-300 font-bold font-bangla">
+              <p className="text-[10px] text-teal-300 font-bold font-bangla truncate">
                 {student.deptName}
               </p>
             </div>
           </div>
 
           <div 
-            className="px-2 py-0.5 rounded-full text-[10px] font-black border border-white/40 shadow-xs"
+            className="px-2 py-0.5 rounded-full text-[10px] font-black border border-white/40 shadow-xs flex-shrink-0 ml-2"
             style={{ backgroundColor: cardData.rarityColor, color: '#1E232A' }}
           >
             {cardData.rarityLabel}
@@ -358,23 +436,28 @@ export const HeroSummary: React.FC<HeroSummaryProps> = ({
           </div>
         </div>
 
-        {/* Reason for Assignment Section */}
+        {/* Reason for Assignment Section (Properly Wrapping) */}
         <div className="p-2 bg-[#064E3B]/80 text-[#D1FAE5] rounded-xl border border-emerald-500/40 text-[10px] sm:text-[11px] font-bangla font-medium flex items-start space-x-1.5 flex-shrink-0">
           <Info className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0 mt-0.5" />
-          <div>
+          <div className="flex-1 leading-snug">
             <strong className="text-emerald-300 font-black">নক্ষত্রমণ্ডল পাওয়ার কারণ: </strong>
             <span>{cardData.constellationReason}</span>
           </div>
         </div>
 
-        {/* Personal Game Contribution Metrics */}
+        {/* Personal Game Contribution Metrics (Clean Count Only) */}
         <div className="p-2 bg-white text-[#1E232A] rounded-xl border-2 border-[#1E232A] shadow-xs space-y-0.5 text-left font-bangla flex-shrink-0">
           <div className="flex items-center justify-between text-xs border-b border-gray-100 pb-0.5">
-            <span className="text-gray-600 font-bold">🚢 ব্যাটেলশিপ: {player.battleshipMoves?.length || 3} চাল সম্পন্ন</span>
-            <span className="font-bold text-gray-600">🔴 কানেক্ট-৪: C{player.connect4Col !== null ? player.connect4Col + 1 : 1} (+10)</span>
+            <span className="text-gray-600 font-bold truncate pr-1">
+              🚢 গুপ্ত বনাম প্রকাশ্য: {player.battleshipMoves?.length || 3} চাল
+              {hitCount > 0 && (
+                <span className="text-red-600 font-black"> • 🎯 {hitCount}টি ঘাঁটি উন্মোচিত</span>
+              )}
+            </span>
+            <span className="font-bold text-gray-600 flex-shrink-0">🔴 ডিপার্টমেন্টাল বন্ডিং: C{player.connect4Col !== null ? player.connect4Col + 1 : 1} (+10)</span>
           </div>
           <div className="flex items-center justify-between text-xs pt-0.5">
-            <span className="font-bold text-amber-600">🏗️ স্ট্যাকিং: {player.stackFloors} তলা (×{player.stackCombos} কম্বো)</span>
+            <span className="font-bold text-amber-600">🏗️ নাম কামাও: {player.stackFloors} তলা (×{player.stackCombos} কম্বো)</span>
             <span className="text-sm font-black text-emerald-600">+{player.totalPointsEarned} Pts</span>
           </div>
         </div>

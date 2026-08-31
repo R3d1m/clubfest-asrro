@@ -52,7 +52,7 @@ export const BanglaBriefing: React.FC<BanglaBriefingProps> = ({ student, onStart
                 ১. ডিপার্টমেন্টের প্রতিনিধিত্ব (গেম ১ ও ২):
               </strong>
               <p className="text-gray-700 font-medium text-[11px] sm:text-xs">
-                ৩ ম্যাচের এই গেম এর প্রথম দুটোতে (<span className="font-bold text-red-600">ব্যাটেলশিপ</span> ও <span className="font-bold text-teal-600">কানেক্ট-৪</span>) তুমি সরাসরি তোমার ডিপার্টমেন্টকে পয়েন্ট এনে দেবে।
+                ৩ ম্যাচের এই গেম এর প্রথম দুটোতে (<span className="font-bold text-red-600">গুপ্ত বনাম প্রকাশ্য</span> ও <span className="font-bold text-teal-600">ডিপার্টমেন্টাল বন্ডিং</span>) তুমি সরাসরি তোমার ডিপার্টমেন্টকে পয়েন্ট এনে দেবে।
               </p>
             </div>
           </div>
@@ -64,7 +64,7 @@ export const BanglaBriefing: React.FC<BanglaBriefingProps> = ({ student, onStart
                 ২. ব্যক্তিগত শ্রেষ্ঠত্ব ও ASRRO পুরস্কার (গেম ৩):
               </strong>
               <p className="text-gray-700 font-medium text-[11px] sm:text-xs">
-                ৩য় গেমটিতে (<span className="font-bold text-amber-600">টাওয়ার স্ট্যাক</span>) হবে তোমার ব্যক্তিগত লড়াই। টপ ৫ এ থাকলে <strong className="text-[#D67229]">ASRRO থেকে বিশেষ পুরস্কার নিশ্চিত!</strong>
+                ৩য় গেমটিতে (<span className="font-bold text-amber-600">নাম কামাও</span>) হবে তোমার ব্যক্তিগত লড়াই। টপ ৫ এ থাকলে <strong className="text-[#D67229]">ASRRO থেকে বিশেষ পুরস্কার নিশ্চিত!</strong>
               </p>
             </div>
           </div>
