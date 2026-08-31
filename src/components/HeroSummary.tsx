@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState, useMemo } from 'react';
-import { Share2, Download, Award, Sparkles, Shield, Star, CheckCircle2 } from 'lucide-react';
+import React, { useEffect, useState, useMemo } from 'react';
+import { Share2, Download, Sparkles, Info } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { ParsedStudent, PlayerRecord } from '../types';
 import { sound } from '../utils/sound';
@@ -155,7 +155,7 @@ export const HeroSummary: React.FC<HeroSummaryProps> = ({
         ctx.lineWidth = 3;
         ctx.stroke();
 
-        // Digit inside the Star!
+        // Digit inside the Star
         ctx.fillStyle = '#1E232A';
         ctx.font = '900 18px sans-serif';
         ctx.textAlign = 'center';
@@ -163,7 +163,7 @@ export const HeroSummary: React.FC<HeroSummaryProps> = ({
         ctx.fillText(n.digitLabel || `${idx + 1}`, nx, ny + 1);
       });
 
-      // 4. Student Identity & Batch Banner
+      // 4. Student Identity & Constellation Reason Banner
       const idBoxY = 870;
       ctx.fillStyle = '#FFFBEB';
       ctx.fillRect(60, idBoxY, width - 120, 170);
@@ -172,14 +172,14 @@ export const HeroSummary: React.FC<HeroSummaryProps> = ({
       ctx.strokeRect(60, idBoxY, width - 120, 170);
 
       ctx.fillStyle = '#1E232A';
-      ctx.font = '900 46px sans-serif';
+      ctx.font = '900 44px sans-serif';
       ctx.textAlign = 'left';
       ctx.textBaseline = 'alphabetic';
-      ctx.fillText(`${student.studentId} • ${student.deptAbbr} '${student.batchShort}`, 90, idBoxY + 65);
+      ctx.fillText(`${student.studentId} • ${student.deptName} (${student.deptAbbr})`, 90, idBoxY + 55);
 
       ctx.fillStyle = '#0F766E';
-      ctx.font = 'bold 28px sans-serif';
-      ctx.fillText(`${cardData.batchTitle} (${cardData.batchRoleBangla})`, 90, idBoxY + 110);
+      ctx.font = 'bold 22px sans-serif';
+      ctx.fillText(`💡 বরাদ্দ পাওয়ার কারণ: ${cardData.constellationReason}`, 90, idBoxY + 105);
 
       ctx.fillStyle = '#64748B';
       ctx.font = 'bold 22px sans-serif';
@@ -213,7 +213,7 @@ export const HeroSummary: React.FC<HeroSummaryProps> = ({
       ctx.fillStyle = '#F9D342';
       ctx.font = 'bold 22px sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('VERIFIED PARTICIPANT • RUET ASRRO FEST 2026', width / 2, height - 85);
+      ctx.fillText('ASRRO • CUET Club FEST 2026', width / 2, height - 85);
 
       // Download file
       const link = document.createElement('a');
@@ -259,7 +259,7 @@ export const HeroSummary: React.FC<HeroSummaryProps> = ({
 
             <div className="text-left">
               <div className="flex items-center space-x-1.5">
-                <span className="font-mono font-black text-sm tracking-wider text-[#F9D342]">
+                <span className="font-mono font-black text-base tracking-wider text-[#F9D342]">
                   {student.studentId}
                 </span>
                 <span className="text-[10px] px-1.5 py-0.2 rounded bg-white/20 font-bold">
@@ -267,7 +267,7 @@ export const HeroSummary: React.FC<HeroSummaryProps> = ({
                 </span>
               </div>
               <p className="text-[10px] text-teal-300 font-bold font-bangla">
-                {cardData.batchTitle} ({cardData.batchRoleBangla})
+                {student.deptName}
               </p>
             </div>
           </div>
@@ -291,8 +291,8 @@ export const HeroSummary: React.FC<HeroSummaryProps> = ({
           </div>
 
           {/* SVG Constellation with 7 ID Digits in the Stars */}
-          <div className="flex-1 min-h-0 relative flex items-center justify-center">
-            <svg viewBox="0 0 100 100" className="w-full h-full max-h-[160px]">
+          <div className="flex-1 min-h-0 relative flex items-center justify-center py-1">
+            <svg viewBox="0 0 100 100" className="w-full h-full max-h-[145px]">
               {/* Connector Beams */}
               {cardData.edges.map(({ from, to }, idx) => {
                 const n1 = cardData.nodes[from];
@@ -351,15 +351,24 @@ export const HeroSummary: React.FC<HeroSummaryProps> = ({
             </svg>
           </div>
 
-          {/* Persona Label & ID Mapping Indicator */}
-          <div className="text-center bg-black/50 py-1 px-2 rounded-xl border border-white/10 text-[11px] font-black text-amber-300 z-10 flex items-center justify-between">
+          {/* Persona Label */}
+          <div className="text-center bg-black/50 py-0.5 px-2 rounded-xl border border-white/10 text-[11px] font-black text-amber-300 z-10 flex items-center justify-between">
             <span>🎖️ {cardData.archetypeTitle}</span>
             <span className="text-[10px] text-gray-300 font-mono">আইডি নক্ষত্র: {student.studentId}</span>
           </div>
         </div>
 
+        {/* Reason for Assignment Section */}
+        <div className="p-2 bg-[#064E3B]/80 text-[#D1FAE5] rounded-xl border border-emerald-500/40 text-[10px] sm:text-[11px] font-bangla font-medium flex items-start space-x-1.5 flex-shrink-0">
+          <Info className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0 mt-0.5" />
+          <div>
+            <strong className="text-emerald-300 font-black">নক্ষত্রমণ্ডল পাওয়ার কারণ: </strong>
+            <span>{cardData.constellationReason}</span>
+          </div>
+        </div>
+
         {/* Personal Game Contribution Metrics */}
-        <div className="p-2 bg-white text-[#1E232A] rounded-xl border-2 border-[#1E232A] shadow-xs space-y-1 text-left font-bangla flex-shrink-0">
+        <div className="p-2 bg-white text-[#1E232A] rounded-xl border-2 border-[#1E232A] shadow-xs space-y-0.5 text-left font-bangla flex-shrink-0">
           <div className="flex items-center justify-between text-xs border-b border-gray-100 pb-0.5">
             <span className="text-gray-600 font-bold">🚢 ব্যাটেলশিপ: {player.battleshipMoves?.length || 3} চাল সম্পন্ন</span>
             <span className="font-bold text-gray-600">🔴 কানেক্ট-৪: C{player.connect4Col !== null ? player.connect4Col + 1 : 1} (+10)</span>
