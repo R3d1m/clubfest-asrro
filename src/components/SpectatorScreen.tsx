@@ -214,7 +214,7 @@ export const SpectatorScreen: React.FC<SpectatorScreenProps> = ({ serverState, o
           <div className="space-y-3 flex-1 overflow-y-auto">
             {/* Top Chill */}
             <div className="p-2 bg-[#F8F9FA] rounded-xl border border-[#1E232A]">
-              <span className="text-[10px] font-bold text-gray-500 block">😴 সবচেয়ে চিল ও ঘুমন্ত:</span>
+              <span className="text-[10px] font-bold text-gray-500 block">সবচেয়ে চিল :</span>
               <div className="flex items-center justify-between mt-0.5">
                 <span className="text-xs font-black text-purple-700">
                   {Object.entries(poll?.q1 || {}).sort((a, b) => b[1] - a[1])[0]?.[0] || 'ভোট চলছে...'}
@@ -227,7 +227,7 @@ export const SpectatorScreen: React.FC<SpectatorScreenProps> = ({ serverState, o
 
             {/* Top Hype */}
             <div className="p-2 bg-[#F8F9FA] rounded-xl border border-[#1E232A]">
-              <span className="text-[10px] font-bold text-gray-500 block">⚡ সবচেয়ে বেশি হাইপ:</span>
+              <span className="text-[10px] font-bold text-gray-500 block">সবচেয়ে বেশি ক্যাচাল:</span>
               <div className="flex items-center justify-between mt-0.5">
                 <span className="text-xs font-black text-amber-600">
                   {Object.entries(poll?.q2 || {}).sort((a, b) => b[1] - a[1])[0]?.[0] || 'ভোট চলছে...'}
@@ -240,7 +240,7 @@ export const SpectatorScreen: React.FC<SpectatorScreenProps> = ({ serverState, o
 
             {/* Canteen Kings */}
             <div className="p-2 bg-[#F8F9FA] rounded-xl border border-[#1E232A]">
-              <span className="text-[10px] font-bold text-gray-500 block">☕ ক্যান্টিনের আড্ডায় সেরা:</span>
+              <span className="text-[10px] font-bold text-gray-500 block">সেরা ডিপার্টমেন্ট:</span>
               <div className="flex items-center justify-between mt-0.5">
                 <span className="text-xs font-black text-emerald-600">
                   {Object.entries(poll?.q3 || {}).sort((a, b) => b[1] - a[1])[0]?.[0] || 'ভোট চলছে...'}
