@@ -344,7 +344,10 @@ export class GameEngine {
       this.connect4.streakScores[player.deptCode].points += streakBonus;
       player.totalPointsEarned += streakBonus;
 
-      this.addActivity(`🔴 ৪-ইন-এ-রো! ${DEPARTMENTS[player.deptCode].abbr} ৪টি বল মিলিয়ে গ্রে লক করেছে! (+${totalPoints} pts)`, 'CONNECT4_STREAK', player.deptCode);
+      // Gravity Compaction: Clear locked streak balls and let balls above fall down!
+      this.applyConnect4Gravity();
+
+      this.addActivity(`🔴 ৪-ইন-এ-রো! ${DEPARTMENTS[player.deptCode].abbr} ৪টি বল মিলিয়ে পয়েন্ট নিয়েছে ও কলাম ফাঁকা করেছে! (+${totalPoints} pts)`, 'CONNECT4_STREAK', player.deptCode);
     } else {
       this.addActivity(`${DEPARTMENTS[player.deptCode].abbr} কলাম ${col + 1}-এ বল ড্রপ করেছে! (+${dropPoints} pts)`, 'CONNECT4_BLOCK', player.deptCode);
     }
@@ -406,6 +409,38 @@ export class GameEngine {
     }
 
     return null;
+  }
+
+  public applyConnect4Gravity(): void {
+    if (!this.connect4 || !this.connect4.grid) return;
+    for (let c = 0; c < this.connect4.cols; c++) {
+      if (!this.connect4.grid[c]) continue;
+      // Collect all active balls in this column (excluding gray locked / cleared balls)
+      const remainingCells: Array<{ deptCode: DepartmentCode }> = [];
+      for (let r = 0; r < this.connect4.rows; r++) {
+        const cell = this.connect4.grid[c][r];
+        if (cell !== null && cell.deptCode && !cell.isGrayLocked) {
+          remainingCells.push({
+            deptCode: cell.deptCode
+          });
+        }
+      }
+
+      // Re-fill column from bottom (rows - 1) up to row 0
+      for (let r = this.connect4.rows - 1; r >= 0; r--) {
+        const cellData = remainingCells.pop();
+        if (cellData) {
+          this.connect4.grid[c][r] = {
+            col: c,
+            row: r,
+            deptCode: cellData.deptCode,
+            isGrayLocked: false
+          };
+        } else {
+          this.connect4.grid[c][r] = null;
+        }
+      }
+    }
   }
 
   // --- Stacker Logic ---
@@ -708,6 +743,7 @@ export class GameEngine {
             });
           }
           this.connect4 = neonGameState.connect4;
+          this.applyConnect4Gravity();
           this.pollStats = neonGameState.pollStats;
           this.players = neonPlayers;
           this.stackerTopRecords = neonStackers;
@@ -733,7 +769,10 @@ export class GameEngine {
             });
           }
         }
-        if (data.connect4) this.connect4 = data.connect4;
+        if (data.connect4) {
+          this.connect4 = data.connect4;
+          this.applyConnect4Gravity();
+        }
         if (data.stackerTopRecords) this.stackerTopRecords = data.stackerTopRecords;
         if (data.pollStats) this.pollStats = data.pollStats;
         if (data.players) this.players = data.players;

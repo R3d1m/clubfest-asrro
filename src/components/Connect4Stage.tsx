@@ -118,7 +118,7 @@ export const Connect4Stage: React.FC<Connect4StageProps> = ({
       <div className="w-full flex-1 min-h-0 pop-box p-2 bg-[#F9D342] border-3.5 border-[#1E232A] relative flex flex-col justify-center shadow-pop overflow-hidden">
         <div className="text-[11px] text-[#1E232A] font-bangla text-center mb-1 font-bold flex-shrink-0">
           {hasPlayed 
-            ? '৪টি মিললে বলগুলো ধূসর (Gray) হয়ে স্থায়ী পয়েন্ট লক হয়!' 
+            ? '🎉 ৪টি মিললে বল উধাও হয়ে পয়েন্ট লক হয় ও কলাম ফাঁকা হয়!' 
             : '👇 যেকোনো কলামের বাটনে ট্যাপ করে তোমার বলটি ড্রপ করো:'}
         </div>
 
